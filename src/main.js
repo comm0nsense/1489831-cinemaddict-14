@@ -5,7 +5,6 @@ import { createMovieCard } from './view/movie-card.js';
 import { createShowMoreBtn } from './view/show-more-btn.js';
 import { createMovieDetailsPopup } from './view/popup.js';
 import { createMoviesSectionTemplate } from './view/movies-section.js';
-import { createMoviesListTemplate } from './view/movies-list.js';
 
 const MOVIES_COUNT = 5;
 const SECTION_MOVIES_COUNT = 2;
@@ -24,7 +23,6 @@ render(siteMainElement, createFiltersTemplate());
 render(siteMainElement, createMoviesSectionTemplate());
 
 const siteMoviesSection = siteMainElement.querySelector('.films');
-render(siteMoviesSection, createMoviesListTemplate());
 
 const siteMoviesListContainer = siteMoviesSection.querySelector('.films-list__container');
 
