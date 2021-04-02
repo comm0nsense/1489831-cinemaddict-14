@@ -1,9 +1,11 @@
 import { createMainNavigationTemplate } from './view/main-navigation.js';
 import { createFiltersTemplate } from './view/filters.js';
 import { createUserProfile } from './view/user-profile.js';
-import { createMovieCard } from './view/film-card.js';
+import { createMovieCard } from './view/movie-card.js';
 import { createShowMoreBtn } from './view/show-more-btn.js';
-import {createMovieDetailsPopup} from './view/popup.js';
+import { createMovieDetailsPopup } from './view/popup.js';
+import { createMoviesSectionTemplate } from './view/movies-section.js';
+import { createMoviesListTemplate } from './view/movies-list.js';
 
 const MOVIES_COUNT = 5;
 const SECTION_MOVIES_COUNT = 2;
@@ -12,53 +14,34 @@ const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
 
+const siteBodyElement = document.querySelector('body');
 const siteHeader = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 render(siteHeader, createUserProfile());
 render(siteMainElement, createMainNavigationTemplate());
 render(siteMainElement, createFiltersTemplate());
+render(siteMainElement, createMoviesSectionTemplate());
 
-const movies = document.createElement('section');
-movies.className = 'films';
-siteMainElement.appendChild(movies);
+const siteMoviesSection = siteMainElement.querySelector('.films');
+render(siteMoviesSection, createMoviesListTemplate());
 
-const moviesList = document.createElement('section');
-moviesList.className = 'films-list';
-movies.appendChild(moviesList);
-
-const moviesListContainer = document.createElement('div');
-moviesListContainer.className = 'films-list__container';
-moviesList.appendChild(moviesListContainer);
+const siteMoviesListContainer = siteMoviesSection.querySelector('.films-list__container');
 
 for (let i = 0; i < MOVIES_COUNT; i++) {
-  render(moviesListContainer, createMovieCard());
+  render(siteMoviesListContainer, createMovieCard());
 }
 
-render(moviesList, createShowMoreBtn());
+render(siteMoviesSection, createShowMoreBtn());
 
-const TOP_RATED_TITLE = 'Top rated';
-const MOST_COMMENTED_TITLE = 'Most commented';
+const topRatedMoviesList = siteMoviesSection.querySelector('#films-list-top-rated');
+const topRatedMoviesListContainer = topRatedMoviesList.querySelector('.films-list__container');
+const mostCommentedMoviesList = siteMoviesSection.querySelector('#films-list-most-commented');
+const mostCommentedMoviesListContainer = mostCommentedMoviesList.querySelector('.films-list__container');
 
-const createMoviesListExtra = (text) => {
-  const moviesListExtra = document.createElement('section');
-  moviesListExtra.className = 'films-list--extra';
-  movies.appendChild(moviesListExtra);
+for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
+  render(topRatedMoviesListContainer, createMovieCard());
+  render(mostCommentedMoviesListContainer, createMovieCard());
+}
 
-  const moviesListTitle = document.createElement('h2');
-  moviesListTitle.textContent = text;
-  moviesListTitle.className = 'films-list__title';
-  moviesListExtra.appendChild(moviesListTitle);
-  const moviesListExtraContainer = document.createElement('div');
-  moviesListExtraContainer.className = 'films-list__container';
-  moviesListExtra.appendChild(moviesListExtraContainer);
-
-  for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
-    render(moviesListExtraContainer, createMovieCard());
-  }
-};
-
-createMoviesListExtra(TOP_RATED_TITLE);
-createMoviesListExtra(MOST_COMMENTED_TITLE);
-
-render(document.body, createMovieDetailsPopup());
+render(siteBodyElement, createMovieDetailsPopup());
