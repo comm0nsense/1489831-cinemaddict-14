@@ -6,6 +6,8 @@ import { createShowMoreBtn } from './view/show-more-btn.js';
 import { createMovieDetailsPopup } from './view/popup.js';
 import { createMoviesSectionTemplate } from './view/movies-section.js';
 import './mock/movie.js';
+import './mock/comment.js';
+
 
 const MOVIES_COUNT = 5;
 const SECTION_MOVIES_COUNT = 2;

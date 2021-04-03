@@ -1,4 +1,5 @@
-import { getRandomInteger, getUniqueRandomNumbers } from './util.js';
+import { getRandomInteger, getUniqueRandomNumbers, random, getRandomArrayElement } from './util.js';
+import {generateComment} from './comment.js';
 
 const generateDescription = () => {
   const sentences = [
@@ -59,14 +60,57 @@ const generatePoster = () => {
   return posters[randomIndex];
 };
 
-const generateMovie = () => {
-  return {
-    // film_info: {
-    title: generateTitle(),
-    poster: generatePoster(),
-    description: generateDescription(),
-    // }
-  };
+const generateReleaseCountry = () => {
+  const countires = ['Australia', 'Brazil', 'Canada', 'China', 'France', 'Germany', 'India',
+    'Indonesia', 'Italy', 'Japan', 'Mexico', ' Russia', 'Saudi Arabia', 'South Africa',
+    'South Korea', 'Turkey', 'UK', 'USA'];
+
+  return getRandomArrayElement(countires);
 };
 
+const generateGenre = () => {
+  const genres = ['Action', 'Adventure', 'Animation', 'Comedy', 'Drama', 'Documentary', 'Horror',
+    'Sci-Fi', 'Western', 'Thriller', 'Fantasy', 'Crime', 'Music'];
+  const randomCount = getRandomInteger(1, 3); //количество жанров
+  const randomIndexes = getUniqueRandomNumbers(randomCount, 0, genres.length - 1);
+  const array = [];
+
+  for (const index of randomIndexes) {
+    array.push(genres[index]);
+  }
+
+  return array;
+};
+
+const generateMovieComments = () => {
+  const random = getRandomInteger(0, 5);
+  const comments = new Array(random).fill().map(() => generateComment());
+  return comments;
+};
+
+const generateMovie = () => {
+  // порядок полей такой же как в структуре данных? или нет?
+  return {
+    'film_info': {
+      'title': generateTitle(),
+      'poster': generatePoster(),
+      'description': generateDescription(),
+      'total_rating': random(0, 10).toFixed(1),//Почему название через low dash?
+      'release': {
+        'date': '2019-05-11T00:00:00.000Z',
+        'release_country': generateReleaseCountry(),
+      },
+      'genre': generateGenre(),
+      'comments': generateMovieComments(),
+      'runtime': '1h 36m',
+      'user_details': {
+        'watchlist': false,
+        'already_watched': true,
+        'watching_date': '2019-04-12T16:12:32.554Z',
+        'favorite': false,
+      },
+    },
+  };
+};
+//Этот объект содержит все данные для заполнения не только картчоки, но и попапа?
 console.log(generateMovie());
