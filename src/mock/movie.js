@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import {
   getRandomInteger,
   random,
@@ -18,13 +17,13 @@ const titles = [
 ];
 
 const posters = [
-  '../public/images/posters/made-for-each-other.png',
-  'popeye-meets-sinbad',
-  'sagebrush-trail',
-  'santa-claus-conquers-the-martians',
-  'the-dance-of-life',
-  'the-great-flamarion',
-  'the-man-with-the-golden-arm',
+  '../images/posters/made-for-each-other.png',
+  '../images/posters/popeye-meets-sinbad.png',
+  '../images/posters/sagebrush-trail.jpg',
+  '../images/posters/santa-claus-conquers-the-martians.jpg',
+  '../images/posters/the-dance-of-life.jpg',
+  '../images/posters/the-great-flamarion.jpg',
+  '../images/posters/the-man-with-the-golden-arm.jpg',
 ];
 
 const countires = ['Australia', 'Brazil', 'Canada', 'China', 'France', 'Germany', 'India',
@@ -100,14 +99,14 @@ const generateUserDetails = () => {
       'watchlist': getRandomInteger(0, 1),
       'already_watched': true,
       'watching_date': getRandomDate(),
-      'favorite': getRandomInteger(0,1),
+      'favorite': getRandomInteger(0, 1),
     };
   } else {
     return {
       'watchlist': getRandomInteger(0, 1),
       'already_watched': false,
       'watching_date': null,
-      'favorite': getRandomInteger(0,1),
+      'favorite': getRandomInteger(0, 1),
     };
   }
 };
@@ -115,29 +114,29 @@ const generateUserDetails = () => {
 const generateMovie = () => {
   // порядок полей такой же как в структуре данных? или нет?
   return {
-    'film_info': {
-      'id': movieId++,
-      'title': getRandomArrayElement(titles),
-      'alternative_title': getRandomArrayElement(titles),
-      'poster': getRandomArrayElement(posters),
-      'age_rating': ageRatingMap.get(getRandomArrayElement(ageRatingList)),
-      'description': generateDescription(),
-      'total_rating': random(0, 10).toFixed(1),//Почему название через low dash?
-      'director': getRandomArrayElement(directors),
-      'writers': generateWriters(),
-      'actors': generateActors(),
-      'release': {
-        'date': getRandomDate(new Date(1990, 0, 1), new Date()),
-        'release_country': getRandomArrayElement(countires),
-      },
-      'genre': generateGenreArray(),
-      'comments': new Array(getRandomInteger(0, 5)).fill().map(() => generateComment()),
-      'runtime': convertTime(getRandomInteger(60, 240)),
-      'user_details': generateUserDetails(),
-    },
+    // 'filmInfo': {
+    'id': movieId++,
+    'title': getRandomArrayElement(titles),
+    'alternative_title': getRandomArrayElement(titles),
+    'poster': getRandomArrayElement(posters),
+    'ageRating': ageRatingMap.get(getRandomArrayElement(ageRatingList)),
+    'description': generateDescription(),
+    'totalRating': random(0, 10).toFixed(1),//Почему название через low dash?
+    'director': getRandomArrayElement(directors),
+    'writers': generateWriters(),
+    'actors': generateActors(),
+    // 'release': {
+    'releaseDate': getRandomDate(new Date(1990, 0, 1), new Date()),
+    'releaseCountry': getRandomArrayElement(countires),
+    // },
+    'genre': generateGenreArray(),
+    'comments': new Array(getRandomInteger(0, 5)).fill().map(() => generateComment()),
+    'runtime': convertTime(getRandomInteger(60, 240)),
+    'userDetails': generateUserDetails(),
+    // },
   };
 };
 //объект movie содержит все данные для заполнения не только картчоки, но и попапа?
 
-export {generateMovie};
+export { generateMovie };
 

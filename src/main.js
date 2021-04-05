@@ -5,7 +5,7 @@ import { createMovieCard } from './view/movie-card.js';
 import { createShowMoreBtn } from './view/show-more-btn.js';
 import { createMovieDetailsPopup } from './view/popup.js';
 import { createMoviesSectionTemplate } from './view/movies-section.js';
-import {generateMovie} from './mock/movie.js';
+import { generateMovie } from './mock/movie.js';
 import './mock/comment.js';
 
 
@@ -29,11 +29,13 @@ const siteMoviesSection = siteMainElement.querySelector('.films');
 
 const siteMoviesListContainer = siteMoviesSection.querySelector('.films-list__container');
 
-const movies = new Array(5).fill().map(() => generateMovie());
+const movies = new Array(MOVIES_COUNT).fill().map(() => generateMovie());
 console.log(movies);
 
-for (let i = 0; i < movies.length; i++) {
+for (let i = 0; i < MOVIES_COUNT; i++) {
+
   render(siteMoviesListContainer, createMovieCard(movies[i]));
+  // console.log(movies[i].title);
 }
 
 render(siteMoviesSection, createShowMoreBtn());
@@ -44,8 +46,8 @@ const mostCommentedMoviesList = siteMoviesSection.querySelector('#films-list-mos
 const mostCommentedMoviesListContainer = mostCommentedMoviesList.querySelector('.films-list__container');
 
 for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
-  render(topRatedMoviesListContainer, createMovieCard());
-  render(mostCommentedMoviesListContainer, createMovieCard());
+  render(topRatedMoviesListContainer, createMovieCard(movies[i]));
+  render(mostCommentedMoviesListContainer, createMovieCard(movies[i]));
 }
 
 // render(siteBodyElement, createMovieDetailsPopup());
