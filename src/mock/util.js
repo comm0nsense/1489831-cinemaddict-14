@@ -13,23 +13,48 @@ const random = (a = 1, b = 0) => {
   return lower + Math.random() * (upper - lower);
 };
 
-const getUniqueRandomNumbers = (length, min, max) => {
-  const arr = [];
-  while (arr.length < length) {
-    const number = getRandomInteger(min, max);
-    if (arr.indexOf(number) === -1) arr.push(number);
-  }
-  return arr;
-};
-
 const getRandomArrayElement = (array) => {
   const randomNumber = Math.floor(Math.random() * array.length);
   return array[randomNumber];
 };
 
+const convertArrayToUniqArray = (array) => {
+  const set = new Set(array);
+  const uniqArray = Array.from(set);
+  return uniqArray;
+};
+
+const generateArray = (number1, number2, array) => {
+  return new Array(getRandomInteger(number1, number2)).fill().map(() => getRandomArrayElement(array));
+};
+
+const getRandomDate = (start = new Date(2000, 0, 1), end = new Date()) => {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+};
+
+// const start = new Date(2001, 0, 1);
+// const end = new Date();
+// const result = getRandomDate(start, end);
+// const result2 = dayjs(result);
+// console.log(`result Date: ${result}, result Dayjs: ${result2}`);
+
+const convertTime = (n) => {
+  const hours = (n / 60);
+  const rhours = Math.floor(hours);
+  const minutes = (hours - rhours) * 60;
+  const rminutes = Math.round(minutes);
+
+  return `${rhours}h ${rminutes}m`;
+};
+
+// console.log(convertTime(200));
+
 export {
   getRandomInteger,
-  getUniqueRandomNumbers,
   random,
-  getRandomArrayElement
+  getRandomArrayElement,
+  convertArrayToUniqArray,
+  generateArray,
+  getRandomDate,
+  convertTime
 };

@@ -5,7 +5,7 @@ import { createMovieCard } from './view/movie-card.js';
 import { createShowMoreBtn } from './view/show-more-btn.js';
 import { createMovieDetailsPopup } from './view/popup.js';
 import { createMoviesSectionTemplate } from './view/movies-section.js';
-import './mock/movie.js';
+import {generateMovie} from './mock/movie.js';
 import './mock/comment.js';
 
 
@@ -29,8 +29,11 @@ const siteMoviesSection = siteMainElement.querySelector('.films');
 
 const siteMoviesListContainer = siteMoviesSection.querySelector('.films-list__container');
 
-for (let i = 0; i < MOVIES_COUNT; i++) {
-  render(siteMoviesListContainer, createMovieCard());
+const movies = new Array(5).fill().map(() => generateMovie());
+console.log(movies);
+
+for (let i = 0; i < movies.length; i++) {
+  render(siteMoviesListContainer, createMovieCard(movies[i]));
 }
 
 render(siteMoviesSection, createShowMoreBtn());
@@ -45,4 +48,4 @@ for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
   render(mostCommentedMoviesListContainer, createMovieCard());
 }
 
-render(siteBodyElement, createMovieDetailsPopup());
+// render(siteBodyElement, createMovieDetailsPopup());
