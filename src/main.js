@@ -50,4 +50,4 @@ for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
   render(mostCommentedMoviesListContainer, createMovieCard(movies[i]));
 }
 
-// render(siteBodyElement, createMovieDetailsPopup());
+render(siteBodyElement, createMovieDetailsPopup(movies[0]));

@@ -8,6 +8,7 @@ import {
   convertTime
 } from './util.js';
 import { generateComment } from './comment.js';
+import {getMapKeyByValue} from './util.js';
 
 const titles = [
   'Mank', 'The Assistant', 'La Llorna', 'Boys State', 'She Dies Tomorrow', 'The Vast of Night',
@@ -117,7 +118,7 @@ const generateMovie = () => {
     // 'filmInfo': {
     'id': movieId++,
     'title': getRandomArrayElement(titles),
-    'alternative_title': getRandomArrayElement(titles),
+    'originalTitle': getRandomArrayElement(titles),
     'poster': getRandomArrayElement(posters),
     'ageRating': ageRatingMap.get(getRandomArrayElement(ageRatingList)),
     'description': generateDescription(),
@@ -136,7 +137,7 @@ const generateMovie = () => {
     // },
   };
 };
-//объект movie содержит все данные для заполнения не только картчоки, но и попапа?
+// объект movie содержит все данные для заполнения не только картчоки, но и попапа?
 
-export { generateMovie };
+export { generateMovie, ageRatingMap };
 

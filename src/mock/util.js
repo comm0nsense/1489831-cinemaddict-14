@@ -49,6 +49,13 @@ const convertTime = (n) => {
 
 // console.log(convertTime(200));
 
+const getMapKeyByValue = (map, searchValue) => {
+  for (const [key, value] of map.entries()) {
+    if (value === searchValue)
+      return key;
+  }
+};
+
 export {
   getRandomInteger,
   random,
@@ -56,5 +63,6 @@ export {
   convertArrayToUniqArray,
   generateArray,
   getRandomDate,
-  convertTime
+  convertTime,
+  getMapKeyByValue
 };
