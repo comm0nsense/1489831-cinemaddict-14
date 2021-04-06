@@ -1,9 +1,25 @@
-import {ageRatingMap} from '../mock/movie.js';
-import {getMapKeyByValue} from '../mock/util.js';
+import dayjs from 'dayjs';
+import { ageRatingMap } from '../mock/movie.js';
+import { getMapKeyByValue } from '../mock/util.js';
 
 export const createMovieDetailsPopup = (movie) => {
-  const { poster, ageRating, title, originalTitle, totalRating, director } = movie;
+  const { poster, ageRating, title, originalTitle, totalRating, director, writers, actors,
+    releaseDate, runtime, releaseCountry, genre, description } = movie;
   const ageRatingDescription = getMapKeyByValue(ageRatingMap, ageRating);
+  const writersList = writers.join(', ');
+  const actorsList = actors.join(', ');
+  const releaseDateFormatted = dayjs(releaseDate).format('D MMMM YYYY');
+
+  const createGenreSpan = (genre) => {
+    return `<span class="film-details__genre">${genre}</span>`;
+  };
+
+  const genreList = genre.map((genre) => createGenreSpan(genre)).join('');
+  let genreTitle = 'Genre';
+
+  if (genre.length > 1) {
+    genreTitle = 'Genres';
+  }
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -37,35 +53,34 @@ export const createMovieDetailsPopup = (movie) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+              <td class="film-details__cell">${writersList}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+              <td class="film-details__cell">${actorsList}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">30 March 1945</td>
+              <td class="film-details__cell">${releaseDateFormatted}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">1h 18m</td>
+              <td class="film-details__cell">${runtime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">USA</td>
+              <td class="film-details__cell">${releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genreTitle}</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">Drama</span>
-                <span class="film-details__genre">Film-Noir</span>
-                <span class="film-details__genre">Mystery</span></td>
+                ${genreList}
+                </td>
             </tr>
           </table>
 
           <p class="film-details__film-description">
-            The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in flashback. The Great Flamarion (Erich von Stroheim) is an arrogant, friendless, and misogynous marksman who displays his trick gunshot act in the vaudeville circuit. His show features a beautiful assistant, Connie (Mary Beth Hughes) and her drunken husband Al (Dan Duryea), Flamarion's other assistant. Flamarion falls in love with Connie, the movie's femme fatale, and is soon manipulated by her into killing her no good husband during one of their acts.
+            ${description}
           </p>
         </div>
       </div>
