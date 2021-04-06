@@ -1,5 +1,5 @@
-import { createMainNavigationTemplate } from './view/main-navigation.js';
-import { createFiltersTemplate } from './view/filters.js';
+import { createFiltersTemplate } from './view/main-navigation.js';
+// import { createFiltersTemplate } from './view/filters.js';
 import { createUserProfile } from './view/user-profile.js';
 import { createMovieCard } from './view/movie-card.js';
 import { createShowMoreBtn } from './view/show-more-btn.js';
@@ -21,7 +21,7 @@ const siteHeader = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 render(siteHeader, createUserProfile());
-render(siteMainElement, createMainNavigationTemplate());
+render(siteMainElement, createFiltersTemplate());
 render(siteMainElement, createFiltersTemplate());
 render(siteMainElement, createMoviesSectionTemplate());
 
@@ -50,4 +50,4 @@ for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
   render(mostCommentedMoviesListContainer, createMovieCard(movies[i]));
 }
 
-render(siteBodyElement, createMovieDetailsPopup(movies[0]));
+// render(siteBodyElement, createMovieDetailsPopup(movies[0]));
