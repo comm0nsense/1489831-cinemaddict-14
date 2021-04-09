@@ -1,7 +1,8 @@
 import {
   getRandomArrayElement,
   generateArray,
-  convertArrayToUniqArray} from './util.js';
+  convertArrayToUniqArray,
+} from './util.js';
 
 const emotions = ['smile', 'sleeping', 'puke', 'angry'];
 
@@ -31,12 +32,19 @@ const generateComment = () => {
   return {
     'id': commentId++,
     'author': getRandomArrayElement(names),
-    'comment': generateCommentText(),
+    'text': generateCommentText(),
     'date': '2019-05-11T00:00:00.000Z',
     'emotion': getRandomArrayElement(emotions),
   };
 };
 
-// console.log(generateComment());
+//25 фильмов на 5 комментов = 125
+const commentsData = new Array(125).fill().map(() => generateComment());
+console.log(commentsData);
 
-export { generateComment };
+const arrayOfCommentsIds = [];
+commentsData.forEach((comment) => {
+  arrayOfCommentsIds.push(comment.id);
+});
+
+export { generateComment, arrayOfCommentsIds, commentsData };

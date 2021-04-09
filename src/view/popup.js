@@ -1,25 +1,71 @@
 import dayjs from 'dayjs';
 import { ageRatingMap } from '../mock/movie.js';
 import { getMapKeyByValue } from '../mock/util.js';
+import { commentsData } from '../mock/comment.js';
 
-export const createMovieDetailsPopup = (movie) => {
-  const { poster, ageRating, title, originalTitle, totalRating, director, writers, actors,
-    releaseDate, runtime, releaseCountry, genre, description } = movie;
+const formatCommentDate = (date) => {
+  return dayjs(date).format('YYYY/MM/DD HH:mm ');
+};
+
+const createCommentsTemplate = (commentData) => {
+  const {
+    emotion,
+    author,
+    text,
+    date,
+  } = commentData;
+
+  return `
+    <li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${author}</span>
+        <span class="film-details__comment-day">${formatCommentDate(date)}</span>
+        <button class="film-details__comment-delete">Delete</button>
+        </p>
+        </div>
+     </li>`;
+};
+
+export const createMoviePopupTemplate = (movie) => {
+  const {
+    poster,
+    ageRating,
+    title,
+    originalTitle,
+    totalRating,
+    director,
+    writers,
+    actors,
+    releaseDate,
+    runtime,
+    releaseCountry,
+    genres,
+    description,
+    movieCommentsIds,
+  } = movie;
+
   const ageRatingDescription = getMapKeyByValue(ageRatingMap, ageRating);
   const writersList = writers.join(', ');
   const actorsList = actors.join(', ');
   const releaseDateFormatted = dayjs(releaseDate).format('D MMMM YYYY');
 
-  const createGenreSpan = (genre) => {
-    return `<span class="film-details__genre">${genre}</span>`;
-  };
+  const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
+  const genreList = genres.length > 1
+    ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
+    : `<span class="film-details__genre">${genres}</span>`;
 
-  const genreList = genre.map((genre) => createGenreSpan(genre)).join('');
-  let genreTitle = 'Genre';
-
-  if (genre.length > 1) {
-    genreTitle = 'Genres';
+  let commentsFragment = '';
+  if (movieCommentsIds.length) {
+    const array = commentsData.filter(({ id }) => movieCommentsIds.includes(id));
+    // console.log(array);
+    commentsFragment = array.map((comment) => createCommentsTemplate(comment)).join('');
   }
+
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -99,61 +145,10 @@ export const createMovieDetailsPopup = (movie) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${movieCommentsIds.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Interesting setting and a good cast</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">Tim Macoveev</span>
-                <span class="film-details__comment-day">2019/12/31 23:59</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Booooooooooring</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">2 days ago</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Very very old. Meh</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">2 days ago</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">Today</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
+       ${commentsFragment}
         </ul>
 
         <div class="film-details__new-comment">

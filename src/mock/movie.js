@@ -7,8 +7,8 @@ import {
   getRandomDate,
   convertTime
 } from './util.js';
-import { generateComment } from './comment.js';
-import {getMapKeyByValue} from './util.js';
+import { arrayOfCommentsIds } from './comment.js';
+import { getMapKeyByValue } from './util.js';
 
 const titles = [
   'Mank', 'The Assistant', 'La Llorna', 'Boys State', 'She Dies Tomorrow', 'The Vast of Night',
@@ -95,21 +95,12 @@ const generateActors = () => {
 const generateUserDetails = () => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
 
-  if (isAlreadyWatched) {
-    return {
-      'watchlist': getRandomInteger(0, 1),
-      'already_watched': true,
-      'watching_date': getRandomDate(),
-      'favorite': getRandomInteger(0, 1),
-    };
-  } else {
-    return {
-      'watchlist': getRandomInteger(0, 1),
-      'already_watched': false,
-      'watching_date': null,
-      'favorite': getRandomInteger(0, 1),
-    };
-  }
+  return {
+    'watchlist': getRandomInteger(0, 1),
+    'alreadyWatched': isAlreadyWatched,
+    'watchingDate': isAlreadyWatched ? getRandomDate() : false,
+    'favorite': getRandomInteger(0, 1),
+  };
 };
 
 const generateMovie = () => {
@@ -130,8 +121,9 @@ const generateMovie = () => {
     'releaseDate': getRandomDate(new Date(1990, 0, 1), new Date()),
     'releaseCountry': getRandomArrayElement(countires),
     // },
-    'genre': generateGenreArray(),
-    'comments': new Array(getRandomInteger(0, 5)).fill().map(() => generateComment()),
+    'genres': generateGenreArray(),
+    // 'comments': new Array(getRandomInteger(0, 5)).fill().map(() => generateComment()),
+    'movieCommentsIds': arrayOfCommentsIds.splice(0, getRandomInteger(0, 5)),
     'runtime': convertTime(getRandomInteger(60, 240)),
     'userDetails': generateUserDetails(),
     // },
