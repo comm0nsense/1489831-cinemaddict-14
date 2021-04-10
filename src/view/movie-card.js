@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export const createMovieCard = (movie) => {
+export const createMovieCardTemplate = (movie) => {
   const { title, totalRating, releaseDate, runtime, poster, genres, movieCommentsIds, description } = movie;
   const releaseYear = dayjs(releaseDate).format('YYYY');
 
