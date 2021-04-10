@@ -7,7 +7,7 @@ import { createMoviePopupTemplate } from './view/popup.js';
 import { createMoviesSectionTemplate } from './view/movies-section.js';
 import { generateMovie } from './mock/movie.js';
 import './mock/comment.js';
-// import { generateFilter } from './mock/filter.js';
+import { generateFilter } from './filter.js';
 import { createFooterStatisticsTemplate } from './view/footer-statictics.js';
 import './mock/sorting.js';
 
@@ -17,6 +17,9 @@ const SECTION_MOVIES_COUNT = 2;
 
 const movies = new Array(TOTAL_MOVIES).fill().map(() => generateMovie());
 console.log(movies);
+const filters = generateFilter(movies);
+console.log(filters);
+
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -27,7 +30,7 @@ const siteHeader = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 render(siteHeader, createUserProfile());
-render(siteMainElement, createFiltersTemplate(movies));
+render(siteMainElement, createFiltersTemplate(filters));
 render(siteMainElement, createSortingTemplate());
 render(siteMainElement, createMoviesSectionTemplate());
 

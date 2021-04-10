@@ -1,16 +1,24 @@
-import { generateFilter } from '../filter.js';
+const createFilterItemTemplate = (filter) => {
+  const { name, count } = filter;
 
-export const createFiltersTemplate = (movies) => {
-  const filters = generateFilter(movies);
-  console.log(filters);
+  return ( //почему не будет работаь если убрать ()?
+    `
+    <a href="#${name}" class="main-navigation__item">${name}
+    <span class="main-navigation__item-count">${count}</span></a>
+    `
+  );
+};
 
-  return `<nav class="main-navigation">
-  <div class="main-navigation__items">
-    <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-    <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${filters[0].count}</span></a>
-    <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${filters[2].count}</span></a>
-    <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${filters[1].count}</span></a>
-  </div>
-  <a href="#stats" class="main-navigation__additional">Stats</a>
-</nav>`;
+export const createFiltersTemplate = (filters) => {
+  const filterItemsTemaplate = filters.
+    map((filter) => createFilterItemTemplate(filter)).join('');
+
+  return `
+  <nav class="main-navigation">
+    <div class="main-navigation__items">
+      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
+        ${filterItemsTemaplate}
+    </div>
+    <a href="#stats" class="main-navigation__additional">Stats</a>
+  </nav>`;
 };

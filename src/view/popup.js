@@ -1,6 +1,4 @@
 import dayjs from 'dayjs';
-import { ageRatingMap } from '../mock/movie.js';
-import { getMapKeyByValue } from '../mock/util.js';
 import { commentsData } from '../mock/comment.js';
 
 const formatCommentDate = (date) => {
@@ -23,12 +21,13 @@ const createCommentsTemplate = (commentData) => {
       <div>
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${formatCommentDate(date)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+         <span class="film-details__comment-author">${author}</span>
+          <span class="film-details__comment-day">${formatCommentDate(date)}</span>
+          <button class="film-details__comment-delete">Delete</button>
         </p>
-        </div>
-     </li>`;
+      </div>
+     </li>
+  `;
 };
 
 export const createMoviePopupTemplate = (movie) => {
@@ -49,7 +48,7 @@ export const createMoviePopupTemplate = (movie) => {
     movieCommentsIds,
   } = movie;
 
-  const ageRatingDescription = getMapKeyByValue(ageRatingMap, ageRating);
+  // const ageRatingDescription = getMapKeyByValue(ageRatingMap, ageRating);
   const writersList = writers.join(', ');
   const actorsList = actors.join(', ');
   const releaseDateFormatted = dayjs(releaseDate).format('D MMMM YYYY');
@@ -75,9 +74,9 @@ export const createMoviePopupTemplate = (movie) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="${poster}" alt="">
+          <img class="film-details__poster-img" src="/images/posters/${poster}" alt="">
 
-          <p class="film-details__age">${ageRatingDescription}</p>
+          <p class="film-details__age">${ageRating}+</p>
         </div>
 
         <div class="film-details__info">

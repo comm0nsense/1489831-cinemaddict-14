@@ -1,13 +1,28 @@
 import dayjs from 'dayjs';
 
+const convertDateToYear = (date) => {
+  return dayjs(date).format('YYYY');
+};
+
 export const createMovieCardTemplate = (movie) => {
-  const { title, totalRating, releaseDate, runtime, poster, genres, movieCommentsIds, description } = movie;
-  const releaseYear = dayjs(releaseDate).format('YYYY');
+
+  const {
+    title,
+    totalRating,
+    releaseDate,
+    runtime,
+    poster,
+    genres,
+    movieCommentsIds,
+    description,
+  } = movie;
+
+  const releaseYear = convertDateToYear(releaseDate);
 
   const shortDescription = (description.length <= 139)
     ? description
     : description.slice(0, 139) + '...';
-  // console.log(shortDescription.length);
+
 
   return `
     <article class="film-card">
@@ -18,7 +33,7 @@ export const createMovieCardTemplate = (movie) => {
         <span class="film-card__duration">${runtime}</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
-      <img src="${poster}" alt="" class="film-card__poster">
+      <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${shortDescription}</p>
       <a class="film-card__comments">${movieCommentsIds.length} comments</a>
       <div class="film-card__controls">
