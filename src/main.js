@@ -37,11 +37,11 @@ render(siteHeader, createUserProfileTemplate(userProfiles[0]));
 render(siteMainElement, createFiltersTemplate(filters));
 render(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
 
-//// Отрисовка экрана Статистика - заокмментировано, чтобы скрыть
+//// Отрисовка экрана Статистика - закомментировано, чтобы скрыть
 // render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
 ////
 
-////Отрисовка экаран фильмы
+////Отрисовка экрана фильмы - как должно быть реализовано переключение между экранами?
 render(siteMainElement, createMoviesSectionTemplate());//ничего не принимает...?
 
 const siteMoviesSection = siteMainElement.querySelector('.films');
@@ -81,7 +81,7 @@ const mostCommentedMoviesListContainer = mostCommentedMoviesList.querySelector('
 for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
   //OS: 2 карточки с наивысшим рейтингом
   render(topRatedMoviesListContainer, createMovieCardTemplate(movies[i]));
-  //OS: 2 карточки с наибольшим количестов комментариев
+  //OS: 2 карточки с наибольшим количеством комментариев
   render(mostCommentedMoviesListContainer, createMovieCardTemplate(movies[i + 2]));
 }
 //// Конец отрисовки Экрана фильмы
@@ -90,5 +90,5 @@ for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
 render(siteFooterElement, createFooterStatisticsTemplate(movies));
 
-////Отрисовка Попапа -- заокмментировано, чтобы скрыть
+////Отрисовка Попапа -- закомментировано, чтобы скрыть
 // render(siteBodyElement, createMoviePopupTemplate(movies[0]));
