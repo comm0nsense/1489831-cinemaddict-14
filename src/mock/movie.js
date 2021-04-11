@@ -5,7 +5,7 @@ import {
   getRandomDate,
   convertTime,
   generateRandomArray
-} from './util.js';
+} from './mock-util.js';
 
 import {
   arrayOfCommentsIds
@@ -146,7 +146,7 @@ const ACTORS = [
   'Meryl Streep',
 ];
 
-let movieId = 0;
+let movieId = 1;
 
 const AGE_RATINGS = [
   0,
@@ -159,10 +159,10 @@ const generateUserDetails = () => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
 
   return {
-    'watchlist': getRandomInteger(0, 1),
-    'alreadyWatched': isAlreadyWatched,
+    'isWatchlist': getRandomInteger(0, 1),
+    'isAlreadyWatched': isAlreadyWatched,
     'watchingDate': isAlreadyWatched ? getRandomDate() : false,
-    'favorite': getRandomInteger(0, 1),
+    'isFavorite': getRandomInteger(0, 1),
   };
 };
 
@@ -189,6 +189,7 @@ const generateMovie = () => {
 };
 
 export {
-  generateMovie
+  generateMovie,
+  GENRES
 };
 
