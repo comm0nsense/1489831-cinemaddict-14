@@ -17,6 +17,8 @@ const SECTION_MOVIES_COUNT = 2;
 
 const movies = new Array(TOTAL_MOVIES).fill().map(() => generateMovie());
 // console.log(movies);
+// OS: There are no movies in our database.
+
 const filters = generateFilter(movies);
 // console.log(filters);
 const userProfiles = new Array(5).fill().map(() => createUserProfile());
@@ -33,14 +35,14 @@ const siteMainElement = document.querySelector('.main');
 
 render(siteHeader, createUserProfileTemplate(userProfiles[0]));
 render(siteMainElement, createFiltersTemplate(filters));
-render(siteMainElement, createSortingTemplate());
+render(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
 
-//// Отрисовка экрана Статистика
+//// Отрисовка экрана Статистика - заокмментировано, чтобы скрыть
 // render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
 ////
 
 ////Отрисовка экаран фильмы
-render(siteMainElement, createMoviesSectionTemplate());
+render(siteMainElement, createMoviesSectionTemplate());//ничего не принимает...?
 
 const siteMoviesSection = siteMainElement.querySelector('.films');
 const movieList = siteMoviesSection.querySelector('.films-list');
@@ -77,7 +79,9 @@ const mostCommentedMoviesList = siteMoviesSection.querySelector('#films-list-mos
 const mostCommentedMoviesListContainer = mostCommentedMoviesList.querySelector('.films-list__container');
 
 for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
+  //OS: 2 карточки с наивысшим рейтингом
   render(topRatedMoviesListContainer, createMovieCardTemplate(movies[i]));
+  //OS: 2 карточки с наибольшим количестов комментариев
   render(mostCommentedMoviesListContainer, createMovieCardTemplate(movies[i + 2]));
 }
 //// Конец отрисовки Экрана фильмы
@@ -86,5 +90,5 @@ for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
 render(siteFooterElement, createFooterStatisticsTemplate(movies));
 
-////Отрисовка Попапа
+////Отрисовка Попапа -- заокмментировано, чтобы скрыть
 // render(siteBodyElement, createMoviePopupTemplate(movies[0]));
