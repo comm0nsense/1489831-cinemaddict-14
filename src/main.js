@@ -1,6 +1,8 @@
 import { generateMovie, commentsData } from './mock/mock-movie.js';
 import { userProfiles } from './mock/mock-user-profile.js';
-import { generateArray, renderTemplate } from './util.js';
+import { generateArray, renderTemplate, renderElement, RenderPosition } from './util.js';
+// import { createMoviesSectionTemplate } from './view/movies-section.js';
+import MoviesSectionView from './view/movies-section.js';
 
 import { createFiltersTemplate } from './view/filters.js';
 import { createSortingTemplate } from './view/sorting';
@@ -8,7 +10,7 @@ import { createUserProfileTemplate } from './view/user-profile.js';
 import { createMovieCardTemplate } from './view/movie-card.js';
 import { createShowMoreBtnTemplate } from './view/show-more-btn.js';
 import { createMoviePopupTemplate } from './view/popup.js';
-import { createMoviesSectionTemplate } from './view/movies-section.js';
+
 import { createFooterStatisticsTemplate } from './view/footer-statictics.js';
 import { createStatisticsTemplate } from './view/statictics.js';
 import { generateFilter } from './filter.js';
@@ -43,7 +45,7 @@ renderTemplate(siteMainElement, createSortingTemplate());//OS: по идее н�
 ////
 
 ////Отрисовка экрана фильмы - как должно быть реализовано переключение между экранами?
-renderTemplate(siteMainElement, createMoviesSectionTemplate());//ничего не принимает...?
+renderElement(siteMainElement, new MoviesSectionView().getElement(), RenderPosition.BEFOREEND);
 
 const siteMoviesSection = siteMainElement.querySelector('.films');
 const movieList = siteMoviesSection.querySelector('.films-list');
