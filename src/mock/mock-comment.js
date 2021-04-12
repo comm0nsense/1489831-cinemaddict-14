@@ -49,13 +49,4 @@ const generateComment = () => {
   };
 };
 
-//25 фильмов на 5 комментов = 125
-const commentsData = new Array(125).fill().map(() => generateComment());
-console.log(commentsData);
-
-const arrayOfCommentsIds = [];
-commentsData.forEach((comment) => {
-  arrayOfCommentsIds.push(comment.id);
-});
-
-export { generateComment, arrayOfCommentsIds, commentsData };
+export { generateComment};

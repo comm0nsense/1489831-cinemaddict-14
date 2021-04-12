@@ -1,3 +1,5 @@
+import { generateMovie, commentsData } from './mock/mock-movie.js';
+import { userProfiles } from './mock/mock-user-profile.js';
 import { createFiltersTemplate } from './view/filters.js';
 import { createSortingTemplate } from './view/sorting';
 import { createUserProfileTemplate } from './view/user-profile.js';
@@ -5,24 +7,21 @@ import { createMovieCardTemplate } from './view/movie-card.js';
 import { createShowMoreBtnTemplate } from './view/show-more-btn.js';
 import { createMoviePopupTemplate } from './view/popup.js';
 import { createMoviesSectionTemplate } from './view/movies-section.js';
-import { generateMovie } from './mock/movie.js';
-import { generateFilter } from './filter.js';
 import { createFooterStatisticsTemplate } from './view/footer-statictics.js';
-import { createUserProfile } from './mock/mock-user-profile.js';
 import { createStatisticsTemplate } from './view/statictics.js';
+import { generateFilter } from './filter.js';
+import { generateArray } from './util.js';
 
 const TOTAL_MOVIES = 12;
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
 
-const movies = new Array(TOTAL_MOVIES).fill().map(() => generateMovie());
+const movies = generateArray(TOTAL_MOVIES, generateMovie);
 // console.log(movies);
 // OS: There are no movies in our database.
 
 const filters = generateFilter(movies);
 // console.log(filters);
-const userProfiles = new Array(5).fill().map(() => createUserProfile());
-// console.log(userProfiles);
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -38,7 +37,7 @@ render(siteMainElement, createFiltersTemplate(filters));
 render(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
 
 //// Отрисовка экрана Статистика - закомментировано, чтобы скрыть
-// render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
+render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
 ////
 
 ////Отрисовка экрана фильмы - как должно быть реализовано переключение между экранами?
@@ -57,8 +56,7 @@ if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
   const showMoreBtn = movieList.querySelector('.films-list__show-more');
   let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
-  const showMoreBtnClickHandler= (evt) => {
-    evt.preventDefault();
+  const showMoreBtnClickHandler= () => {
     movies
       .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
       .forEach((movie) => render(siteMoviesListContainer, createMovieCardTemplate(movie)));
@@ -88,7 +86,7 @@ for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
 
 //// Отрисовка Футера
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
-render(siteFooterElement, createFooterStatisticsTemplate(movies));
+render(siteFooterElement, createFooterStatisticsTemplate(movies.length));
 
 ////Отрисовка Попапа -- закомментировано, чтобы скрыть
-// render(siteBodyElement, createMoviePopupTemplate(movies[0]));
+render(siteBodyElement, createMoviePopupTemplate(movies[0], commentsData));

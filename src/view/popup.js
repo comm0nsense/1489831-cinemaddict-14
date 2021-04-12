@@ -1,4 +1,3 @@
-import { commentsData } from '../mock/comment.js';
 import {
   formatCommentDate,
   converArrayToList,
@@ -30,7 +29,7 @@ const createCommentsTemplate = (commentData) => {
   `;
 };
 
-export const createMoviePopupTemplate = (movie) => {
+export const createMoviePopupTemplate = (movie, commentsData) => {
   const {
     poster,
     ageRating,
@@ -46,6 +45,9 @@ export const createMoviePopupTemplate = (movie) => {
     genres,
     description,
     movieCommentsIds,
+    userDetails: {isWatchlist},
+    userDetails: {isAlreadyWatched},
+    userDetails: {isFavorite},
   } = movie;
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
@@ -125,13 +127,13 @@ export const createMoviePopupTemplate = (movie) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isWatchlist ? 'checked' : ''}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isAlreadyWatched ? 'checked' : ''}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? 'checked' : ''}>
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>

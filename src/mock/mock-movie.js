@@ -8,8 +8,12 @@ import {
 } from './mock-util.js';
 
 import {
-  arrayOfCommentsIds
-} from './comment.js';
+  generateComment
+} from './mock-comment.js';
+
+import {
+  generateArray
+} from '../util.js';
 
 const TITLES = [
   'Mank',
@@ -155,6 +159,13 @@ const AGE_RATINGS = [
   18,
 ];
 
+const commentsData = generateArray(125, generateComment);
+
+const arrayOfCommentsIds = [];
+commentsData.forEach((comment) => {
+  arrayOfCommentsIds.push(comment.id);
+});
+
 const generateUserDetails = () => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
 
@@ -190,6 +201,7 @@ const generateMovie = () => {
 
 export {
   generateMovie,
-  GENRES
+  GENRES,
+  commentsData
 };
 
