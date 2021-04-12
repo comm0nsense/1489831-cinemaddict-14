@@ -1,16 +1,14 @@
 import { generateMovie, commentsData } from './mock/mock-movie.js';
 import { userProfiles } from './mock/mock-user-profile.js';
 import { generateArray, renderTemplate, renderElement, RenderPosition } from './util.js';
-// import { createMoviesSectionTemplate } from './view/movies-section.js';
 import MoviesSectionView from './view/movies-section.js';
+import showMoreBtnView from './view/show-more-btn.js';
+import SortingView from './view/sorting.js';
 
 import { createFiltersTemplate } from './view/filters.js';
-import { createSortingTemplate } from './view/sorting';
 import { createUserProfileTemplate } from './view/user-profile.js';
 import { createMovieCardTemplate } from './view/movie-card.js';
-import { createShowMoreBtnTemplate } from './view/show-more-btn.js';
 import { createMoviePopupTemplate } from './view/popup.js';
-
 import { createFooterStatisticsTemplate } from './view/footer-statictics.js';
 import { createStatisticsTemplate } from './view/statictics.js';
 import { generateFilter } from './filter.js';
@@ -27,10 +25,6 @@ const movies = generateArray(TOTAL_MOVIES, generateMovie);
 const filters = generateFilter(movies);
 // console.log(filters);
 
-// const render = (container, template, place = 'beforeend') => {
-//   container.insertAdjacentHTML(place, template);
-// };
-
 const siteBodyElement = document.querySelector('body');
 const siteHeader = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -38,7 +32,7 @@ const siteMainElement = document.querySelector('.main');
 
 renderTemplate(siteHeader, createUserProfileTemplate(userProfiles[0]));
 renderTemplate(siteMainElement, createFiltersTemplate(filters));
-renderTemplate(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
+renderElement(siteMainElement, new SortingView().getElement(), RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу
 
 //// Отрисовка экрана Статистика - закомментировано, чтобы скрыть
 // renderTemplate(siteMainElement, createStatisticsTemplate(userProfiles[1]));
@@ -56,7 +50,7 @@ for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
 }
 
 if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
-  renderTemplate(movieList, createShowMoreBtnTemplate());
+  renderElement(movieList, new showMoreBtnView().getElement(), RenderPosition.BEFOREEND);
   const showMoreBtn = movieList.querySelector('.films-list__show-more');
   let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
