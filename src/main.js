@@ -37,7 +37,7 @@ render(siteMainElement, createFiltersTemplate(filters));
 render(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
 
 //// Отрисовка экрана Статистика - закомментировано, чтобы скрыть
-render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
+// render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
 ////
 
 ////Отрисовка экрана фильмы - как должно быть реализовано переключение между экранами?
@@ -47,7 +47,7 @@ const siteMoviesSection = siteMainElement.querySelector('.films');
 const movieList = siteMoviesSection.querySelector('.films-list');
 const siteMoviesListContainer = siteMoviesSection.querySelector('.films-list__container');
 
-for (let i = 0; i < NUMBER_OF_MOVIES_TO_RENDER; i++) {
+for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
   render(siteMoviesListContainer, createMovieCardTemplate(movies[i]));
 }
 
@@ -89,4 +89,4 @@ const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
 render(siteFooterElement, createFooterStatisticsTemplate(movies.length));
 
 ////Отрисовка Попапа -- закомментировано, чтобы скрыть
-render(siteBodyElement, createMoviePopupTemplate(movies[0], commentsData));
+// render(siteBodyElement, createMoviePopupTemplate(movies[0], commentsData));
