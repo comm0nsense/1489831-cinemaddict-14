@@ -1,3 +1,5 @@
+import { createSiteElement } from '../util.js'
+
 export const createMoviesSectionTemplate = () => {
   return `
     <section class="films">

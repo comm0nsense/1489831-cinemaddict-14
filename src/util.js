@@ -5,6 +5,12 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
+/**
+ * Вместо шаблонной строки принимает элемент
+ * @param {*} container  - DOM-узел, куда добавляем элемент
+ * @param {DOM element} element - ссылка на DOM-узел, т.е. элемент, котоырй получился в рез-те обработки разметки и который нужно добавить в контейнер
+ * @param {constant} place - местоположение в контейнетре: в начале или в конце
+ */
 export const renderElement = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
@@ -20,6 +26,11 @@ export const renderTemplate = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
 
+/**
+ * Функция создания элемента на основании разметки
+ * @param {string} template - принимает шаблонную строку. Строка должна иметь общую обертку.
+ * @returns DOM-элемент
+ */
 export const createSiteElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;

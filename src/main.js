@@ -1,5 +1,7 @@
 import { generateMovie, commentsData } from './mock/mock-movie.js';
 import { userProfiles } from './mock/mock-user-profile.js';
+import { generateArray, renderTemplate } from './util.js';
+
 import { createFiltersTemplate } from './view/filters.js';
 import { createSortingTemplate } from './view/sorting';
 import { createUserProfileTemplate } from './view/user-profile.js';
@@ -10,7 +12,7 @@ import { createMoviesSectionTemplate } from './view/movies-section.js';
 import { createFooterStatisticsTemplate } from './view/footer-statictics.js';
 import { createStatisticsTemplate } from './view/statictics.js';
 import { generateFilter } from './filter.js';
-import { generateArray } from './util.js';
+
 
 const TOTAL_MOVIES = 12;
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
@@ -23,43 +25,43 @@ const movies = generateArray(TOTAL_MOVIES, generateMovie);
 const filters = generateFilter(movies);
 // console.log(filters);
 
-const render = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
+// const render = (container, template, place = 'beforeend') => {
+//   container.insertAdjacentHTML(place, template);
+// };
 
 const siteBodyElement = document.querySelector('body');
 const siteHeader = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 
-render(siteHeader, createUserProfileTemplate(userProfiles[0]));
-render(siteMainElement, createFiltersTemplate(filters));
-render(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
+renderTemplate(siteHeader, createUserProfileTemplate(userProfiles[0]));
+renderTemplate(siteMainElement, createFiltersTemplate(filters));
+renderTemplate(siteMainElement, createSortingTemplate());//OS: по идее нужна функция сортировки по дате и рейтингу
 
 //// Отрисовка экрана Статистика - закомментировано, чтобы скрыть
-// render(siteMainElement, createStatisticsTemplate(userProfiles[1]));
+// renderTemplate(siteMainElement, createStatisticsTemplate(userProfiles[1]));
 ////
 
 ////Отрисовка экрана фильмы - как должно быть реализовано переключение между экранами?
-render(siteMainElement, createMoviesSectionTemplate());//ничего не принимает...?
+renderTemplate(siteMainElement, createMoviesSectionTemplate());//ничего не принимает...?
 
 const siteMoviesSection = siteMainElement.querySelector('.films');
 const movieList = siteMoviesSection.querySelector('.films-list');
 const siteMoviesListContainer = siteMoviesSection.querySelector('.films-list__container');
 
 for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
-  render(siteMoviesListContainer, createMovieCardTemplate(movies[i]));
+  renderTemplate(siteMoviesListContainer, createMovieCardTemplate(movies[i]));
 }
 
 if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
-  render(movieList, createShowMoreBtnTemplate());
+  renderTemplate(movieList, createShowMoreBtnTemplate());
   const showMoreBtn = movieList.querySelector('.films-list__show-more');
   let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
   const showMoreBtnClickHandler= () => {
     movies
       .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
-      .forEach((movie) => render(siteMoviesListContainer, createMovieCardTemplate(movie)));
+      .forEach((movie) => renderTemplate(siteMoviesListContainer, createMovieCardTemplate(movie)));
 
     numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
 
@@ -78,15 +80,15 @@ const mostCommentedMoviesListContainer = mostCommentedMoviesList.querySelector('
 
 for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
   //OS: 2 карточки с наивысшим рейтингом
-  render(topRatedMoviesListContainer, createMovieCardTemplate(movies[i]));
+  renderTemplate(topRatedMoviesListContainer, createMovieCardTemplate(movies[i]));
   //OS: 2 карточки с наибольшим количеством комментариев
-  render(mostCommentedMoviesListContainer, createMovieCardTemplate(movies[i + 2]));
+  renderTemplate(mostCommentedMoviesListContainer, createMovieCardTemplate(movies[i + 2]));
 }
 //// Конец отрисовки Экрана фильмы
 
 //// Отрисовка Футера
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
-render(siteFooterElement, createFooterStatisticsTemplate(movies.length));
+renderTemplate(siteFooterElement, createFooterStatisticsTemplate(movies.length));
 
 ////Отрисовка Попапа -- закомментировано, чтобы скрыть
-// render(siteBodyElement, createMoviePopupTemplate(movies[0], commentsData));
+// renderTemplate(siteBodyElement, createMoviePopupTemplate(movies[0], commentsData));
