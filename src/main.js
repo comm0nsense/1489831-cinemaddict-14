@@ -38,7 +38,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 
-render(siteHeaderElement,  new UserProfileView(userProfiles[0]).getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileView(userProfiles[0]).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new MainNavView(filters).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new SortingView().getElement(), RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу
 
@@ -53,9 +53,27 @@ const filmsListComponent = new MoviesListView();
 render(filmsSectionComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
 const filmsListContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
+
 const renderFilm = (container, movie) => {
   const filmComponent = new MovieCardView(movie);
   render(container, filmComponent.getElement(), RenderPosition.BEFOREEND);
+
+  const filmPoster = filmComponent.getElement().querySelector('.film-card__poster');
+  const filmComments = filmComponent.getElement().querySelector('.film-card__comments');
+  const filmTitle = filmComponent.getElement().querySelector('.film-card__title');
+
+  filmPoster.addEventListener('click', () => {
+    console.log('клик по постреу!');
+  });
+
+  filmComments.addEventListener('click', () => {
+    console.log('клик по комментариям!');
+  });
+
+  filmTitle.addEventListener('click', () => {
+    console.log('Клин по названию');
+  });
+
 };
 
 for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
@@ -68,7 +86,7 @@ if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
   render(filmsListComponent.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
   let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
-  const showMoreBtnClickHandler= () => {
+  const showMoreBtnClickHandler = () => {
     movies
       .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
       .forEach((movie) => renderFilm(filmsListContainer, movie));
@@ -87,9 +105,7 @@ const topRatedListComponent = new MoviesExtraListView(FilmExtraListTitle.TOP_RAT
 render(filmsSectionComponent.getElement(), topRatedListComponent.getElement(), RenderPosition.BEFOREEND);
 const mostCommentedListComponent = new MoviesExtraListView(FilmExtraListTitle.MOST_COMMENTED);
 render(filmsSectionComponent.getElement(), mostCommentedListComponent.getElement(), RenderPosition.BEFOREEND);
-// const topRatedMoviesList = siteMoviesSection.querySelector('#films-list-top-rated');
 const topRatedListContainer = topRatedListComponent.getElement().querySelector('.films-list__container');
-// const mostCommentedMoviesList = siteMoviesSection.querySelector('#films-list-most-commented');
 const mostCommentedListContainer = mostCommentedListComponent.getElement().querySelector('.films-list__container');
 
 for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
@@ -105,7 +121,8 @@ const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
 render(siteFooterElement, new FooterStatisticsView(movies.length).getElement(), RenderPosition.BEFOREEND);
 
 ////Отрисовка Попапа -- закомментировано, чтобы скрыть
-const popupComponent = new MoviePopupView(movies[0]);
-render(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
-const commentsContainer = popupComponent.getElement().querySelector('.film-details__bottom-container');
-render(commentsContainer, new MovieCommentsView(movies[0], comments).getElement(), RenderPosition.BEFOREEND);
+// const popupComponent = new MoviePopupView(movies[0]);
+// render(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
+// const commentsContainer = popupComponent.getElement().querySelector('.film-details__bottom-container');
+// render(commentsContainer, new MovieCommentsView(movies[0], comments).getElement(), RenderPosition.BEFOREEND);
+
