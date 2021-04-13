@@ -16,7 +16,7 @@ export const FilmExtraListTitle = {
  * @param {DOM element} element - ссылка на DOM-узел, т.е. элемент, котоырй получился в рез-те обработки разметки и который нужно добавить в контейнер
  * @param {constant} place - местоположение в контейнетре: в начале или в конце
  */
-export const renderElement = (container, element, place) => {
+export const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -27,9 +27,6 @@ export const renderElement = (container, element, place) => {
   }
 };
 
-export const renderTemplate = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
 
 /**
  * Функция создания DOM-элемента на основании разметки
