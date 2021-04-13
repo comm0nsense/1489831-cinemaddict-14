@@ -1,16 +1,22 @@
 import { createSiteElement } from '../util.js';
 
-const createMoviesSectionTemplate = () => {
-  return '<section class="films"></section>';
+const createMoviesListTemplate = () => {
+
+  return `
+    <section class="films-list">
+      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      <div class="films-list__container"></div>
+    </section>
+    `;
 };
 
-export default class MoviesSection {
+export default class MoviesList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createMoviesSectionTemplate();
+    return createMoviesListTemplate();
   }
 
   getElement() {

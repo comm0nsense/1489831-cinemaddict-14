@@ -5,6 +5,11 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
+export const FilmExtraListTitle = {
+  TOP_RATED: 'Top rated',
+  MOST_COMMENTED: 'Most Commented',
+};
+
 /**
  * Вместо шаблонной строки принимает элемент
  * @param {*} container  - DOM-узел, куда добавляем элемент
@@ -27,7 +32,7 @@ export const renderTemplate = (container, template, place = 'beforeend') => {
 };
 
 /**
- * Функция создания элемента на основании разметки
+ * Функция создания DOM-элемента на основании разметки
  * @param {string} template - принимает шаблонную строку. Строка должна иметь общую обертку.
  * @returns DOM-элемент
  */
@@ -35,7 +40,7 @@ export const createSiteElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
-  return newElement.firstChild;
+  return newElement.firstElementChild;
 };
 
 const formatCommentDate = (date) => {
