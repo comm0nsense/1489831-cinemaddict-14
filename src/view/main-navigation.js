@@ -1,6 +1,8 @@
+import { createSiteElement } from '../util.js';
+
 const ALL_MOVIES_FILTER = 'All Movies';
 
-const createFilterItemTemplate = ({ name, count }, isActive) => {
+const createMainNavItemTemplate = ({ name, count }, isActive) => {
 
   return `
     <a href="#${name.toLowerCase()}" class="main-navigation__item ${isActive ? 'main-navigation__item--active' : ''}">
@@ -11,9 +13,9 @@ const createFilterItemTemplate = ({ name, count }, isActive) => {
   `;
 };
 
-export const createFiltersTemplate = (filters) => {
+const createMainNavTemplate = (filters) => {
   const filterItemsTemplate = filters.
-    map((filter, index) => createFilterItemTemplate(filter, index === 0)).join('');
+    map((filter, index) => createMainNavItemTemplate(filter, index === 0)).join('');
 
   return `
     <nav class="main-navigation">
@@ -24,3 +26,26 @@ export const createFiltersTemplate = (filters) => {
     </nav>
   `;
 };
+
+export default class MainNav {
+  constructor(filters) {
+    this._element = null;
+    this._filters = filters;
+  }
+
+  getTemplate() {
+    return createMainNavTemplate(this._filters);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

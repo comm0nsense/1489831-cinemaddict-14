@@ -1,3 +1,5 @@
+import { createSiteElement } from '../util.js';
+
 import {
   formatCommentDate,
   converArrayToList,
@@ -29,7 +31,7 @@ const createCommentsTemplate = (commentData) => {
   `;
 };
 
-export const createMoviePopupTemplate = (movie, commentsData) => {
+const createMoviePopupTemplate = (movie, commentsData) => {
   const {
     poster,
     ageRating,
@@ -181,3 +183,27 @@ export const createMoviePopupTemplate = (movie, commentsData) => {
   </section>
   `;
 };
+
+export default class MoviePopup {
+  constructor(movie, commentsData) {
+    this._element = null;
+    this._movie = movie;
+    this._commentsData = commentsData;
+  }
+
+  getTemplate() {
+    return createMoviePopupTemplate(this._movie, this._commentsData);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

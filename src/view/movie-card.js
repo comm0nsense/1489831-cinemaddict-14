@@ -1,8 +1,9 @@
 import { convertDateToYear } from '../util.js';
+import { createSiteElement } from '../util.js';
 
 const SHORT_DESC_LENGTH = 139;
 
-export const createMovieCardTemplate = (movie) => {
+const createMovieCardTemplate = (movie) => {
 
   const {
     title,
@@ -38,3 +39,26 @@ export const createMovieCardTemplate = (movie) => {
     </article>
   `;
 };
+
+export default class MovieCard {
+  constructor(movie) {
+    this._element = null;
+    this._movie = movie;
+  }
+
+  getTemplate() {
+    return createMovieCardTemplate(this._movie);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

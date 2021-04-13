@@ -1,4 +1,6 @@
-export const createUserProfileTemplate = (userProfile) => {
+import { createSiteElement } from '../util.js';
+
+const createUserProfileTemplate = (userProfile) => {
   const {rank} = userProfile;
 
   return `
@@ -8,3 +10,26 @@ export const createUserProfileTemplate = (userProfile) => {
     </section>
   `;
 };
+
+export default class UserProfileView {
+  constructor(userRank) {
+    this._element = null;
+    this._userRank = userRank;
+  }
+
+  getTemplate() {
+    return createUserProfileTemplate(this._userRank);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
