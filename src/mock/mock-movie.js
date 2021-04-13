@@ -159,10 +159,10 @@ const AGE_RATINGS = [
   18,
 ];
 
-const commentsData = generateArray(125, generateComment);
+const comments = generateArray(125, generateComment);
 
 const arrayOfCommentsIds = [];
-commentsData.forEach((comment) => {
+comments.forEach((comment) => {
   arrayOfCommentsIds.push(comment.id);
 });
 
@@ -202,6 +202,6 @@ const generateMovie = () => {
 export {
   generateMovie,
   GENRES,
-  commentsData
+  comments
 };
 

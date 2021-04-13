@@ -1,4 +1,4 @@
-import { generateMovie, commentsData } from './mock/mock-movie.js';
+import { generateMovie, comments } from './mock/mock-movie.js';
 import { userProfiles } from './mock/mock-user-profile.js';
 import { generateFilter } from './filter.js';
 
@@ -19,7 +19,8 @@ import UserProfileView from './view/user-profile.js';
 import MovieCardView from './view/movie-card.js';
 import MainNavView from './view/main-navigation.js';
 import MoviePopupView from './view/popup.js';
-import StatisticsView from './view/statictics.js';
+import MovieCommentsView from './view/comments.js';
+// import StatisticsView from './view/statictics.js';
 
 const TOTAL_MOVIES = 12;
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
@@ -52,9 +53,14 @@ const filmsListComponent = new MoviesListView();
 render(filmsSectionComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
 const filmsListContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
+const renderFilm = (container, movie) => {
+  const filmComponent = new MovieCardView(movie);
+  render(container, filmComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
-  render(filmsListContainer, new MovieCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
+  // render(filmsListContainer, new MovieCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(filmsListContainer, movies[i]);
 }
 
 if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
@@ -65,7 +71,7 @@ if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
   const showMoreBtnClickHandler= () => {
     movies
       .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
-      .forEach((movie) => render(filmsListContainer, new MovieCardView(movie).getElement(), RenderPosition.BEFOREEND));
+      .forEach((movie) => renderFilm(filmsListContainer, movie));
 
     numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
 
@@ -88,9 +94,9 @@ const mostCommentedListContainer = mostCommentedListComponent.getElement().query
 
 for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
   //OS: 2 карточки с наивысшим рейтингом
-  render(topRatedListContainer, new MovieCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(topRatedListContainer, movies[i]);
   //OS: 2 карточки с наибольшим количеством комментариев
-  render(mostCommentedListContainer, new MovieCardView(movies[i + 2]).getElement(), RenderPosition.BEFOREEND);
+  renderFilm(mostCommentedListContainer, movies[i + 2]);
 }
 //// Конец отрисовки Экрана фильмы
 
@@ -99,4 +105,7 @@ const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
 render(siteFooterElement, new FooterStatisticsView(movies.length).getElement(), RenderPosition.BEFOREEND);
 
 ////Отрисовка Попапа -- закомментировано, чтобы скрыть
-// render(siteBodyElement, new MoviePopupView(movies[0], commentsData).getElement(), RenderPosition.BEFOREEND);
+const popupComponent = new MoviePopupView(movies[0]);
+render(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
+const commentsContainer = popupComponent.getElement().querySelector('.film-details__bottom-container');
+render(commentsContainer, new MovieCommentsView(movies[0], comments).getElement(), RenderPosition.BEFOREEND);
