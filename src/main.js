@@ -23,9 +23,10 @@ import MovieCommentsView from './view/comments.js';
 import EmptyMovieListView from './view/empty-list.js';
 // import StatisticsView from './view/statictics.js';
 
-const TOTAL_MOVIES = 5;
+const TOTAL_MOVIES = 12;
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
+const EXTRA_LIST_MOVIES_COUNT = 0;
 
 const movies = generateArray(TOTAL_MOVIES, generateMovie);
 console.log(movies);
@@ -75,7 +76,7 @@ const renderFilm = (container, movie) => {
   const filmTitle = filmComponent.getElement().querySelector('.film-card__title');
 
   const onMovieCardClick = (evt) => {
-    // console.log(evt.target);
+    console.log(evt.target);
 
     siteBodyElement.classList.add('hide-overflow');
 
@@ -171,7 +172,7 @@ const renderFilmExtraList = (extraListTitle, movies) => {
   );
 
   const extraListContainer = extraListComponent.getElement().querySelector('.films-list__container');
-  for (let i = 0; i < SECTION_MOVIES_COUNT; i++) { //ForEach когда будут отфильтрованы??
+  for (let i = 0; i < SECTION_MOVIES_COUNT; i++) { //если одинаковый рейтниг, то 2 случайных - просто беру 2 первых
     renderFilm(extraListContainer, movies[i]);
   }
 
@@ -187,9 +188,20 @@ const renderFilmSection = (sectionContainer, movies) => {
   const moviesSortByMostComments = movies.slice().sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
 
   renderFilmList(filmsSectionComponent.getElement(), movies);
-  renderFilmExtraList(FilmExtraListTitle.TOP_RATED, moviesSortByRating);
-  renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, moviesSortByMostComments);
 
+  const isFilmsWithRating = movies
+    .every((movie) => parseFloat(movie.totalRating) > EXTRA_LIST_MOVIES_COUNT);
+
+  if (isFilmsWithRating) {
+    renderFilmExtraList(FilmExtraListTitle.TOP_RATED, moviesSortByRating);
+  }
+
+  const isFilmsWithComments = movies
+    .every((movie) => parseFloat(movie.movieCommentsIds.length) === EXTRA_LIST_MOVIES_COUNT );
+
+  if (!isFilmsWithComments) {
+    renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, moviesSortByMostComments);
+  }
 };
 
 renderFilmSection(siteMainElement, movies);

@@ -187,6 +187,7 @@ const generateMovie = () => {
     'ageRating': getRandomElementFromArray(AGE_RATINGS),
     'description': generateRandomArray(SENTENCES, 1, 5).join(' '),
     'totalRating': getRandomNumber(0, 10).toFixed(1),
+    // 'totalRating': 0,
     'director': getRandomElementFromArray(DIRECTORS),
     'writers': generateRandomArray(WRITERS, 1, 3),
     'actors': generateRandomArray(ACTORS, 5, 20),
@@ -194,6 +195,7 @@ const generateMovie = () => {
     'releaseCountry': getRandomElementFromArray(COUNTRIES),
     'genres': generateRandomArray(GENRES, 1, 3),
     'movieCommentsIds': arrayOfCommentsIds.splice(0, getRandomInteger(0, 5)),
+    // 'movieCommentsIds': '',
     'runtime': convertTime(getRandomInteger(60, 240)),
     'userDetails': generateUserDetails(),
   };
