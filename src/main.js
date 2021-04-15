@@ -29,7 +29,7 @@ const SECTION_MOVIES_COUNT = 2;
 const EXTRA_LIST_MOVIES_COUNT = 0;
 
 const movies = generateArray(TOTAL_MOVIES, generateMovie);
-console.log(movies);
+// console.log(movies);
 
 const filters = generateFilter(movies);
 // console.log(filters);
@@ -44,7 +44,7 @@ render(
   new UserProfileView(userProfiles[0]).getElement(),
   RenderPosition.BEFOREEND);
 
-/* MENU AND FILTERS */
+/* MENU - FILTERS */
 render(
   siteMainElement,
   new MainNavView(filters).getElement(),
@@ -92,7 +92,7 @@ const renderFilm = (container, movie) => {
 
     render(
       commentsContainer,
-      new MovieCommentsView(movies[0], comments).getElement(),
+      new MovieCommentsView(filmToPopup[0], comments).getElement(),
       RenderPosition.BEFOREEND);
 
     const popupCloseBtn = popupComponent.getElement().querySelector('.film-details__close-btn');
@@ -112,13 +112,13 @@ const renderFilm = (container, movie) => {
       }
     };
 
-    const onPopupCloseBtnClickHandler = () => {
+    const onPopupCloseBtnClick = () => {
       siteBodyElement.removeChild(popupComponent.getElement());
       siteBodyElement.classList.remove('hide-overflow');
       // closePopup();
     };
 
-    popupCloseBtn.addEventListener('click', onPopupCloseBtnClickHandler);
+    popupCloseBtn.addEventListener('click', onPopupCloseBtnClick);
     document.addEventListener('keydown', onEscKeyDown);
   };
 
@@ -173,10 +173,9 @@ const renderFilmExtraList = (extraListTitle, movies) => {
   );
 
   const extraListContainer = extraListComponent.getElement().querySelector('.films-list__container');
-  for (let i = 0; i < SECTION_MOVIES_COUNT; i++) { //если одинаковый рейтниг, то 2 случайных - просто беру 2 первых
+  for (let i = 0; i < SECTION_MOVIES_COUNT; i++) { //если одинаковый рейтниг, то 2 случайных - это просто беру 2 первых после сортировки
     renderFilm(extraListContainer, movies[i]);
   }
-
 };
 
 const renderFilmSection = (sectionContainer, movies) => {
@@ -185,22 +184,21 @@ const renderFilmSection = (sectionContainer, movies) => {
     return;
   }
 
-  const moviesSortByRating = movies.slice().sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
-  const moviesSortByMostComments = movies.slice().sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
-
   renderFilmList(filmsSectionComponent.getElement(), movies);
 
-  const isFilmsWithRating = movies
-    .every((movie) => parseFloat(movie.totalRating) > EXTRA_LIST_MOVIES_COUNT);
+  const isAllFilmsWithoutRating = movies
+    .every((movie) => parseFloat(movie.totalRating) === EXTRA_LIST_MOVIES_COUNT);
 
-  if (isFilmsWithRating) {
+  if (!isAllFilmsWithoutRating) {
+    const moviesSortByRating = movies.slice().sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
     renderFilmExtraList(FilmExtraListTitle.TOP_RATED, moviesSortByRating);
   }
 
-  const isFilmsWithComments = movies
+  const isAllFilmsWithoutComments = movies
     .every((movie) => parseFloat(movie.movieCommentsIds.length) === EXTRA_LIST_MOVIES_COUNT );
 
-  if (!isFilmsWithComments) {
+  if (!isAllFilmsWithoutComments) {
+    const moviesSortByMostComments = movies.slice().sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
     renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, moviesSortByMostComments);
   }
 };
