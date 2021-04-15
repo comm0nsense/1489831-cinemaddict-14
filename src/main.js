@@ -23,7 +23,7 @@ import MovieCommentsView from './view/comments.js';
 import EmptyMovieListView from './view/empty-list.js';
 // import StatisticsView from './view/statictics.js';
 
-const TOTAL_MOVIES = 12;
+const TOTAL_MOVIES = 5;
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
 
@@ -183,9 +183,12 @@ const renderFilmSection = (sectionContainer, movies) => {
     return;
   }
 
+  const moviesSortByRating = movies.slice().sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
+  const moviesSortByMostComments = movies.slice().sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
+
   renderFilmList(filmsSectionComponent.getElement(), movies);
-  renderFilmExtraList(FilmExtraListTitle.TOP_RATED, movies);
-  renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, movies);
+  renderFilmExtraList(FilmExtraListTitle.TOP_RATED, moviesSortByRating);
+  renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, moviesSortByMostComments);
 
 };
 
