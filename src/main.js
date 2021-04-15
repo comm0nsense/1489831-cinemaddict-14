@@ -61,6 +61,7 @@ render(
 
 /* FILM SECTION */
 
+
 const filmsSectionComponent = new MoviesSectionView();
 
 render(
@@ -164,7 +165,7 @@ const renderFilmList = (listContainer, movies) => {
   }
 };
 
-renderFilmList(filmsSectionComponent.getElement(), movies);
+// renderFilmList(filmsSectionComponent.getElement(), movies);
 
 const renderFilmExtraList = (extraListTitle, movies) => {
   const extraListComponent = new MoviesExtraListView(extraListTitle);
@@ -182,9 +183,22 @@ const renderFilmExtraList = (extraListTitle, movies) => {
 
 };
 
-renderFilmExtraList(FilmExtraListTitle.TOP_RATED, movies);
-renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, movies);
+// renderFilmExtraList(FilmExtraListTitle.TOP_RATED, movies);
+// renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, movies);
 
+const renderFilmSection = (sectionContainer, movies) => {
+  if (movies.length === 0) {
+    render(sectionContainer, new EmptyMovieListView().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
+  renderFilmList(filmsSectionComponent.getElement(), movies);
+  renderFilmExtraList(FilmExtraListTitle.TOP_RATED, movies);
+  renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, movies);
+
+};
+
+renderFilmSection(siteMainElement, movies);
 
 /* FOOTER */
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
