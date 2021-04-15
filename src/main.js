@@ -29,7 +29,6 @@ const SECTION_MOVIES_COUNT = 2;
 
 const movies = generateArray(TOTAL_MOVIES, generateMovie);
 console.log(movies);
-// OS: There are no movies in our database.
 
 const filters = generateFilter(movies);
 // console.log(filters);
@@ -60,8 +59,6 @@ render(
 // render(siteMainElement, new StatisticsView(userProfiles[1]).getElement(), RenderPosition.BEFOREEND);
 
 /* FILM SECTION */
-
-
 const filmsSectionComponent = new MoviesSectionView();
 
 render(
@@ -128,7 +125,6 @@ const renderFilm = (container, movie) => {
   filmTitle.addEventListener('click', onMovieCardClick);
 };
 
-/* ALL FILMS RENDERING */
 const renderFilmList = (listContainer, movies) => {
 
   const filmsListComponent = new MoviesListView();
@@ -146,10 +142,10 @@ const renderFilmList = (listContainer, movies) => {
 
   if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
     const showMoreBtnComponent = new ShowMoreBtnView();
-    render(filmsListContainer, showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
+    render(filmsListComponent.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
     let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
-    const showMoreBtnClickHandler = () => {
+    const onShowMoreBtnClick = () => {
       movies
         .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
         .forEach((movie) => renderFilm(filmsListContainer, movie));
@@ -161,11 +157,9 @@ const renderFilmList = (listContainer, movies) => {
       }
     };
 
-    showMoreBtnComponent.getElement().addEventListener('click', showMoreBtnClickHandler);
+    showMoreBtnComponent.getElement().addEventListener('click', onShowMoreBtnClick);
   }
 };
-
-// renderFilmList(filmsSectionComponent.getElement(), movies);
 
 const renderFilmExtraList = (extraListTitle, movies) => {
   const extraListComponent = new MoviesExtraListView(extraListTitle);
@@ -182,9 +176,6 @@ const renderFilmExtraList = (extraListTitle, movies) => {
   }
 
 };
-
-// renderFilmExtraList(FilmExtraListTitle.TOP_RATED, movies);
-// renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, movies);
 
 const renderFilmSection = (sectionContainer, movies) => {
   if (movies.length === 0) {
