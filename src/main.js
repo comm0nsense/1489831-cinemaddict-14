@@ -60,22 +60,13 @@ render(
 // render(siteMainElement, new StatisticsView(userProfiles[1]).getElement(), RenderPosition.BEFOREEND);
 
 /* FILM SECTION */
-// как должно быть реализовано переключение между экранами?
+
 const filmsSectionComponent = new MoviesSectionView();
 
 render(
   siteMainElement,
   filmsSectionComponent.getElement(),
   RenderPosition.BEFOREEND);
-
-const filmsListComponent = new MoviesListView();
-
-render(
-  filmsSectionComponent.getElement(),
-  filmsListComponent.getElement(),
-  RenderPosition.BEFOREEND);
-
-const filmsListContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
 const renderFilm = (container, movie) => {
   const filmComponent = new MovieCardView(movie);
@@ -137,54 +128,63 @@ const renderFilm = (container, movie) => {
 };
 
 /* ALL FILMS RENDERING */
-for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
-  renderFilm(filmsListContainer, movies[i]);
-}
+const renderFilmList = (listContainer, movies) => {
 
-if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
-  const showMoreBtnComponent = new ShowMoreBtnView();
-  render(filmsListComponent.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
-  let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
+  const filmsListComponent = new MoviesListView();
 
-  const showMoreBtnClickHandler = () => {
-    movies
-      .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
-      .forEach((movie) => renderFilm(filmsListContainer, movie));
+  render(
+    filmsSectionComponent.getElement(),
+    filmsListComponent.getElement(),
+    RenderPosition.BEFOREEND);
 
-    numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
+  const filmsListContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
-    if (numberOfMoviesRendered >= movies.length) {
-      showMoreBtnComponent.getElement().remove();
-    }
-  };
+  for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
+    renderFilm(filmsListContainer, movies[i]);
+  }
 
-  showMoreBtnComponent.getElement().addEventListener('click', showMoreBtnClickHandler);
-}
+  if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
+    const showMoreBtnComponent = new ShowMoreBtnView();
+    render(filmsListContainer, showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
+    let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
-/* TOP RATED FILM LIST */
-const topRatedListComponent = new MoviesExtraListView(FilmExtraListTitle.TOP_RATED);
+    const showMoreBtnClickHandler = () => {
+      movies
+        .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
+        .forEach((movie) => renderFilm(filmsListContainer, movie));
 
-render(
-  filmsSectionComponent.getElement(),
-  topRatedListComponent.getElement(),
-  RenderPosition.BEFOREEND);
+      numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
 
-const mostCommentedListComponent = new MoviesExtraListView(FilmExtraListTitle.MOST_COMMENTED);
+      if (numberOfMoviesRendered >= movies.length) {
+        showMoreBtnComponent.getElement().remove();
+      }
+    };
 
-render(
-  filmsSectionComponent.getElement(),
-  mostCommentedListComponent.getElement(),
-  RenderPosition.BEFOREEND);
+    showMoreBtnComponent.getElement().addEventListener('click', showMoreBtnClickHandler);
+  }
+};
 
-const topRatedListContainer = topRatedListComponent.getElement().querySelector('.films-list__container');
-const mostCommentedListContainer = mostCommentedListComponent.getElement().querySelector('.films-list__container');
+renderFilmList(filmsSectionComponent.getElement(), movies);
 
-for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
-  //OS: 2 карточки с наивысшим рейтингом
-  renderFilm(topRatedListContainer, movies[i]);
-  //OS: 2 карточки с наибольшим количеством комментариев
-  renderFilm(mostCommentedListContainer, movies[i + 2]);
-}
+const renderFilmExtraList = (extraListTitle, movies) => {
+  const extraListComponent = new MoviesExtraListView(extraListTitle);
+
+  render(
+    filmsSectionComponent.getElement(),
+    extraListComponent.getElement(),
+    RenderPosition.BEFOREEND,
+  );
+
+  const extraListContainer = extraListComponent.getElement().querySelector('.films-list__container');
+  for (let i = 0; i < SECTION_MOVIES_COUNT; i++) { //ForEach когда будут отфильтрованы??
+    renderFilm(extraListContainer, movies[i]);
+  }
+
+};
+
+renderFilmExtraList(FilmExtraListTitle.TOP_RATED, movies);
+renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, movies);
+
 
 /* FOOTER */
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
