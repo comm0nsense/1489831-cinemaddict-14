@@ -21,7 +21,7 @@ const createMovieCardTemplate = (movie) => {
   } = movie;
 
   return `
-    <article class="film-card" data-id = "${id}">
+    <article class="film-card" id = "${id}">
       <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">

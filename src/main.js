@@ -76,11 +76,12 @@ const renderFilm = (container, movie) => {
   const filmTitle = filmComponent.getElement().querySelector('.film-card__title');
 
   const onMovieCardClick = (evt) => {
-    console.log(evt.target);
-
     siteBodyElement.classList.add('hide-overflow');
 
-    const popupComponent = new MoviePopupView(movies[0]);
+    const filmId = evt.target.offsetParent.getAttribute('id');
+    const filmToPopup = movies.filter((movie) => movie.id === Number(filmId));
+
+    const popupComponent = new MoviePopupView(filmToPopup[0]);
 
     render(
       siteBodyElement,
