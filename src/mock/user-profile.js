@@ -1,11 +1,11 @@
 import {
   getRandomElementFromArray,
   getRandomInteger
-} from './mock-util.js';
+} from './util.js';
 
 import {
   GENRES
-}  from './mock-movie.js';
+}  from './movie.js';
 
 const USER_RANKS = ['Novice', 'Fan', 'Movie Buff'];
 

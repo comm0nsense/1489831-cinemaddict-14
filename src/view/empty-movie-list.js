@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util.js';
+import { createSiteElement } from '../util/util.js';
 
 const createEmptyListTemplate = () => {
   return '<h2 class="films-list__title">There are no movies in our database</h2>';

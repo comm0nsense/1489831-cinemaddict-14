@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util.js';
+import { createSiteElement } from '../util/util.js';
 
 const createSortingTemplate = () => {
   return (

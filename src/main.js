@@ -1,26 +1,22 @@
-import { generateMovie, comments } from './mock/mock-movie.js';
-import { userProfiles } from './mock/mock-user-profile.js';
-import { generateFilter } from './filter.js';
+import { generateComments, generateArrayOfCommentsIds, generateMovies} from './mock/movie.js';
+import { userProfiles } from './mock/user-profile.js';
+import { generateFilterData } from './filter.js';
 
-import {
-  generateArray,
-  render,
-  RenderPosition,
-  FilmExtraListTitle
-} from './util.js';
+import { render} from './util/util.js';
+import { RenderPosition, FilmExtraListTitle} from './util/const.js';
 
 import MoviesSectionView from './view/movies-section.js';
 import MoviesListView from './view/movies-list.js';
 import ShowMoreBtnView from './view/show-more-btn.js';
 import SortingView from './view/sorting.js';
-import MoviesExtraListView from './view/movies-list-extra.js';
+import MoviesExtraListView from './view/movies-extra-list.js';
 import FooterStatisticsView from './view/footer-statictics.js';
 import UserProfileView from './view/user-profile.js';
 import MovieCardView from './view/movie-card.js';
-import MainNavView from './view/main-navigation.js';
-import MoviePopupView from './view/popup.js';
-import MovieCommentsView from './view/comments.js';
-import EmptyMovieListView from './view/empty-list.js';
+import MainNavView from './view/main-nav.js';
+import MoviePopupView from './view/movie-popup.js';
+import MovieCommentsView from './view/movie-comments.js';
+import EmptyMovieListView from './view/empty-movie-list.js';
 // import StatisticsView from './view/statictics.js';
 
 const TOTAL_MOVIES = 12;
@@ -28,23 +24,27 @@ const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
 const EXTRA_LIST_MOVIES_COUNT = 0;
 
-const movies = generateArray(TOTAL_MOVIES, generateMovie);
-// console.log(movies);
+const comments = generateComments(125);
+const commentsIds = generateArrayOfCommentsIds(comments);
+const movies = generateMovies(TOTAL_MOVIES, commentsIds);
+console.log(movies);
 
-const filters = generateFilter(movies);
+const filters = generateFilterData(movies);
 // console.log(filters);
 
 const siteBodyElement = document.querySelector('body');
-const siteHeaderElement = document.querySelector('.header');
-const siteMainElement = document.querySelector('.main');
 
 /* USER RANK */
+const siteHeaderElement = document.querySelector('.header');
+
 render(
   siteHeaderElement,
   new UserProfileView(userProfiles[0]).getElement(),
   RenderPosition.BEFOREEND);
 
 /* MENU - FILTERS */
+const siteMainElement = document.querySelector('.main');
+
 render(
   siteMainElement,
   new MainNavView(filters).getElement(),
@@ -67,6 +67,7 @@ render(
   filmsSectionComponent.getElement(),
   RenderPosition.BEFOREEND);
 
+
 const renderFilm = (container, movie) => {
   const filmComponent = new MovieCardView(movie);
   render(container, filmComponent.getElement(), RenderPosition.BEFOREEND);
@@ -78,10 +79,10 @@ const renderFilm = (container, movie) => {
   const onMovieCardClick = (evt) => {
     siteBodyElement.classList.add('hide-overflow');
 
-    const filmId = evt.target.offsetParent.getAttribute('id');
-    const filmToPopup = movies.filter((movie) => movie.id === Number(filmId));
+    // const filmId = evt.target.offsetParent.getAttribute('id');
+    // const filmToPopup = movies.filter((movie) => movie.id === Number(filmId));
 
-    const popupComponent = new MoviePopupView(filmToPopup[0]);
+    const popupComponent = new MoviePopupView(movie);
 
     render(
       siteBodyElement,
@@ -92,30 +93,32 @@ const renderFilm = (container, movie) => {
 
     render(
       commentsContainer,
-      new MovieCommentsView(filmToPopup[0], comments).getElement(),
+      new MovieCommentsView(movie, comments).getElement(),
       RenderPosition.BEFOREEND);
 
     const popupCloseBtn = popupComponent.getElement().querySelector('.film-details__close-btn');
 
-    // const closePopup = () => {
-    //   siteBodyElement.removeChild(popupComponent.getElement());
-    //   siteBodyElement.classList.remove('hide-overflow');
-    // };
+    const closePopup = () => {
+      siteBodyElement.removeChild(popupComponent.getElement());
+      siteBodyElement.classList.remove('hide-overflow');
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        siteBodyElement.removeChild(popupComponent.getElement());
-        siteBodyElement.classList.remove('hide-overflow');
-        // closePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
+        // siteBodyElement.removeChild(popupComponent.getElement());
+        // siteBodyElement.classList.remove('hide-overflow');
+        closePopup();
+        // document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
     const onPopupCloseBtnClick = () => {
-      siteBodyElement.removeChild(popupComponent.getElement());
-      siteBodyElement.classList.remove('hide-overflow');
-      // closePopup();
+      // siteBodyElement.removeChild(popupComponent.getElement());
+      // siteBodyElement.classList.remove('hide-overflow');
+      closePopup();
+      // document.removeEventListener('keydown', onEscKeyDown);
     };
 
     popupCloseBtn.addEventListener('click', onPopupCloseBtnClick);
@@ -190,7 +193,7 @@ const renderFilmSection = (sectionContainer, movies) => {
     .every((movie) => parseFloat(movie.totalRating) === EXTRA_LIST_MOVIES_COUNT);
 
   if (!isAllFilmsWithoutRating) {
-    const moviesSortByRating = movies.slice().sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
+    const moviesSortByRating = [...movies].sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
     renderFilmExtraList(FilmExtraListTitle.TOP_RATED, moviesSortByRating);
   }
 
@@ -198,7 +201,7 @@ const renderFilmSection = (sectionContainer, movies) => {
     .every((movie) => parseFloat(movie.movieCommentsIds.length) === EXTRA_LIST_MOVIES_COUNT );
 
   if (!isAllFilmsWithoutComments) {
-    const moviesSortByMostComments = movies.slice().sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
+    const moviesSortByMostComments = [...movies].sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
     renderFilmExtraList(FilmExtraListTitle.MOST_COMMENTED, moviesSortByMostComments);
   }
 };

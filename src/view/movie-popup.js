@@ -1,9 +1,9 @@
-import { createSiteElement } from '../util.js';
+import { createSiteElement } from '../util/util.js';
 
 import {
   converArrayToList,
   formatReleaseDate
-} from '../util.js';
+} from '../util/util.js';
 
 
 const createMoviePopupTemplate = (movie) => {
@@ -40,7 +40,7 @@ const createMoviePopupTemplate = (movie) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="/images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>

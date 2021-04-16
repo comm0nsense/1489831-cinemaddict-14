@@ -1,5 +1,8 @@
-import { convertDateToYear } from '../util.js';
-import { createSiteElement } from '../util.js';
+import {
+  convertDateToYear,
+  createSiteElement
+} from '../util/util.js';
+
 
 const SHORT_DESC_LENGTH = 139;
 
@@ -15,9 +18,7 @@ const createMovieCardTemplate = (movie) => {
     genres,
     movieCommentsIds,
     description,
-    userDetails: {isWatchlist},
-    userDetails: {isAlreadyWatched},
-    userDetails: {isFavorite},
+    userDetails: {isWatchlist, isAlreadyWatched, isFavorite},
   } = movie;
 
   return `

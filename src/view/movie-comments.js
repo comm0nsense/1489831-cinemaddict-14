@@ -1,8 +1,7 @@
-import { createSiteElement } from '../util.js';
-
 import {
+  createSiteElement,
   formatCommentDate
-} from '../util.js';
+} from '../util/util.js';
 
 /**
  * Функция создания шаблона комментария
@@ -70,12 +69,12 @@ const createNewCommentEmojiFragment = () => {
  * @returns {string} строка, содержащая разметку комопнента списка комментариев
  */
 //  ${comments.map((comment) => createCommentItemTemplate(comment)).join(' ')}
-const createCommentsTemplate = (movie, commentsData) => {
+const createCommentsTemplate = (movie, comments) => {
   const {movieCommentsIds} = movie;
 
   let commentsFragment = '';
   if (movieCommentsIds.length) {
-    const array = commentsData.filter(({ id }) => movieCommentsIds.includes(id));
+    const array = comments.filter(({ id }) => movieCommentsIds.includes(id));
     commentsFragment = array.map((comment) => createCommentItemTemplate(comment)).join('');
   }
 
@@ -103,14 +102,14 @@ const createCommentsTemplate = (movie, commentsData) => {
 };
 
 export default class MovieComments {
-  constructor(movie, commentsData) {
+  constructor(movie, comments) {
     this._element = null;
     this._movie = movie;
-    this._commentsData = commentsData;
+    this._comments = comments;
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._movie, this._commentsData);
+    return createCommentsTemplate(this._movie, this._comments);
   }
 
   getElement() {

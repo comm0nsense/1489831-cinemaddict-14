@@ -5,15 +5,15 @@ import {
   getRandomDate,
   convertTime,
   generateRandomArray
-} from './mock-util.js';
+} from './util.js';
 
 import {
   generateComment
-} from './mock-comment.js';
+} from './comment.js';
 
 import {
   generateArray
-} from '../util.js';
+} from '../util/util.js';
 
 const TITLES = [
   'Mank',
@@ -159,12 +159,23 @@ const AGE_RATINGS = [
   18,
 ];
 
-const comments = generateArray(125, generateComment);
+const generateComments = (number) => {
+  return generateArray(number, generateComment);
+};
 
-const arrayOfCommentsIds = [];
-comments.forEach((comment) => {
-  arrayOfCommentsIds.push(comment.id);
-});
+const generateArrayOfCommentsIds = (comments) => {
+  const arrayOfCommentsIds = [];
+
+  comments.forEach((comment) => {
+    arrayOfCommentsIds.push(comment.id);
+  });
+
+  return arrayOfCommentsIds;
+};
+
+const generateMovieCommentsIds = (commentsIds) => {
+  return commentsIds.splice(0, getRandomInteger(0, 5));
+};
 
 const generateUserDetails = () => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
@@ -177,7 +188,7 @@ const generateUserDetails = () => {
   };
 };
 
-const generateMovie = () => {
+const generateMovie = (array) => {
 
   return {
     'id': movieId++,
@@ -194,16 +205,23 @@ const generateMovie = () => {
     'releaseDate': getRandomDate(new Date(1990, 0, 1), new Date()),
     'releaseCountry': getRandomElementFromArray(COUNTRIES),
     'genres': generateRandomArray(GENRES, 1, 3),
-    'movieCommentsIds': arrayOfCommentsIds.splice(0, getRandomInteger(0, 5)),
+    // 'movieCommentsIds': arrayOfCommentsIds.splice(0, getRandomInteger(0, 5)),
+    'movieCommentsIds': generateMovieCommentsIds(array),
+
     // 'movieCommentsIds': '',
     'runtime': convertTime(getRandomInteger(60, 240)),
     'userDetails': generateUserDetails(),
   };
 };
 
+const generateMovies = (number, array) => {
+  return new Array(number).fill().map(() => generateMovie(array));
+};
+
 export {
-  generateMovie,
   GENRES,
-  comments
+  generateComments,
+  generateArrayOfCommentsIds,
+  generateMovies
 };
 
