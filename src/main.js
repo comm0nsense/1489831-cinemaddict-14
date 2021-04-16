@@ -12,10 +12,10 @@ import SortingView from './view/sorting.js';
 import MoviesExtraListView from './view/movies-extra-list.js';
 import FooterStatisticsView from './view/footer-statictics.js';
 import UserProfileView from './view/user-profile.js';
-import MovieCardView from './view/card.js';
+import MovieCardView from './view/movie-card.js';
 import MainNavView from './view/main-nav.js';
-import MoviePopupView from './view/popup.js';
-import MovieCommentsView from './view/comments.js';
+import MoviePopupView from './view/movie-popup.js';
+import MovieCommentsView from './view/movie-comments.js';
 import EmptyMovieListView from './view/empty-movie-list.js';
 // import StatisticsView from './view/statictics.js';
 
