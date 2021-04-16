@@ -4,7 +4,7 @@ import {
   createSiteElement
 } from '../util/util.js';
 
-const createMoviePopupTemplate = (movie) => {
+const createMovieDetailedCardTemplate = (movie) => {
   const {
     poster,
     ageRating,
@@ -110,14 +110,14 @@ const createMoviePopupTemplate = (movie) => {
   `;
 };
 
-export default class MoviePopup {
+export default class MovieDetailedCard {
   constructor(movie) {
     this._element = null;
     this._movie = movie;
   }
 
   getTemplate() {
-    return createMoviePopupTemplate(this._movie);
+    return createMovieDetailedCardTemplate(this._movie);
   }
 
   getElement() {
