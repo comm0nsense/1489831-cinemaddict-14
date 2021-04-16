@@ -27,7 +27,7 @@ const EXTRA_LIST_MOVIES_COUNT = 0;
 const comments = generateComments(125);
 const commentsIds = generateArrayOfCommentsIds(comments);
 const movies = generateMovies(TOTAL_MOVIES, commentsIds);
-console.log(movies);
+// console.log(movies);
 
 const filters = generateFilterData(movies);
 // console.log(filters);
@@ -76,7 +76,7 @@ const renderFilm = (container, movie) => {
   const filmComments = filmComponent.getElement().querySelector('.film-card__comments');
   const filmTitle = filmComponent.getElement().querySelector('.film-card__title');
 
-  const onMovieCardClick = (evt) => {
+  const onMovieCardClick = () => {
     siteBodyElement.classList.add('hide-overflow');
 
     // const filmId = evt.target.offsetParent.getAttribute('id');
