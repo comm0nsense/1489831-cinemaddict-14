@@ -4,7 +4,7 @@ const createMoviesSectionTemplate = () => {
   return '<section class="films"></section>';
 };
 
-export default class MoviesSection {
+export default class MoviesContainer {
   constructor() {
     this._element = null;
   }

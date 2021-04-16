@@ -1,10 +1,8 @@
-import { createSiteElement } from '../util/util.js';
-
 import {
   converArrayToList,
-  formatReleaseDate
+  formatReleaseDate,
+  createSiteElement
 } from '../util/util.js';
-
 
 const createMoviePopupTemplate = (movie) => {
   const {
@@ -21,9 +19,7 @@ const createMoviePopupTemplate = (movie) => {
     releaseCountry,
     genres,
     description,
-    userDetails: {isWatchlist},
-    userDetails: {isAlreadyWatched},
-    userDetails: {isFavorite},
+    userDetails: {isWatchlist, isAlreadyWatched,isFavorite },
   } = movie;
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
