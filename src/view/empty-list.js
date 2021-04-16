@@ -1,16 +1,16 @@
 import { createSiteElement } from '../util.js';
 
-const createShowMoreBtnTemplate = () => {
-  return '<button class="films-list__show-more">Show more</button>';
+const createEmptyListTemplate = () => {
+  return '<h2 class="films-list__title">There are no movies in our database</h2>';
 };
 
-export default class showMoreBtn {
+export default class EmptyMovieList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createShowMoreBtnTemplate();
+    return createEmptyListTemplate();
   }
 
   getElement() {

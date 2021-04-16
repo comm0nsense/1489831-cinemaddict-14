@@ -1,4 +1,6 @@
-export const createStatisticsTemplate = (userProfile) => {
+import { createSiteElement } from '../util.js';
+
+const createStatisticsTemplate = (userProfile) => {
   const {rank, totalMoviesWatched, totalDuration, topGenre} = userProfile;
   //totalDuration раскладывает на ч-м
   return `
@@ -50,3 +52,26 @@ export const createStatisticsTemplate = (userProfile) => {
     </section>
   `;
 };
+
+export default class Statictics {
+  constructor(userProfile) {
+    this._element = null;
+    this._userProfile = userProfile;
+  }
+
+  getTemplate() {
+    return createStatisticsTemplate(this._userProfile);
+  }
+
+  getElement() {
+    if(!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
