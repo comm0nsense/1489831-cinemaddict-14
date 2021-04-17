@@ -24,6 +24,11 @@ const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
 const EXTRA_LIST_MOVIES_COUNT = 0;
 const TOTAL_COMMENTS = 125;
+const classesToOpenDetailedFilmCard = [
+  'film-card__poster',
+  'film-card__comments',
+  'film-card__title',
+];
 
 const comments = generateComments(TOTAL_COMMENTS);
 const commentsIds = generateArrayOfCommentsIds(comments);
@@ -68,63 +73,68 @@ render(
   filmsContainerComponent.getElement(),
   RenderPosition.BEFOREEND);
 
-const renderDetailedFilmCard = (movie) => {
+const renderDetailedFilmCard = (movie, evt) => {
 
-  siteBodyElement.classList.add('hide-overflow');
+  // console.log(evt.target.classList.value);
 
-  const detailedFilmCardComponent = new MovieDetailedCardView(movie);
+  const clickTarget = evt.target.classList.value;
+  if (classesToOpenDetailedFilmCard.includes(clickTarget)) {
+    // console.log(`клин по ${clickTarget}`);
 
-  render(
-    siteBodyElement,
-    detailedFilmCardComponent.getElement(),
-    RenderPosition.BEFOREEND);
+    siteBodyElement.classList.add('hide-overflow');
 
-  const commentsContainer = detailedFilmCardComponent.getElement().querySelector('.film-details__bottom-container');
+    const detailedFilmCardComponent = new MovieDetailedCardView(movie);
 
-  render(
-    commentsContainer,
-    new MovieCommentsView(movie, comments).getElement(),
-    RenderPosition.BEFOREEND);
+    if (!siteBodyElement.querySelector('.film-details')) {
+      render(
+        siteBodyElement,
+        detailedFilmCardComponent.getElement(),
+        RenderPosition.BEFOREEND);
 
-  const detailedFilmCardCloseBtn = detailedFilmCardComponent.getElement().querySelector('.film-details__close-btn');
+      const commentsContainer = detailedFilmCardComponent.getElement().querySelector('.film-details__bottom-container');
 
-  const closeDetailedFilmCard = () => {
+      render(
+        commentsContainer,
+        new MovieCommentsView(movie, comments).getElement(),
+        RenderPosition.BEFOREEND);
 
-    detailedFilmCardComponent.getElement().remove();
-    detailedFilmCardComponent.removeElement();
-    siteBodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', onEscKeyDown);
-  };
+      const detailedFilmCardCloseBtn = detailedFilmCardComponent.getElement().querySelector('.film-details__close-btn');
 
-  const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      closeDetailedFilmCard();
+      const closeDetailedFilmCard = () => {
+
+        detailedFilmCardComponent.getElement().remove();
+        detailedFilmCardComponent.removeElement();
+        siteBodyElement.classList.remove('hide-overflow');
+        document.removeEventListener('keydown', onEscKeyDown);
+      };
+
+      const onEscKeyDown = (evt) => {
+        if (evt.key === 'Escape' || evt.key === 'Esc') {
+          evt.preventDefault();
+          closeDetailedFilmCard();
+        }
+      };
+
+      const onPopupCloseBtnClick = () => {
+        closeDetailedFilmCard();
+      };
+
+      detailedFilmCardCloseBtn.addEventListener('click', onPopupCloseBtnClick);
+      document.addEventListener('keydown', onEscKeyDown);
+    } else {
+      console.log('карточка уже есть');
     }
-  };
-
-  const onPopupCloseBtnClick = () => {
-    closeDetailedFilmCard();
-  };
-
-  detailedFilmCardCloseBtn.addEventListener('click', onPopupCloseBtnClick);
-  document.addEventListener('keydown', onEscKeyDown);
+  } else {
+    console.log('клик мимо, попап не открываем');
+  }
 };
 
 const renderFilmCard = (container, movie) => {
   const filmComponent = new MovieCardView(movie);
   render(container, filmComponent.getElement(), RenderPosition.BEFOREEND);
 
-  filmComponent.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
-    renderDetailedFilmCard(movie);
-  });
-
-  filmComponent.getElement().querySelector('.film-card__title').addEventListener('click', () => {
-    renderDetailedFilmCard(movie);
-  });
-
-  filmComponent.getElement().querySelector('.film-card__comments').addEventListener('click', () => {
-    renderDetailedFilmCard(movie);
+  filmComponent.getElement().addEventListener('click', (evt) => {
+    renderDetailedFilmCard(movie, evt);
   });
 };
 
