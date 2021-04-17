@@ -1,10 +1,10 @@
-import { createSiteElement } from '../util.js';
+import { createSiteElement } from '../util/util.js';
 
 const createMoviesSectionTemplate = () => {
   return '<section class="films"></section>';
 };
 
-export default class MoviesSection {
+export default class MoviesContainer {
   constructor() {
     this._element = null;
   }

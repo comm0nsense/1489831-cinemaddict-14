@@ -2,7 +2,7 @@ import {
   getRandomElementFromArray,
   generateRandomArray,
   getRandomDate
-} from './mock-util.js';
+} from './util.js';
 
 const EMOTIONS = [
   'smile',

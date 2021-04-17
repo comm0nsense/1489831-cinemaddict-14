@@ -1,12 +1,10 @@
-import { createSiteElement } from '../util.js';
-
 import {
   converArrayToList,
-  formatReleaseDate
-} from '../util.js';
+  formatReleaseDate,
+  createSiteElement
+} from '../util/util.js';
 
-
-const createMoviePopupTemplate = (movie) => {
+const createMovieDetailedCardTemplate = (movie) => {
   const {
     poster,
     ageRating,
@@ -21,9 +19,7 @@ const createMoviePopupTemplate = (movie) => {
     releaseCountry,
     genres,
     description,
-    userDetails: {isWatchlist},
-    userDetails: {isAlreadyWatched},
-    userDetails: {isFavorite},
+    userDetails: {isWatchlist, isAlreadyWatched,isFavorite },
   } = movie;
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
@@ -40,7 +36,7 @@ const createMoviePopupTemplate = (movie) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="/images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
@@ -114,14 +110,14 @@ const createMoviePopupTemplate = (movie) => {
   `;
 };
 
-export default class MoviePopup {
+export default class MovieDetailedCard {
   constructor(movie) {
     this._element = null;
     this._movie = movie;
   }
 
   getTemplate() {
-    return createMoviePopupTemplate(this._movie);
+    return createMovieDetailedCardTemplate(this._movie);
   }
 
   getElement() {

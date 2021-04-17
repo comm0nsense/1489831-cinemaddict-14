@@ -1,14 +1,5 @@
 import dayjs from 'dayjs';
-
-export const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
-
-export const FilmExtraListTitle = {
-  TOP_RATED: 'Top rated',
-  MOST_COMMENTED: 'Most Commented',
-};
+import { RenderPosition } from './const.js';
 
 /**
  * Вместо шаблонной строки принимает элемент

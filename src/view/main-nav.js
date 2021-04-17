@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util.js';
+import { createSiteElement } from '../util/util.js';
 
 const ALL_MOVIES_FILTER = 'All Movies';
 

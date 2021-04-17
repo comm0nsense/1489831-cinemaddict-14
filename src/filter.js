@@ -5,7 +5,7 @@ const movieToFilterMap = {
   'History': (movies) => movies.filter((movie) => movie.userDetails.isAlreadyWatched).length,
 };
 
-export const generateFilter = (movies) => {
+export const generateFilterData = (movies) => {
   return Object.entries(movieToFilterMap).map( ([filterName, countMovies])=> {
     return {
       name: filterName,

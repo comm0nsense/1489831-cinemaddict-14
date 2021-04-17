@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util.js';
+import { createSiteElement } from '../util/util.js';
 
 const createUserProfileTemplate = (userProfile) => {
   const {rank} = userProfile;
@@ -11,7 +11,7 @@ const createUserProfileTemplate = (userProfile) => {
   `;
 };
 
-export default class UserProfileView {
+export default class UserProfile {
   constructor(userRank) {
     this._element = null;
     this._userRank = userRank;
