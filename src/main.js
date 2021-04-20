@@ -2,7 +2,7 @@ import { generateComments, generateArrayOfCommentsIds, generateMovies } from './
 import { userProfiles } from './mock/user-profile.js';
 import { generateFilterData } from './filter.js';
 
-import { render } from './util/util.js';
+import { render, remove } from './util/render.js';
 import { RenderPosition, FilmExtraListTitle } from './util/const.js';
 
 import MoviesContainerView from './view/movies-container.js';
@@ -98,12 +98,8 @@ const renderDetailedFilmCard = (movie, evt) => {
         new MovieCommentsView(movie, comments).getElement(),
         RenderPosition.BEFOREEND);
 
-      // const detailedFilmCardCloseBtn = detailedFilmCardComponent.getElement().querySelector('.film-details__close-btn');
-
       const closeDetailedFilmCard = () => {
-
-        detailedFilmCardComponent.getElement().remove();
-        detailedFilmCardComponent.removeElement();
+        remove(detailedFilmCardComponent);
         siteBodyElement.classList.remove('hide-overflow');
         document.removeEventListener('keydown', onEscKeyDown);
       };
@@ -119,7 +115,6 @@ const renderDetailedFilmCard = (movie, evt) => {
         closeDetailedFilmCard();
       };
 
-      // detailedFilmCardCloseBtn.addEventListener('click', onPopupCloseBtnClick);
       detailedFilmCardComponent.setCloseBtnClickHandler(onPopupCloseBtnClick);
       document.addEventListener('keydown', onEscKeyDown);
     } else {
@@ -137,6 +132,12 @@ const renderFilmCard = (container, movie) => {
   filmComponent.getElement().addEventListener('click', (evt) => {
     renderDetailedFilmCard(movie, evt);
   });
+
+  //не работает и не ясно почему - https://prnt.sc/11qu6cm
+  // filmComponent.getElement().setOpenDetailedFilmCardHandler((evt) => {
+  //   renderDetailedFilmCard(movie, evt);
+  // });
+
 };
 
 const renderFilmList = (listContainer, movies) => {
@@ -167,13 +168,11 @@ const renderFilmList = (listContainer, movies) => {
       numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
 
       if (numberOfMoviesRendered >= movies.length) {
-        showMoreBtnComponent.getElement().remove();
+        remove(showMoreBtnComponent);
       }
     };
 
-    // showMoreBtnComponent.getElement().addEventListener('click', onShowMoreBtnClick);
     showMoreBtnComponent.setClickHandler(onShowMoreBtnClick);
-
   }
 };
 
