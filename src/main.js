@@ -42,61 +42,38 @@ const siteBodyElement = document.querySelector('body');
 
 /* USER RANK */
 const siteHeaderElement = document.querySelector('.header');
-
-render(
-  siteHeaderElement,
-  new UserProfileView(userProfiles[0]).getElement(),
-  RenderPosition.BEFOREEND);
+const userProfileComponent =  new UserProfileView(userProfiles[0]);
+render(siteHeaderElement, userProfileComponent,RenderPosition.BEFOREEND);
 
 /* MENU - FILTERS */
 const siteMainElement = document.querySelector('.main');
-
-render(
-  siteMainElement,
-  new MainNavView(filters).getElement(),
-  RenderPosition.BEFOREEND);
+const mainNavComponent = new MainNavView(filters);
+render(siteMainElement, mainNavComponent, RenderPosition.BEFOREEND);
 
 /* SORTING */
-render(
-  siteMainElement,
-  new SortingView().getElement(),
-  RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу
+const sortingComponent = new SortingView();
+render(siteMainElement, sortingComponent, RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу
 
 /* STATISTICS SCREEN (закомментировано, чтобы скрыть) */
 // render(siteMainElement, new StatisticsView(userProfiles[1]).getElement(), RenderPosition.BEFOREEND);
 
 /* FILM SECTION */
 const filmsContainerComponent = new MoviesContainerView();
-
-render(
-  siteMainElement,
-  filmsContainerComponent.getElement(),
-  RenderPosition.BEFOREEND);
+render(siteMainElement, filmsContainerComponent, RenderPosition.BEFOREEND);
 
 const renderDetailedFilmCard = (movie, evt) => {
-
-  // console.log(evt.target.classList.value);
-
   const clickTarget = evt.target.classList.value;
+
   if (classesToOpenDetailedFilmCard.includes(clickTarget)) {
-    // console.log(`клин по ${clickTarget}`);
 
     siteBodyElement.classList.add('hide-overflow');
-
     const detailedFilmCardComponent = new MovieDetailedCardView(movie);
 
     if (!siteBodyElement.querySelector('.film-details')) {
-      render(
-        siteBodyElement,
-        detailedFilmCardComponent.getElement(),
-        RenderPosition.BEFOREEND);
-
+      render(siteBodyElement, detailedFilmCardComponent, RenderPosition.BEFOREEND);
       const commentsContainer = detailedFilmCardComponent.getElement().querySelector('.film-details__bottom-container');
-
-      render(
-        commentsContainer,
-        new MovieCommentsView(movie, comments).getElement(),
-        RenderPosition.BEFOREEND);
+      const movieCommentsComponent = new MovieCommentsView(movie, comments);
+      render(commentsContainer, movieCommentsComponent, RenderPosition.BEFOREEND);
 
       const closeDetailedFilmCard = () => {
         remove(detailedFilmCardComponent);
@@ -117,17 +94,13 @@ const renderDetailedFilmCard = (movie, evt) => {
 
       detailedFilmCardComponent.setCloseBtnClickHandler(onPopupCloseBtnClick);
       document.addEventListener('keydown', onEscKeyDown);
-    } else {
-      console.log('карточка уже есть');
     }
-  } else {
-    console.log('клик мимо, попап не открываем');
   }
 };
 
 const renderFilmCard = (container, movie) => {
   const filmComponent = new MovieCardView(movie);
-  render(container, filmComponent.getElement(), RenderPosition.BEFOREEND);
+  render(container, filmComponent, RenderPosition.BEFOREEND);
 
   filmComponent.getElement().addEventListener('click', (evt) => {
     renderDetailedFilmCard(movie, evt);
@@ -137,18 +110,11 @@ const renderFilmCard = (container, movie) => {
   // filmComponent.getElement().setOpenDetailedFilmCardHandler((evt) => {
   //   renderDetailedFilmCard(movie, evt);
   // });
-
 };
 
 const renderFilmList = (listContainer, movies) => {
-
   const filmsListComponent = new MoviesListView();
-
-  render(
-    listContainer,
-    filmsListComponent.getElement(),
-    RenderPosition.BEFOREEND);
-
+  render(listContainer, filmsListComponent, RenderPosition.BEFOREEND);
   const filmsListContainer = filmsListComponent.getElement().querySelector('.films-list__container');
 
   for (let i = 0; i < Math.min(movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
@@ -157,7 +123,7 @@ const renderFilmList = (listContainer, movies) => {
 
   if (movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
     const showMoreBtnComponent = new ShowMoreBtnView();
-    render(filmsListComponent.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
+    render(filmsListComponent, showMoreBtnComponent, RenderPosition.BEFOREEND);
     let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
     const onShowMoreBtnClick = () => {
@@ -179,11 +145,7 @@ const renderFilmList = (listContainer, movies) => {
 const renderFilmExtraList = (extraListTitle, movies) => {
   const extraListComponent = new MoviesExtraListView(extraListTitle);
 
-  render(
-    filmsContainerComponent.getElement(),
-    extraListComponent.getElement(),
-    RenderPosition.BEFOREEND,
-  );
+  render(filmsContainerComponent, extraListComponent, RenderPosition.BEFOREEND);
 
   const extraListContainer = extraListComponent.getElement().querySelector('.films-list__container');
   for (let i = 0; i < SECTION_MOVIES_COUNT; i++) { //если одинаковый рейтниг, то 2 случайных - это просто беру 2 первых после сортировки
@@ -194,7 +156,6 @@ const renderFilmExtraList = (extraListTitle, movies) => {
 const renderFilmSection = (sectionContainer, movies) => {
   if (!movies.length) {
     render(sectionContainer, new EmptyMovieListView().getElement(), RenderPosition.BEFOREEND);
-    // return;
   } else {
 
     renderFilmList(filmsContainerComponent.getElement(), movies);
@@ -221,8 +182,5 @@ renderFilmSection(siteMainElement, movies);
 
 /* FOOTER */
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
-
-render(
-  siteFooterElement,
-  new FooterStatisticsView(movies.length).getElement(),
-  RenderPosition.BEFOREEND);
+const footerStaticsComponent =  new FooterStatisticsView(movies.length);
+render(siteFooterElement, footerStaticsComponent, RenderPosition.BEFOREEND);
