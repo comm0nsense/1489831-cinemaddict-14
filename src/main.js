@@ -43,7 +43,7 @@ const siteBodyElement = document.querySelector('body');
 /* USER RANK */
 const siteHeaderElement = document.querySelector('.header');
 const userProfileComponent =  new UserProfileView(userProfiles[0]);
-render(siteHeaderElement, userProfileComponent,RenderPosition.BEFOREEND);
+render(siteHeaderElement, userProfileComponent, RenderPosition.BEFOREEND);
 
 /* MENU - FILTERS */
 const siteMainElement = document.querySelector('.main');
@@ -102,14 +102,9 @@ const renderFilmCard = (container, movie) => {
   const filmComponent = new MovieCardView(movie);
   render(container, filmComponent, RenderPosition.BEFOREEND);
 
-  filmComponent.getElement().addEventListener('click', (evt) => {
+  filmComponent.setOpenDetailedFilmCardHandler((evt) => {
     renderDetailedFilmCard(movie, evt);
   });
-
-  //не работает и не ясно почему - https://prnt.sc/11qu6cm
-  // filmComponent.getElement().setOpenDetailedFilmCardHandler((evt) => {
-  //   renderDetailedFilmCard(movie, evt);
-  // });
 };
 
 const renderFilmList = (listContainer, movies) => {
