@@ -61,6 +61,11 @@ render(siteMainElement, sortingComponent, RenderPosition.BEFOREEND); //OS: ну�
 const filmsContainerComponent = new MoviesContainerView();
 render(siteMainElement, filmsContainerComponent, RenderPosition.BEFOREEND);
 
+/**
+ * Функция открывает детальную карточку фильма
+ * @param {object} movie  - объект фильма, по которому был клик
+ * @param {evt} evt - событие при клике
+ */
 const renderDetailedFilmCard = (movie, evt) => {
   const clickTarget = evt.target.classList.value;
 
@@ -97,6 +102,7 @@ const renderDetailedFilmCard = (movie, evt) => {
     }
   }
 };
+
 
 const renderFilmCard = (container, movie) => {
   const filmComponent = new MovieCardView(movie);

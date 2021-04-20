@@ -52,11 +52,10 @@ export default class MovieCard extends AbstractView {
   }
 
   _openDetailedFilmCardHandler(movie, evt) {
-    // evt.preventDefault();//это здесь нужно??
-    this._callback.openDetailedFilmCard(movie, evt);//нужно ли тут передавать параметры
+    this._callback.openDetailedFilmCard(movie, evt);
   }
 
-  setOpenDetailedFilmCardHandler(callback) { // callback обернут в анонимную функцию в мейне и принимает параметры
+  setOpenDetailedFilmCardHandler(callback) {
     this._callback.openDetailedFilmCard = callback;
     this.getElement().addEventListener('click', this._openDetailedFilmCardHandler);
   }

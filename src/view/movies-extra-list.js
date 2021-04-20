@@ -10,8 +10,6 @@ const createMoviesExtraListTemplate = (listTitle) => {
     `;
 };
 
-// console.log(createSiteElement(createMoviesExtraListTemplate()));
-
 export default class MoviesExtraList extends AbstractView {
   constructor(listTitle) {
     super();
