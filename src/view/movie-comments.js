@@ -1,7 +1,5 @@
-import {
-  createSiteElement,
-  formatCommentDate
-} from '../util/util.js';
+import { formatCommentDate } from '../util/util.js';
+import AbstractView from './abstract.js';
 
 /**
  * Функция создания шаблона комментария
@@ -101,26 +99,14 @@ const createCommentsTemplate = (movie, comments) => {
   `;
 };
 
-export default class MovieComments {
+export default class MovieComments extends AbstractView {
   constructor(movie, comments) {
-    this._element = null;
+    super();
     this._movie = movie;
     this._comments = comments;
   }
 
   getTemplate() {
     return createCommentsTemplate(this._movie, this._comments);
-  }
-
-  getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

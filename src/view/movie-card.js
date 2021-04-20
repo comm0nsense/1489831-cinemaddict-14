@@ -1,8 +1,5 @@
-import {
-  convertDateToYear,
-  createSiteElement
-} from '../util/util.js';
-
+import { convertDateToYear } from '../util/util.js';
+import AbstractView from './abstract.js';
 
 const SHORT_DESC_LENGTH = 139;
 
@@ -42,25 +39,25 @@ const createMovieCardTemplate = (movie) => {
   `;
 };
 
-export default class MovieCard {
+export default class MovieCard extends AbstractView {
   constructor(movie) {
-    this._element = null;
+    super();
     this._movie = movie;
+
+    this._openDetailedFilmCardHandler = this._openDetailedFilmCardHandler.bind(this);
   }
 
   getTemplate() {
     return createMovieCardTemplate(this._movie);
   }
 
-  getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
+  _openDetailedFilmCardHandler() {
+    // evt.preventDefault();//это здесь нужно??
+    this._callback.openDetailedFilmCard();//нужно ли тут передавать параметры
   }
 
-  removeElement() {
-    this._element = null;
+  setOpenDetailedFilmCardHandler(callback) { // callback обернут в анонимную функцию в мейне и принимает параметры
+    this._callback.openDetailedFilmCard = callback;
+    this.getElement().addEventListener('click', this._openDetailedFilmCardHandler);
   }
 }
