@@ -1,8 +1,5 @@
-import {
-  converArrayToList,
-  formatReleaseDate,
-  createSiteElement
-} from '../util/util.js';
+import { converArrayToList, formatReleaseDate } from '../util/util.js';
+import AbstractView from './abstract.js';
 
 const createMovieDetailedCardTemplate = (movie) => {
   const {
@@ -110,25 +107,13 @@ const createMovieDetailedCardTemplate = (movie) => {
   `;
 };
 
-export default class MovieDetailedCard {
+export default class MovieDetailedCard extends AbstractView {
   constructor(movie) {
-    this._element = null;
+    super();
     this._movie = movie;
   }
 
   getTemplate() {
     return createMovieDetailedCardTemplate(this._movie);
-  }
-
-  getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

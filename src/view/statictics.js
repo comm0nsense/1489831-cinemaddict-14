@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util.js';
+import AbstractView from './abstract.js';
 
 const createStatisticsTemplate = (userProfile) => {
   const {rank, totalMoviesWatched, totalDuration, topGenre} = userProfile;
@@ -53,25 +53,13 @@ const createStatisticsTemplate = (userProfile) => {
   `;
 };
 
-export default class Statictics {
+export default class Statictics extends AbstractView {
   constructor(userProfile) {
-    this._element = null;
+    super();
     this._userProfile = userProfile;
   }
 
   getTemplate() {
     return createStatisticsTemplate(this._userProfile);
-  }
-
-  getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

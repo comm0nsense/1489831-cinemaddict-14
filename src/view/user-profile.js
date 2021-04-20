@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util/util.js';
+import AbstractView from './abstract.js';
 
 const createUserProfileTemplate = (userProfile) => {
   const {rank} = userProfile;
@@ -11,25 +11,13 @@ const createUserProfileTemplate = (userProfile) => {
   `;
 };
 
-export default class UserProfile {
+export default class UserProfile extends AbstractView {
   constructor(userRank) {
-    this._element = null;
+    super();
     this._userRank = userRank;
   }
 
   getTemplate() {
     return createUserProfileTemplate(this._userRank);
-  }
-
-  getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

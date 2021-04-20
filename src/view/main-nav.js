@@ -1,4 +1,4 @@
-import { createSiteElement } from '../util/util.js';
+import AbstractView from './abstract.js';
 
 const ALL_MOVIES_FILTER = 'All Movies';
 
@@ -27,25 +27,13 @@ const createMainNavTemplate = (filters) => {
   `;
 };
 
-export default class MainNav {
+export default class MainNav extends AbstractView {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
   }
 
   getTemplate() {
     return createMainNavTemplate(this._filters);
-  }
-
-  getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
