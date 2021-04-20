@@ -111,9 +111,21 @@ export default class MovieDetailedCard extends AbstractView {
   constructor(movie) {
     super();
     this._movie = movie;
+
+    this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
+  }
+
+  _closeBtnClickHandler(evt) {
+    evt.preventDefault(); //это нужно здесь??
+    this._callback.closeBtnClick();
   }
 
   getTemplate() {
     return createMovieDetailedCardTemplate(this._movie);
+  }
+
+  setCloseBtnClickHandler(callback) {
+    this._callback.closeBtnClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeBtnClickHandler);
   }
 }

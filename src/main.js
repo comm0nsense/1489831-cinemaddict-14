@@ -98,7 +98,7 @@ const renderDetailedFilmCard = (movie, evt) => {
         new MovieCommentsView(movie, comments).getElement(),
         RenderPosition.BEFOREEND);
 
-      const detailedFilmCardCloseBtn = detailedFilmCardComponent.getElement().querySelector('.film-details__close-btn');
+      // const detailedFilmCardCloseBtn = detailedFilmCardComponent.getElement().querySelector('.film-details__close-btn');
 
       const closeDetailedFilmCard = () => {
 
@@ -119,7 +119,8 @@ const renderDetailedFilmCard = (movie, evt) => {
         closeDetailedFilmCard();
       };
 
-      detailedFilmCardCloseBtn.addEventListener('click', onPopupCloseBtnClick);
+      // detailedFilmCardCloseBtn.addEventListener('click', onPopupCloseBtnClick);
+      detailedFilmCardComponent.setCloseBtnClickHandler(onPopupCloseBtnClick);
       document.addEventListener('keydown', onEscKeyDown);
     } else {
       console.log('карточка уже есть');
@@ -170,7 +171,9 @@ const renderFilmList = (listContainer, movies) => {
       }
     };
 
-    showMoreBtnComponent.getElement().addEventListener('click', onShowMoreBtnClick);
+    // showMoreBtnComponent.getElement().addEventListener('click', onShowMoreBtnClick);
+    showMoreBtnComponent.setClickHandler(onShowMoreBtnClick);
+
   }
 };
 

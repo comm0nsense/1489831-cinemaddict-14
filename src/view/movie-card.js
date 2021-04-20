@@ -43,9 +43,20 @@ export default class MovieCard extends AbstractView {
   constructor(movie) {
     super();
     this._movie = movie;
+
+    this._openDetailedFilCard = this._openDetailedFilCard.bind(this);
   }
 
   getTemplate() {
     return createMovieCardTemplate(this._movie);
+  }
+
+  _openDetailedFilCard(evt, movie) {
+    this._callback.openDetailedFilmCard(evt, movie);
+  }
+
+  setOpenDetailedFilmCard(callback) {
+    this._callback.openDetailedFilmCard = callback;
+    this.getElement().addEventListener('click', this._openDetailedFilCard);
   }
 }
