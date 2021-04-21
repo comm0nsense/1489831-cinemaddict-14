@@ -19,6 +19,9 @@ import MovieCommentsView from './view/movie-comments.js';
 import EmptyMovieListView from './view/empty-movie-list.js';
 // import StatisticsView from './view/statictics.js';
 
+import MoviesListPresenter from './presenter/movies-list.js';
+import MoviesList from './view/movies-list.js';
+
 const TOTAL_MOVIES = 12;
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
@@ -50,16 +53,18 @@ const siteMainElement = document.querySelector('.main');
 const mainNavComponent = new MainNavView(filters);
 render(siteMainElement, mainNavComponent, RenderPosition.BEFOREEND);
 
+const moviesListPresenter = new MoviesListPresenter(siteMainElement);
+moviesListPresenter.init(movies);
 /* SORTING */
-const sortingComponent = new SortingView();
-render(siteMainElement, sortingComponent, RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу
+// const sortingComponent = new SortingView();
+// render(siteMainElement, sortingComponent, RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу
 
 /* STATISTICS SCREEN (закомментировано, чтобы скрыть) */
 // render(siteMainElement, new StatisticsView(userProfiles[1]).getElement(), RenderPosition.BEFOREEND);
 
 /* FILM SECTION */
-const filmsContainerComponent = new MoviesContainerView();
-render(siteMainElement, filmsContainerComponent, RenderPosition.BEFOREEND);
+// const filmsContainerComponent = new MoviesContainerView();
+// render(siteMainElement, filmsContainerComponent, RenderPosition.BEFOREEND);
 
 /**
  * Функция открывает детальную карточку фильма
@@ -179,7 +184,7 @@ const renderFilmSection = (sectionContainer, movies) => {
   }
 };
 
-renderFilmSection(siteMainElement, movies);
+// renderFilmSection(siteMainElement, movies);
 
 /* FOOTER */
 const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
