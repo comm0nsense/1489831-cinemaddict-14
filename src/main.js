@@ -55,7 +55,7 @@ render(siteMainElement, mainNavComponent, RenderPosition.BEFOREEND);
 
 const moviesListPresenter = new MoviesListPresenter(siteMainElement);
 
-moviesListPresenter.init(movies);
+moviesListPresenter.init(movies, comments);
 /* SORTING */
 // const sortingComponent = new SortingView();
 // render(siteMainElement, sortingComponent, RenderPosition.BEFOREEND); //OS: нужна функция сортировки по дате и рейтингу

@@ -6,29 +6,14 @@ import ShowMoreBtnView from '../view/show-more-btn.js';
 import MovieCardView from '../view/movie-card.js';
 import EmptyMovieListView from '../view/empty-movie-list.js';
 
-
-import MovieDetailedCardView from '../view/movie-detailed-card.js';
-import MovieCommentsView from '../view/movie-comments.js';
-
 import { render, remove } from '../util/render.js';
 import { RenderPosition, FilmExtraListTitle } from '../util/const.js';
 
-import { generateComments} from '../mock/movie.js';
+import MovieCardPresenter from './movie-card.js';
 
 const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const SECTION_MOVIES_COUNT = 2;
 const EXTRA_LIST_MOVIES_COUNT = 0;
-const TOTAL_COMMENTS = 125;
-const classesToOpenDetailedFilmCard = [
-  'film-card__poster',
-  'film-card__comments',
-  'film-card__title',
-];
-
-const comments = generateComments(TOTAL_COMMENTS);
-// const commentsIds = generateArrayOfCommentsIds(comments);
-
-const siteBodyElement = document.querySelector('body');
 
 export default class MoviesList {
   constructor(container) { //mainSiteComponent
@@ -43,6 +28,7 @@ export default class MoviesList {
 
   init(movies, comments) {
     this._movies = movies.slice();
+    this._comments = comments.slice();
 
     this._renderFilmSection(movies);
   }
@@ -55,50 +41,15 @@ export default class MoviesList {
     render(this._container, this._filmsContainer, RenderPosition.BEFOREEND);
   }
 
-  _renderDetailedFilmCard(movie, evt) {
-    const clickTarget = evt.target.classList.value;
-
-    if (classesToOpenDetailedFilmCard.includes(clickTarget)) {
-
-      siteBodyElement.classList.add('hide-overflow');
-      const detailedFilmCardComponent = new MovieDetailedCardView(movie);
-
-      if (!siteBodyElement.querySelector('.film-details')) {
-        render(siteBodyElement, detailedFilmCardComponent, RenderPosition.BEFOREEND);
-        const commentsContainer = detailedFilmCardComponent.getElement().querySelector('.film-details__bottom-container');
-        const movieCommentsComponent = new MovieCommentsView(movie, comments);
-        console.log('должны начать рисовать комменты - как из сюда передать??');
-        render(commentsContainer, movieCommentsComponent, RenderPosition.BEFOREEND);
-
-        const closeDetailedFilmCard = () => {
-          remove(detailedFilmCardComponent);
-          siteBodyElement.classList.remove('hide-overflow');
-          document.removeEventListener('keydown', onEscKeyDown);
-        };
-
-        const onEscKeyDown = (evt) => {
-          if (evt.key === 'Escape' || evt.key === 'Esc') {
-            evt.preventDefault();
-            closeDetailedFilmCard();
-          }
-        };
-
-        const onPopupCloseBtnClick = () => {
-          closeDetailedFilmCard();
-        };
-
-        detailedFilmCardComponent.setCloseBtnClickHandler(onPopupCloseBtnClick);
-        document.addEventListener('keydown', onEscKeyDown);
-      }
-    }
-  }
-
-  _renderFilmCard(container, movie) {
+  _renderFilmCard(filmCardcontainer, movie) {
     const filmComponent = new MovieCardView(movie);
-    render(container, filmComponent, RenderPosition.BEFOREEND);
+    render(filmCardcontainer, filmComponent, RenderPosition.BEFOREEND);
 
     filmComponent.setOpenDetailedFilmCardHandler((evt) => {
-      this._renderDetailedFilmCard(movie, evt);
+      // this._renderDetailedFilmCard(movie, evt);
+      const filmDetailedCardPresenter = new MovieCardPresenter(movie, this._comments);
+      filmDetailedCardPresenter.init(movie, evt);
+
     });
   }
 
