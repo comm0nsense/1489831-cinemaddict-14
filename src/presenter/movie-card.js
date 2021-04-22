@@ -14,7 +14,7 @@ const classesToOpenDetailedFilmCard = [
 const siteBodyElement = document.querySelector('body');
 
 export default class MovieCard {
-  constructor (movie, comments) {
+  constructor(movie, comments) {
     this._movie = movie;
     this._comments = comments;
 
@@ -26,7 +26,7 @@ export default class MovieCard {
   }
 
   // _createFilmCardComponent(movie) {
-    // this._detailedFilmCardComponent = new MovieDetailedCardView(movie);
+  // this._detailedFilmCardComponent = new MovieDetailedCardView(movie);
   // }
 
   _renderDetailedFilmCardComponent() {
