@@ -18,12 +18,15 @@ const EXTRA_LIST_MOVIES_COUNT = 0;
 export default class MoviesList {
   constructor(container) { //mainSiteComponent
     this._container = container;
+    this._numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
     this._sortingComponent = new SortingView();
     this._filmsContainer = new MoviesContainerView();
     this._filmListComponent = new MoviesListView();
     this._showMoreBtnComponent = new ShowMoreBtnView();
     this._emptyMovieListComponent = new EmptyMovieListView();
+
+    this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
   }
 
   init(movies, comments) {
@@ -57,23 +60,21 @@ export default class MoviesList {
     render(this._filmsContainer, this._filmListComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
+  _handleShowMoreBtnClick() {
+    this._movies//как тут упросить?
+      .slice(this._numberOfMoviesRendered, this._numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
+      .forEach((movie) => this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), movie));//getElement - потому что не render где уже есть getElement
+
+    this._numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
+
+    if (this._numberOfMoviesRendered >= this._movies.length) {
+      remove(this._showMoreBtnComponent);
+    }
+  }
+
   _renderShowMoreBtnComponent() {
-
     render(this._filmListComponent, this._showMoreBtnComponent, RenderPosition.BEFOREEND);
-
-    let numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
-
-    this._showMoreBtnComponent.setClickHandler(() => {
-      this._movies
-        .slice(numberOfMoviesRendered, numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
-        .forEach((movie) => this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), movie));
-
-      numberOfMoviesRendered += NUMBER_OF_MOVIES_TO_RENDER;
-
-      if (numberOfMoviesRendered >= this._movies.length) {
-        remove(this._showMoreBtnComponent);
-      }
-    });
+    this._showMoreBtnComponent.setClickHandler(this._handleShowMoreBtnClick);
 
   }
 

@@ -1,4 +1,4 @@
-const movieToFilterMap = {
+const movieToFilterMap = { //можно исользоватьreduce вместо filter
   'All Movies': (movies) => movies.filter((movie) => movie.id).length,
   'Watchlist': (movies) => movies.filter((movie) => movie.userDetails.isWatchlist).length,
   'Favorites': (movies) => movies.filter((movie) => movie.userDetails.isFavorite).length,
