@@ -29,7 +29,7 @@ export default class Movie {
     render(this._filmsContainer, this._filmComponent, RenderPosition.BEFOREEND);
 
     this._filmComponent.setOpenDetailedFilmCardHandler((evt) => {
-      this._renderDetailedFilmCard(movie, evt);
+      this._renderDetailedFilmCard(this._movie, evt);
     });
   }
 
