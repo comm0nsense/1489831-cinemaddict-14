@@ -99,7 +99,7 @@ const createCommentsTemplate = (movie, comments) => {
   `;
 };
 
-export default class MovieComments extends AbstractView {
+export default class PopupComments extends AbstractView {
   constructor(movie, comments) {
     super();
     this._movie = movie;

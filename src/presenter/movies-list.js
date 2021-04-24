@@ -1,9 +1,9 @@
 import SortingView from '../view/sorting.js';
-import MoviesContainerView from '../view/movies-container.js';
-import MoviesListView from '../view/movies-list.js';
-import MoviesExtraListView from '../view/movies-extra-list.js';
+import FilmCardsContainerView from '../view/film-cards-container.js';
+import FilmListView from '../view/films-list.js';
+import FilmsExtraListView from '../view/films-extra-list.js';
 import ShowMoreBtnView from '../view/show-more-btn.js';
-import EmptyMovieListView from '../view/empty-movie-list.js';
+import EmptyFilmListView from '../view/empty-film-list.js';
 
 import { render, remove } from '../util/render.js';
 import { RenderPosition, FilmExtraListTitle } from '../util/const.js';
@@ -20,10 +20,10 @@ export default class MoviesList {
     this._numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
     this._sortingComponent = new SortingView();
-    this._filmsContainer = new MoviesContainerView();
-    this._filmListComponent = new MoviesListView();
+    this._filmCardsContainer = new FilmCardsContainerView();
+    this._filmListComponent = new FilmListView();
     this._showMoreBtnComponent = new ShowMoreBtnView();
-    this._emptyMovieListComponent = new EmptyMovieListView();
+    this._emptyFilmListComponent = new EmptyFilmListView();
 
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
   }
@@ -32,19 +32,19 @@ export default class MoviesList {
     this._movies = movies.slice();
     this._comments = comments.slice();
 
-    this._renderFilmSection(movies);
+    this._renderFilmLists(movies);
   }
 
   _renderSorting() {
     render(this._container, this._sortingComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmsContainer() {
-    render(this._container, this._filmsContainer, RenderPosition.BEFOREEND);
+  _renderFilmCardsContainer() {
+    render(this._container, this._filmCardsContainer, RenderPosition.BEFOREEND);
   }
 
   _renderEmptyMovieList() {
-    render(this._filmsContainer, this._emptyMovieListComponent, RenderPosition.BEFOREEND);
+    render(this._filmCardsContainer, this._emptyFilmListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmCard(filmCardcontainer, movie) {
@@ -53,7 +53,7 @@ export default class MoviesList {
   }
 
   _renderFilmListContainer() {
-    render(this._filmsContainer, this._filmListComponent.getElement(), RenderPosition.BEFOREEND);
+    render(this._filmCardsContainer, this._filmListComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
   _handleShowMoreBtnClick() {
@@ -87,8 +87,8 @@ export default class MoviesList {
   }
 
   _renderFilmExtraList(extraListTitle, movies) {
-    const extraListComponent = new MoviesExtraListView(extraListTitle); //как иначе можно передать extraListTitle??
-    render(this._filmsContainer, extraListComponent, RenderPosition.BEFOREEND);
+    const extraListComponent = new FilmsExtraListView(extraListTitle); //как иначе можно передать extraListTitle??
+    render(this._filmCardsContainer, extraListComponent, RenderPosition.BEFOREEND);
 
     for (let i = 0; i < SECTION_MOVIES_COUNT; i++) {
       this._renderFilmCard(extraListComponent.getElement().querySelector('.films-list__container'), movies[i]);
@@ -116,13 +116,13 @@ export default class MoviesList {
   }
 
 
-  _renderFilmSection(movies) {
+  _renderFilmLists(movies) {
 
     if (!movies.length) {
       this._renderEmptyMovieList();
     } else {
       this._renderSorting();
-      this._renderFilmsContainer();
+      this._renderFilmCardsContainer();
       this._renderFilmList(movies);
       this._renderTopRatedFilms(movies);
       this._renderMostCommentedFilms(movies);

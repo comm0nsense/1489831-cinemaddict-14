@@ -3,7 +3,7 @@ import AbstractView from './abstract.js';
 
 const SHORT_DESC_LENGTH = 139;
 
-const createMovieCardTemplate = (movie) => {
+const createFilmCardTemplate = (movie) => {
 
   const {
     id,
@@ -39,24 +39,24 @@ const createMovieCardTemplate = (movie) => {
   `;
 };
 
-export default class MovieCard extends AbstractView {
+export default class FilmCard extends AbstractView {
   constructor(movie) {
     super();
     this._movie = movie;
 
-    this._openDetailedFilmCardHandler = this._openDetailedFilmCardHandler.bind(this);
+    this._openFilmPopupHandler = this._openFilmPopupHandler.bind(this);
   }
 
   getTemplate() {
-    return createMovieCardTemplate(this._movie);
+    return createFilmCardTemplate(this._movie);
   }
 
-  _openDetailedFilmCardHandler(movie, evt) {
-    this._callback.openDetailedFilmCard(movie, evt);
+  _openFilmPopupHandler(movie, evt) {
+    this._callback.openFilmPoup(movie, evt);
   }
 
-  setOpenDetailedFilmCardHandler(callback) {
-    this._callback.openDetailedFilmCard = callback;
-    this.getElement().addEventListener('click', this._openDetailedFilmCardHandler);
+  setOpenFilmPopupHandler(callback) {
+    this._callback.openFilmPoup = callback;
+    this.getElement().addEventListener('click', this._openFilmPopupHandler);
   }
 }
