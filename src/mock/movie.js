@@ -15,6 +15,10 @@ import {
   generateArray
 } from '../util/util.js';
 
+import {
+  nanoid
+} from 'nanoid';
+
 const TITLES = [
   'Mank',
   'The Assistant',
@@ -191,7 +195,7 @@ const generateUserDetails = () => {
 const generateMovie = (array) => {
 
   return {
-    'id': movieId++,
+    'id': nanoid(),
     'title': getRandomElementFromArray(TITLES),
     'originalTitle': getRandomElementFromArray(TITLES),
     'poster': getRandomElementFromArray(POSTERS),
