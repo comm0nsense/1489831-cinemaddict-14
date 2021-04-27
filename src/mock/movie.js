@@ -185,10 +185,10 @@ const generateUserDetails = () => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
 
   return {
-    'isWatchlist': getRandomInteger(0, 1),
+    'isWatchlist': Boolean(getRandomInteger(0, 1)),
     'isAlreadyWatched': isAlreadyWatched,
-    'watchingDate': isAlreadyWatched ? getRandomDate() : false,
-    'isFavorite': getRandomInteger(0, 1),
+    'watchingDate': isAlreadyWatched ? Boolean(getRandomDate()) : false,
+    'isFavorite': Boolean(getRandomInteger(0, 1)),
   };
 };
 

@@ -20,6 +20,7 @@ export default class MoviesList {
   constructor(container) { //mainSiteComponent
     this._container = container;
     this._numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
+
     this._filmCardPresenter = {};
     this._topRatedFilmCardPresenter = {};
     this._mostCommentedFilmCardPresenter = {};
@@ -32,6 +33,9 @@ export default class MoviesList {
     this._emptyFilmListComponent = new EmptyFilmListView();
 
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
+    this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
+
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(movies, comments) {
@@ -41,9 +45,35 @@ export default class MoviesList {
     this._renderFilmLists(this._movies);
   }
 
-  _handleFilmChange(updatedFilm) {
-    this._movies = updateItem(this._movies, updatedFilm);
-    this._filmCardPresenter[updatedFilm.id].init(updatedFilm);
+  _handleModeChange() {
+
+    if (this._filmCardPresenter) {
+      Object
+        .values(this._filmCardPresenter)
+        .forEach((presenter) => presenter.resetView());
+    }
+  }
+
+  _handleFilmCardChange(updatedFilm) {
+    //в моках, в массиве фильмов меняем данные в объекте фильма, на котором пользователь
+    //что-то кликнул.
+    console.log(this._movies.find((prevFilm) => prevFilm.id === updatedFilm.id));
+    this._movies = updateItem(this._movies, updatedFilm);//заменяет объекта фильма в моках на новый с изменениями
+    console.log(updatedFilm);
+    // Дальше в сохраненных ранее в FilmPresentere карточках по film.id находим карточку
+    //в которой произошло изменение и вызываем метод init передавая туда
+    //агрументом карточку чтобы она перерисовалась.
+    if (this._filmCardPresenter[updatedFilm.id]) {
+      this._filmCardPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (this._topRatedFilmCardPresenter[updatedFilm.id]) {
+      this._topRatedFilmCardPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (this._mostCommentedFilmCardPresenter[updatedFilm.id]) {
+      this._mostCommentedFilmCardPresenter[updatedFilm.id].init(updatedFilm);
+    }
   }
 
   _renderSorting() {
@@ -59,10 +89,10 @@ export default class MoviesList {
   }
 
   _renderFilmCard(filmCardcontainer, movie) {
-    const filmCardPresenter = new MoviePresenter(filmCardcontainer, this._comments);
-    filmCardPresenter.init(movie);
-    // this._filmCardPresenter[movie.id] = filmCardPresenter; //ключ - movie id, значение - instance презентера карточки фильма
-    return filmCardPresenter;
+    const presenter = new MoviePresenter(filmCardcontainer, this._comments, this._handleFilmCardChange);//для каждой карточки передается _handleFilmCardChange метод
+    // const filmCardPresenter = new MoviePresenter(filmCardcontainer, this._comments, this._handleFilmCardChange, this._handleModeChange);//для каждой карточки передается _handleFilmCardChange метод
+    presenter.init(movie);
+    return presenter;
   }
 
   _renderFilmListContainer() {
@@ -146,7 +176,7 @@ export default class MoviesList {
     this._filmCardPresenter = {};
     remove(this._showMoreBtnComponent);
     this._topRatedFilmCardPresenter = {};
-    this._topRatedFilmCardPresenter = {};
+    this._mostCommentedFilmCardPresenter = {};
     //нужно ли удалять контейнеры, куда отрисовываются списки фильмов?
   }
 
@@ -161,7 +191,7 @@ export default class MoviesList {
       this._renderFilmList();
       this._renderTopRatedFilms();
       this._renderMostCommentedFilms();
-      this._clearFilmLists();
+      // this._clearFilmLists();
     }
   }
 
