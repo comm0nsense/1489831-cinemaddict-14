@@ -7,3 +7,9 @@ export const FilmExtraListTitle = {
   TOP_RATED: 'Top rated',
   MOST_COMMENTED: 'Most Commented',
 };
+
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};

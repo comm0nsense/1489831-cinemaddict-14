@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+
 const NUMBER_OF_MOVIES_TO_MEET_CRITERIA = 0;
 
 
@@ -45,6 +46,10 @@ const sortByRating = (movies) => {
   return movies.slice().sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
 };
 
+const sortByReleaseDate = (filmA, filmB) => {
+  return dayjs(filmB.releaseDate).diff(dayjs(filmA.releaseDate));
+};
+
 
 export {
   formatCommentDate,
@@ -55,5 +60,6 @@ export {
   sortByMostCommented,
   checkIfAllFilmsWithoutComments,
   checkIfAllFilmsWithoutRating,
-  sortByRating
+  sortByRating,
+  sortByReleaseDate
 };
