@@ -12,13 +12,11 @@ const Mode = {
 const siteBodyElement = document.querySelector('body');
 
 export default class Movie {
-  // constructor(filmsCardsContainer, comments, changeFilmCardData, changeMode) {
-  constructor(filmsCardsContainer, comments, changeFilmCardData) {
+  constructor(filmsCardsContainer, commentsData, updateFilmCardData) {
 
     this._filmCardsContainer = filmsCardsContainer;
-    this._comments = comments;
-    this._changeData = changeFilmCardData;
-    // this._changeMode = changeMode;
+    this._commentsData = commentsData;
+    this._updateFilmCardData = updateFilmCardData;
 
     this._filmCardComponent = null;
     this._mode = Mode.DEFAULT;
@@ -48,8 +46,6 @@ export default class Movie {
       return;
     }
 
-    // console.log('после return');
-
     if (this._filmCardsContainer.contains(prevFilmCardComponent.getElement())) {
       replace(this._filmCardComponent, prevFilmCardComponent);
     }
@@ -61,78 +57,30 @@ export default class Movie {
     remove(this._filmCardComponent);
   }
 
-  resetView() {
-    if (this._mode !== Mode.DEFAULT) {
-      console.log('меняаем на default');
-    }
-  }
-
   _handleFilmCardClick(evt) {
     this._renderFilmPopup(evt);
   }
 
   _handleFavoriteClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._movie,
-        {
-          // title: 'test - favorites click',
-          userDetails: {
-            isFavorite: !this._movie.userDetails.isFavorite,
-            isAlreadyWatched: this._movie.userDetails.isAlreadyWatched,
-            isWatchlist: this._movie.userDetails.isWatchlist,
-            watchingDate: this._movie.userDetails.watchingDate,
-          },
-        },
-      ),
+    this._updateFilmCardData(
+      Object.assign({}, this._movie, { isFavorite: !this._movie.isFavorite }),
     );
   }
 
   _handleMarkAsWatchedClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._movie,
-        {
-          // title: 'test - MarkAsWatchedClick',
-          userDetails: {
-            isAlreadyWatched: !this._movie.userDetails.isAlreadyWatched,
-            isWatchlist: this._movie.userDetails.isWatchlist,
-            watchingDate: this._movie.userDetails.watchingDate,
-            isFavorite: this._movie.userDetails.isFavorite,
-          },
-        },
-      ),
+    this._updateFilmCardData(
+      Object.assign({}, this._movie, { isAlreadyWatched: !this._movie.isAlreadyWatched }),
     );
   }
 
   _handleAddToWatchlistClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._movie,
-        {
-          // title: 'test - AddToWatchlistClick',
-          userDetails: {
-            isWatchlist: !this._movie.userDetails.isWatchlist,
-            isAlreadyWatched: this._movie.userDetails.isAlreadyWatched,
-            watchingDate: this._movie.userDetails.watchingDate,
-            isFavorite: this._movie.userDetails.isFavorite,
-          },
-        },
-      ),
+    this._updateFilmCardData(
+      Object.assign({}, this._movie, { isWatchlist: !this._movie.isWatchlist }),
     );
-    // console.log('add to watchlist test');
-  }
-
-
-  _renderFilmPopupDesc() {
-    render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmPopupComments() {
-    const popupCommentsComponent = new PopupCommentsView(this._movie, this._comments);
+    const popupCommentsComponent = new PopupCommentsView(this._movie, this._commentsData);
     render(this._filmPopupComponent.getElement().querySelector('.film-details__bottom-container'),
       popupCommentsComponent,
       RenderPosition.BEFOREEND,
@@ -142,7 +90,7 @@ export default class Movie {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      remove(this._filmPopupComponent); //будет undefined если вынести как метод класса если не сделать bind в конструкторе - посмотреть 4 лайв про это
+      remove(this._filmPopupComponent);
       siteBodyElement.classList.remove('hide-overflow');
       document.removeEventListener('keydown', this._escKeyDownHandler);
     }
@@ -159,19 +107,16 @@ export default class Movie {
     siteBodyElement.classList.add('hide-overflow');
     this._filmPopupComponent = new FilmPopupView(this._movie);
 
-    // this._changeMode();//вызываем из муви-лист презетера, который знает о всех муви
-    // this._mode = Mode.DEFAULT;
+    if (!siteBodyElement.querySelector('.film-details')) {
 
-    // if (!siteBodyElement.querySelector('.film-details')) {
-    this._renderFilmPopupDesc();
-    this._renderFilmPopupComments(this._movie);
+      render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
+      this._renderFilmPopupComments(this._movie);
 
-
-    this._filmPopupComponent.setCloseBtnClickHandler(this._popupCloseBtnClickHandler);
-    document.addEventListener('keydown', this._escKeyDownHandler);
-    this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._filmPopupComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);//ПОЧЕМУ НЕ СТАНОВИТСЯ ЖЕЛЫТМ?? ДАННЫЕ МЕНЯЮТСЯ
-    this._filmPopupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);//ПОЧЕМУ НЕ СТАНОВИТСЯ ЖЕЛЫТМ?? ДАННЫЕ МЕНЯЮТСЯ
-    // }//проверяет есть ли уже карточка
-  }//renderFilmPopup
+      document.addEventListener('keydown', this._escKeyDownHandler);
+      this._filmPopupComponent.setCloseBtnClickHandler(this._popupCloseBtnClickHandler);
+      this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+      this._filmPopupComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+      this._filmPopupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
+    }
+  }
 }

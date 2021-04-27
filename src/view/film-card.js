@@ -15,7 +15,9 @@ const createFilmCardTemplate = (movie) => {
     genres,
     movieCommentsIds,
     description,
-    userDetails: { isWatchlist, isAlreadyWatched, isFavorite },
+    isWatchlist,
+    isAlreadyWatched,
+    isFavorite,
   } = movie;
 
   return `

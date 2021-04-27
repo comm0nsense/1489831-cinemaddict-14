@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+const NUMBER_OF_MOVIES_TO_MEET_CRITERIA = 0;
+
 
 const formatCommentDate = (date) => {
   return dayjs(date).format('YYYY/MM/DD HH:mm ');
@@ -26,10 +28,32 @@ const generateArray = (length, elementGeneratingFunction) => {
   return new Array(length).fill().map(elementGeneratingFunction);
 };
 
+const sortByMostCommented = (movies) => {
+  const moviesSortByMostCommented = movies.slice().sort((a, b) => parseFloat(b.movieCommentsIds.length) - parseFloat(a.movieCommentsIds.length));
+  return moviesSortByMostCommented;
+};
+
+const checkIfAllFilmsWithoutComments = (movies) => {
+  return movies.find((movie) => parseFloat(movie.movieCommentsIds.length) > NUMBER_OF_MOVIES_TO_MEET_CRITERIA);
+};
+
+const checkIfAllFilmsWithoutRating = (movies) => {
+  return movies.find((movie) => parseFloat(movie.totalRating) > NUMBER_OF_MOVIES_TO_MEET_CRITERIA);
+};
+
+const sortByRating = (movies) => {
+  return movies.slice().sort((a, b) => parseFloat(b.totalRating) - parseFloat(a.totalRating));
+};
+
+
 export {
   formatCommentDate,
   converArrayToList,
   formatReleaseDate,
   convertDateToYear,
-  generateArray
+  generateArray,
+  sortByMostCommented,
+  checkIfAllFilmsWithoutComments,
+  checkIfAllFilmsWithoutRating,
+  sortByRating
 };

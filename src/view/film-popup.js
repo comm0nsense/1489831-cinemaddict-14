@@ -16,7 +16,9 @@ const createMovieDetailedCardTemplate = (movie) => {
     releaseCountry,
     genres,
     description,
-    userDetails: {isWatchlist, isAlreadyWatched,isFavorite },
+    isWatchlist,
+    isAlreadyWatched,
+    isFavorite,
   } = movie;
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
@@ -123,18 +125,18 @@ export default class MovieDetailedCard extends AbstractView {
     this._callback.closeBtnClick();
   }
 
-  _favoriteClickHandler(evt) {
-    evt.preventDefault;
+  _favoriteClickHandler() {
+    // evt.preventDefault;
     this._callback.favoriteClick(this._movie);
   }
 
-  _markAsWatchedClickHandler(evt) {
-    evt.preventDefault();
+  _markAsWatchedClickHandler() {
+    // evt.preventDefault();
     this._callback.markAsWatchedClick(this._movie);
   }
 
-  _addToWatchlistClickHandler(evt) {
-    evt.preventDefault();
+  _addToWatchlistClickHandler() {
+    // evt.preventDefault();
     this._callback.addToWatchlistClick(this._movie);
   }
 

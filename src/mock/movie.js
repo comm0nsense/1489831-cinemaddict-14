@@ -154,8 +154,6 @@ const ACTORS = [
   'Meryl Streep',
 ];
 
-let movieId = 1;
-
 const AGE_RATINGS = [
   0,
   6,
@@ -181,18 +179,8 @@ const generateMovieCommentsIds = (commentsIds) => {
   return commentsIds.splice(0, getRandomInteger(0, 5));
 };
 
-const generateUserDetails = () => {
-  const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
-
-  return {
-    'isWatchlist': Boolean(getRandomInteger(0, 1)),
-    'isAlreadyWatched': isAlreadyWatched,
-    'watchingDate': isAlreadyWatched ? Boolean(getRandomDate()) : false,
-    'isFavorite': Boolean(getRandomInteger(0, 1)),
-  };
-};
-
 const generateMovie = (array) => {
+  const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
 
   return {
     'id': nanoid(),
@@ -209,12 +197,13 @@ const generateMovie = (array) => {
     'releaseDate': getRandomDate(new Date(1990, 0, 1), new Date()),
     'releaseCountry': getRandomElementFromArray(COUNTRIES),
     'genres': generateRandomArray(GENRES, 1, 3),
-    // 'movieCommentsIds': arrayOfCommentsIds.splice(0, getRandomInteger(0, 5)),
     'movieCommentsIds': generateMovieCommentsIds(array),
-
     // 'movieCommentsIds': '',
     'runtime': convertTime(getRandomInteger(60, 240)),
-    'userDetails': generateUserDetails(),
+    'isWatchlist': Boolean(getRandomInteger(0, 1)),
+    'isAlreadyWatched': isAlreadyWatched,
+    'watchingDate': isAlreadyWatched ? Boolean(getRandomDate()) : false,
+    'isFavorite': Boolean(getRandomInteger(0, 1)),
   };
 };
 
