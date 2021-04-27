@@ -89,8 +89,8 @@ export default class MoviesList {
   }
 
   _renderFilmCard(filmCardcontainer, movie) {
-    const presenter = new MoviePresenter(filmCardcontainer, this._comments, this._handleFilmCardChange);//для каждой карточки передается _handleFilmCardChange метод
-    // const filmCardPresenter = new MoviePresenter(filmCardcontainer, this._comments, this._handleFilmCardChange, this._handleModeChange);//для каждой карточки передается _handleFilmCardChange метод
+    // const presenter = new MoviePresenter(filmCardcontainer, this._comments, this._handleFilmCardChange);//для каждой карточки передается _handleFilmCardChange метод
+    const presenter = new MoviePresenter(filmCardcontainer, this._comments, this._handleFilmCardChange, this._handleModeChange);//для каждой карточки передается _handleFilmCardChange метод
     presenter.init(movie);
     return presenter;
   }
