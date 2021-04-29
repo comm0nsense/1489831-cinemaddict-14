@@ -38,6 +38,8 @@ export default class MoviesList {
     this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    // this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(movies, comments) {
@@ -49,6 +51,11 @@ export default class MoviesList {
     this._renderFilmLists(this._movies);
   }
 
+  // _handleModeChange() {
+  //   Object
+  //     .values(this._filmCardPresenter)
+  //     .forEach((presenter) => presenter.resetView()); //должен удалять filmPopupComponent
+  // }
 
   _handleFilmCardChange(updatedFilm) {
     // console.log(this._movies.find((prevFilm) => prevFilm.id === updatedFilm.id));
@@ -109,7 +116,7 @@ export default class MoviesList {
   }
 
   _renderFilmCard(filmCardContainer, movie) {
-    const presenter = new MoviePresenter(filmCardContainer, this._comments, this._handleFilmCardChange);//для каждой карточки передается _handleFilmCardChange метод
+    const presenter = new MoviePresenter(filmCardContainer, this._comments, this._handleFilmCardChange, this._handleModeChange);//для каждой карточки передается _handleFilmCardChange метод
     presenter.init(movie);
     // this._filmCardPresenter[movie.id] = presenter;
     return presenter;

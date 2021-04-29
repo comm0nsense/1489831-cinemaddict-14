@@ -14,7 +14,7 @@ import MainNavView from './view/main-nav.js';
 import MoviesListPresenter from './presenter/movies-list.js';
 
 
-const TOTAL_MOVIES = 10;
+const TOTAL_MOVIES = 25;
 const TOTAL_COMMENTS = 125;
 
 const comments = generateComments(TOTAL_COMMENTS);
