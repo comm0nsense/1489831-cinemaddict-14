@@ -13,10 +13,10 @@ const createUserProfile = () => {
   const isWatched = Boolean(getRandomInteger(0,1));
 
   return {
-    'rank': isWatched ? getRandomElementFromArray(USER_RANKS) : '',
-    'totalMoviesWatched': isWatched ? getRandomInteger(0, 100) : 0,
-    'totalDuration': isWatched ? getRandomInteger(1, 240) : 0, //100 фильом * 4 часа * 60 мин
-    'topGenre': isWatched ? getRandomElementFromArray(GENRES): '',
+    rank: isWatched ? getRandomElementFromArray(USER_RANKS) : '',
+    totalMoviesWatched: isWatched ? getRandomInteger(0, 100) : 0,
+    totalDuration: isWatched ? getRandomInteger(1, 240) : 0, //100 фильом * 4 часа * 60 мин
+    topGenre: isWatched ? getRandomElementFromArray(GENRES): '',
   };
 };
 

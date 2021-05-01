@@ -17,7 +17,7 @@ const NUMBER_OF_MOVIES_TO_RENDER = 5;
 const NUMBER_OF_EXTRA_FILMS = 2;
 
 export default class MoviesList {
-  constructor(container) { //mainSiteComponent
+  constructor(container) {
     this._container = container;
     this._numberOfMoviesRendered = NUMBER_OF_MOVIES_TO_RENDER;
 
@@ -54,13 +54,11 @@ export default class MoviesList {
   _handleModeChange() {
     Object
       .values(this._filmCardPresenter)
-      .forEach((presenter) => presenter.resetView()); //должен удалять filmPopupComponent
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleFilmCardChange(updatedFilm) {
-    // console.log(this._movies.find((prevFilm) => prevFilm.id === updatedFilm.id));
-    this._movies = updateItem(this._movies, updatedFilm);//заменяет объекта фильма в моках на новый с изменениями
-    // console.log(updatedFilm);
+    this._movies = updateItem(this._movies, updatedFilm);
     this._sourcedMovies = updateItem(this._sourcedMovies, updatedFilm);
 
     if (this._filmCardPresenter[updatedFilm.id]) {
@@ -80,11 +78,9 @@ export default class MoviesList {
     switch (sortType) {
       case SortType.DATE:
         this._movies.sort(sortByReleaseDate);
-        // console.log(this._movies);
         break;
       case SortType.RATING:
         this._movies = sortByRating(this._movies);
-        // console.log(this._movies);
         break;
       default:
         this._movies = this._sourcedMovies.slice();
@@ -118,7 +114,6 @@ export default class MoviesList {
   _renderFilmCard(filmCardContainer, movie) {
     const presenter = new MoviePresenter(filmCardContainer, this._comments, this._handleFilmCardChange, this._handleModeChange);//для каждой карточки передается _handleFilmCardChange метод
     presenter.init(movie);
-    // this._filmCardPresenter[movie.id] = presenter;
     return presenter;
   }
 
@@ -130,7 +125,6 @@ export default class MoviesList {
     this._movies
       .slice(this._numberOfMoviesRendered, this._numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
       .forEach((movie) => {
-        // this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), movie);
         const presenter = this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), movie);
         this._filmCardPresenter[movie.id] = presenter;
       });
@@ -147,14 +141,19 @@ export default class MoviesList {
     this._showMoreBtnComponent.setClickHandler(this._handleShowMoreBtnClick);
   }
 
+  _renderFilms(from, to) {
+    const filmLMainListContainer = this._filmListComponent.getElement().querySelector('.films-list__container');
+    this._movies
+      .slice(from, to)
+      .forEach((movie) => {
+        const presenter = this._renderFilmCard(filmLMainListContainer, movie);
+        this._filmCardPresenter[movie.id] = presenter;
+      });
+  }
+
   _renderFilmList() {
     this._renderFilmListContainer();
-
-    for (let i = 0; i < Math.min(this._movies.length, NUMBER_OF_MOVIES_TO_RENDER); i++) {
-      // this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), this._movies[i]);
-      const presenter = this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), this._movies[i]);
-      this._filmCardPresenter[this._movies[i].id] = presenter;
-    }
+    this._renderFilms(0, Math.min(this._movies.length, NUMBER_OF_MOVIES_TO_RENDER));
 
     if (this._movies.length > NUMBER_OF_MOVIES_TO_RENDER) {
       this._renderShowMoreBtn();
@@ -164,43 +163,38 @@ export default class MoviesList {
   _renderTopRatedFilms() {
     const isAllFilmsWithoutRating = checkIfAllFilmsWithoutRating(this._movies);
 
-    if (isAllFilmsWithoutRating === undefined) {
+    if (isAllFilmsWithoutRating) {
       return;
     }
 
     const moviesSortByRating = sortByRating(this._movies);
-    this._extraListComponent = new FilmsExtraListView(FilmExtraListTitle.TOP_RATED); //как иначе можно передать extraListTitle??
+    this._extraListComponent = new FilmsExtraListView(FilmExtraListTitle.TOP_RATED);
     render(this._filmCardsContainer, this._extraListComponent, RenderPosition.BEFOREEND);
+    const extraListContainer = this._extraListComponent.getElement().querySelector('.films-list__container');
     moviesSortByRating
       .slice(0, NUMBER_OF_EXTRA_FILMS)
       .forEach((movie) => {
-        const presenter = this._renderFilmCard(this._extraListComponent.getElement().querySelector('.films-list__container'), movie);
-        this._topRatedFilmCardPresenter[movie.id] = presenter; //ключ - movie id, значение - instance презентера карточки фильма
-        // this._renderFilmCard(
-        //   this._extraListComponent.getElement().querySelector('.films-list__container'),
-        //   movie);
+        const presenter = this._renderFilmCard(extraListContainer, movie);
+        this._topRatedFilmCardPresenter[movie.id] = presenter;
       });
   }
 
   _renderMostCommentedFilms() {
     const isAllFilmsWithoutComments = checkIfAllFilmsWithoutComments(this._movies);
 
-    if (isAllFilmsWithoutComments === undefined) {
+    if (isAllFilmsWithoutComments) {
       return;
     }
 
     const moviesSortByMostCommented = sortByMostCommented(this._movies);
     this._extraListComponent = new FilmsExtraListView(FilmExtraListTitle.MOST_COMMENTED);
     render(this._filmCardsContainer, this._extraListComponent, RenderPosition.BEFOREEND);
-
+    const extraListContainer = this._extraListComponent.getElement().querySelector('.films-list__container');
     moviesSortByMostCommented
       .slice(0, NUMBER_OF_EXTRA_FILMS)
       .forEach((movie) => {
-        const presenter = this._renderFilmCard(this._extraListComponent.getElement().querySelector('.films-list__container'), movie);
-        this._mostCommentedFilmCardPresenter[movie.id] = presenter; //ключ - movie id, значение - instance презентера карточки фильма
-        // this._renderFilmCard(
-        //   this._extraListComponent.getElement().querySelector('.films-list__container'),
-        //   movie);
+        const presenter = this._renderFilmCard(extraListContainer, movie);
+        this._mostCommentedFilmCardPresenter[movie.id] = presenter;
       });
   }
 
@@ -219,12 +213,13 @@ export default class MoviesList {
 
     if (!this._movies.length) {
       this._renderEmptyMovieList();
-    } else {
-      this._renderSorting();
-      this._renderFilmCardsContainer();
-      this._renderFilmList();
-      this._renderTopRatedFilms();
-      this._renderMostCommentedFilms();
+      return;
     }
+
+    this._renderSorting();
+    this._renderFilmCardsContainer();
+    this._renderFilmList();
+    this._renderTopRatedFilms();
+    this._renderMostCommentedFilms();
   }
 }

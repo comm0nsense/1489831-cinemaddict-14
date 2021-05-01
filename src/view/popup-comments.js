@@ -58,7 +58,6 @@ const createNewCommentEmojiFragment = () => {
   };
 
   return EMOTIONS.map((emoji) => createNewCommentEmojiItemTemplate(emoji)).join('');
-// console.log(newCommentEmojiFragment);
 };
 
 /**
@@ -66,7 +65,6 @@ const createNewCommentEmojiFragment = () => {
  * @param {array} comments - массив комментариев
  * @returns {string} строка, содержащая разметку комопнента списка комментариев
  */
-//  ${comments.map((comment) => createCommentItemTemplate(comment)).join(' ')}
 const createCommentsTemplate = (movie, comments) => {
   const {movieCommentsIds} = movie;
 

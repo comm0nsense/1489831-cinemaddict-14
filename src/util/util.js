@@ -35,11 +35,13 @@ const sortByMostCommented = (movies) => {
 };
 
 const checkIfAllFilmsWithoutComments = (movies) => {
-  return movies.find((movie) => parseFloat(movie.movieCommentsIds.length) > NUMBER_OF_MOVIES_TO_MEET_CRITERIA);
+  const result = movies.find((movie) => parseFloat(movie.movieCommentsIds.length) > NUMBER_OF_MOVIES_TO_MEET_CRITERIA);
+  return result === undefined ? true : false;
 };
 
 const checkIfAllFilmsWithoutRating = (movies) => {
-  return movies.find((movie) => parseFloat(movie.totalRating) > NUMBER_OF_MOVIES_TO_MEET_CRITERIA);
+  const result = movies.find((movie) => parseFloat(movie.totalRating) > NUMBER_OF_MOVIES_TO_MEET_CRITERIA);
+  return result === undefined ? true : false;
 };
 
 const sortByRating = (movies) => {

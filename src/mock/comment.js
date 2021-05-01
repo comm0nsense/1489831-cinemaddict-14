@@ -41,11 +41,11 @@ let commentId = 0;
 const generateComment = () => {
 
   return {
-    'id': commentId++,
-    'author': getRandomElementFromArray(NAMES),
-    'text': generateRandomArray(SENTENCES, 1, 3).join(' '),
-    'date': getRandomDate(),
-    'emotion': getRandomElementFromArray(EMOTIONS),
+    id: commentId++,
+    author: getRandomElementFromArray(NAMES),
+    text: generateRandomArray(SENTENCES, 1, 3).join(' '),
+    date: getRandomDate(),
+    emotion: getRandomElementFromArray(EMOTIONS),
   };
 };
 

@@ -121,22 +121,19 @@ export default class MovieDetailedCard extends AbstractView {
   }
 
   _closeBtnClickHandler(evt) {
-    evt.preventDefault(); //это нужно здесь??
+    evt.preventDefault();
     this._callback.closeBtnClick();
   }
 
   _favoriteClickHandler() {
-    // evt.preventDefault;
     this._callback.favoriteClick(this._movie);
   }
 
   _markAsWatchedClickHandler() {
-    // evt.preventDefault();
     this._callback.markAsWatchedClick(this._movie);
   }
 
   _addToWatchlistClickHandler() {
-    // evt.preventDefault();
     this._callback.addToWatchlistClick(this._movie);
   }
 

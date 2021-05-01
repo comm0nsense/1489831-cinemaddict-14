@@ -45,7 +45,7 @@ export default class Movie {
     this._filmCardComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
     this._filmCardComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
 
-    if (prevFilmCardComponent === null) {
+    if (!prevFilmCardComponent) {
       render(this._filmCardsContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
       return;
     }

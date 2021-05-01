@@ -30,7 +30,7 @@ const createFilmCardTemplate = (movie) => {
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${(description.length <= SHORT_DESC_LENGTH) ? description : description.slice(0, 139) + '...'}</p>
+      <p class="film-card__description">${(description.length <= SHORT_DESC_LENGTH) ? description : description.slice(0, SHORT_DESC_LENGTH) + '...'}</p>
       <a class="film-card__comments">${movieCommentsIds.length} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isWatchlist ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>
@@ -78,7 +78,6 @@ export default class FilmCard extends AbstractView {
 
   setFilmCardClickHandler(callback) {
     this._callback.filmCardClick = callback;
-    // this.getElement().addEventListener('click', this._filmCardClickHandler);
     this.getElement().querySelector('.film-card__poster').addEventListener('click', this._filmCardClickHandler);
     this.getElement().querySelector('.film-card__title').addEventListener('click', this._filmCardClickHandler);
     this.getElement().querySelector('.film-card__comments').addEventListener('click', this._filmCardClickHandler);
