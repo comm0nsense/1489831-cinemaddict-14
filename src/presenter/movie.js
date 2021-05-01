@@ -21,7 +21,7 @@ export default class Movie {
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
-    // this._mode = Mode.DEFAULT;
+    this._mode = Mode.DEFAULT;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._popupCloseBtnClickHandler = this._popupCloseBtnClickHandler.bind(this);
@@ -45,66 +45,74 @@ export default class Movie {
     this._filmCardComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
     this._filmCardComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
 
-    if (prevFilmCardComponent === null || prevFilmPopupComponent === null) {
+    if (prevFilmCardComponent === null) {
       render(this._filmCardsContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
       return;
     }
 
     if (this._filmCardsContainer.contains(prevFilmCardComponent.getElement())) {
       replace(this._filmCardComponent, prevFilmCardComponent);
+      remove(prevFilmCardComponent);
     }
 
-    // if (this._mode === Mode.DEFAULT) {
-    //   replace(this._filmCardComponent, prevFilmCardComponent);
-    // }
-
-    // if (this._mode === Mode.EDITING) {
-    //   replace(this._filmPopupComponent, prevFilmPopupComponent);
-    // }
-
-    remove(prevFilmCardComponent);
-    remove(prevFilmPopupComponent);
+    if (this._mode === Mode.POPUP) {
+      replace(this._filmPopupComponent, prevFilmPopupComponent);
+      remove(prevFilmPopupComponent);
+      this._addPopupInfo();
+    }
   }
 
   destroy() {
     remove(this._filmCardComponent);
   }
 
-  // resetView() {
-  //   if (this._mode !== Mode.DEFAULT) {
-  //     this._closeFilmPopupComponent();
-  //   }
-  // }
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._closeFilmPopupComponent();
+    }
+  }
 
-  // _closeFilmPopupComponent() {
-  //   remove(this._filmPopupComponent);
-  //   siteBodyElement.classList.remove('hide-overflow');
-  //   this._filmPopupComponent === null;
-  // }
+  _closeFilmPopupComponent() {
+    remove(this._filmPopupComponent);
+    this._filmPopupComponent = null;
+    this._changeOverflow(false);
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+    this._mode = Mode.DEFAULT;
+  }
 
   _handleFilmCardClick() {
-    // this._renderFilmPopup(evt);// почему здесь сразу не написать то, что внутри renderFilmPopup
-    // this._changeMode();
-    // this._mode = Mode.POPUP;
-    siteBodyElement.classList.add('hide-overflow');
+    this._changeMode();
+    this._mode = Mode.POPUP;
+    this._renderFilmPopup();
+    document.addEventListener('keydown', this._escKeyDownHandler);
+  }
 
-    if (this._filmPopupComponent === null) {
-      this._filmPopupComponent = new FilmPopupView(this._movie);
-      this._filmPopupComponent.getElement();
-    }
-
-
-    // if (!siteBodyElement.querySelector('.film-details')) {
+  _renderFilmPopup() {
+    this._filmPopupComponent = new FilmPopupView(this._movie);
 
     render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
-    this._renderFilmPopupComments(this._movie);
+    this._addPopupInfo();
+  }
 
-    document.addEventListener('keydown', this._escKeyDownHandler);
+  _addPopupInfo() {
+    this._renderFilmPopupComments(this._movie);
+    this._changeOverflow(true);
+    this._addPopupEvents();
+  }
+
+  _changeOverflow(isAdded) {
+    if (isAdded) {
+      siteBodyElement.classList.add('hide-overflow');
+    } else {
+      siteBodyElement.classList.remove('hide-overflow');
+    }
+  }
+
+  _addPopupEvents() {
     this._filmPopupComponent.setCloseBtnClickHandler(this._popupCloseBtnClickHandler);
     this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmPopupComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
     this._filmPopupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
-    // }
   }
 
   _handleFavoriteClick() {
@@ -136,43 +144,11 @@ export default class Movie {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      remove(this._filmPopupComponent);
-      this._filmPopupComponent = null;
-      siteBodyElement.classList.remove('hide-overflow');
-      document.removeEventListener('keydown', this._escKeyDownHandler);
-      // this._mode = Mode.DEFAULT;
+      this._closeFilmPopupComponent();
     }
   }
 
   _popupCloseBtnClickHandler() {
-    remove(this._filmPopupComponent);
-    this._filmPopupComponent = null;
-    siteBodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this._escKeyDownHandler);
-    // this._mode = Mode.DEFAULT;
-  }
-
-
-  _renderFilmPopup() {
-
-    siteBodyElement.classList.add('hide-overflow');
-
-    if (this._filmPopupComponent === null) {
-      this._filmPopupComponent = new FilmPopupView(this._movie);
-      this._filmPopupComponent.getElement();
-    }
-
-
-    // if (!siteBodyElement.querySelector('.film-details')) {
-
-    render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
-    this._renderFilmPopupComments(this._movie);
-
-    document.addEventListener('keydown', this._escKeyDownHandler);
-    this._filmPopupComponent.setCloseBtnClickHandler(this._popupCloseBtnClickHandler);
-    this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._filmPopupComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
-    this._filmPopupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
-    // }
+    this._closeFilmPopupComponent();
   }
 }

@@ -39,7 +39,7 @@ export default class MoviesList {
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    // this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(movies, comments) {
@@ -51,11 +51,11 @@ export default class MoviesList {
     this._renderFilmLists(this._movies);
   }
 
-  // _handleModeChange() {
-  //   Object
-  //     .values(this._filmCardPresenter)
-  //     .forEach((presenter) => presenter.resetView()); //должен удалять filmPopupComponent
-  // }
+  _handleModeChange() {
+    Object
+      .values(this._filmCardPresenter)
+      .forEach((presenter) => presenter.resetView()); //должен удалять filmPopupComponent
+  }
 
   _handleFilmCardChange(updatedFilm) {
     // console.log(this._movies.find((prevFilm) => prevFilm.id === updatedFilm.id));
