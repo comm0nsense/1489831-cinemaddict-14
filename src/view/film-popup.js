@@ -16,7 +16,9 @@ const createMovieDetailedCardTemplate = (movie) => {
     releaseCountry,
     genres,
     description,
-    userDetails: {isWatchlist, isAlreadyWatched,isFavorite },
+    isWatchlist,
+    isAlreadyWatched,
+    isFavorite,
   } = movie;
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
@@ -113,11 +115,26 @@ export default class MovieDetailedCard extends AbstractView {
     this._movie = movie;
 
     this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
+    this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
   }
 
   _closeBtnClickHandler(evt) {
-    evt.preventDefault(); //это нужно здесь??
+    evt.preventDefault();
     this._callback.closeBtnClick();
+  }
+
+  _favoriteClickHandler() {
+    this._callback.favoriteClick(this._movie);
+  }
+
+  _markAsWatchedClickHandler() {
+    this._callback.markAsWatchedClick(this._movie);
+  }
+
+  _addToWatchlistClickHandler() {
+    this._callback.addToWatchlistClick(this._movie);
   }
 
   getTemplate() {
@@ -128,4 +145,23 @@ export default class MovieDetailedCard extends AbstractView {
     this._callback.closeBtnClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeBtnClickHandler);
   }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.film-details__control-label--favorite')
+      .addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setMarkAsWatchedClickHandler(callback) {
+    this._callback.markAsWatchedClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watched')
+      .addEventListener('click', this._markAsWatchedClickHandler);
+  }
+
+  setAddToWatchlistClickHandler(callback) {
+    this._callback.addToWatchlistClick = callback;
+    this.getElement().querySelector('.film-details__control-label--watchlist')
+      .addEventListener('click', this._addToWatchlistClickHandler);
+  }
 }
+

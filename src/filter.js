@@ -1,8 +1,8 @@
 const movieToFilterMap = {
   'All Movies': (movies) => movies.filter((movie) => movie.id).length,
-  'Watchlist': (movies) => movies.filter((movie) => movie.userDetails.isWatchlist).length,
-  'Favorites': (movies) => movies.filter((movie) => movie.userDetails.isFavorite).length,
-  'History': (movies) => movies.filter((movie) => movie.userDetails.isAlreadyWatched).length,
+  'Watchlist': (movies) => movies.filter((movie) => movie.isWatchlist).length,
+  'Favorites': (movies) => movies.filter((movie) => movie.isFavorite).length,
+  'History': (movies) => movies.filter((movie) => movie.isAlreadyWatched).length,
 };
 
 export const generateFilterData = (movies) => {

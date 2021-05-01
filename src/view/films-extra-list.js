@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-const createMoviesExtraListTemplate = (listTitle) => {
+const createFilmsExtraListTemplate = (listTitle) => {
 
   return `
     <section class="films-list films-list--extra">
@@ -10,15 +10,13 @@ const createMoviesExtraListTemplate = (listTitle) => {
     `;
 };
 
-// console.log(createSiteElement(createMoviesExtraListTemplate()));
-
-export default class MoviesExtraList extends AbstractView {
+export default class FilmsExtraList extends AbstractView {
   constructor(listTitle) {
     super();
     this._listTitle = listTitle;
   }
 
   getTemplate() {
-    return createMoviesExtraListTemplate(this._listTitle);
+    return createFilmsExtraListTemplate(this._listTitle);
   }
 }

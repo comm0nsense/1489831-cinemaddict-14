@@ -2,7 +2,6 @@ import AbstractView from './abstract.js';
 
 const createStatisticsTemplate = (userProfile) => {
   const {rank, totalMoviesWatched, totalDuration, topGenre} = userProfile;
-  //totalDuration раскладывает на ч-м
   return `
     <section class="statistic">
       <p class="statistic__rank">

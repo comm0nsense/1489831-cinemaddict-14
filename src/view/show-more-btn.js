@@ -16,7 +16,7 @@ export default class ShowMoreBtn extends AbstractView {
   }
 
   _clickHandler(evt) {
-    evt.preventDefault(); //это нужно здесь??
+    evt.preventDefault();
     this._callback.click();
   }
 
