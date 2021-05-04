@@ -1,6 +1,5 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import PopupCommentsView from '../view/popup-comments.js';
 import { RenderPosition } from '../util/const.js';
 import { render, remove, replace } from '../util/render.js';
 
@@ -15,7 +14,7 @@ export default class Movie {
   constructor(filmsCardsContainer, commentsData, updateFilmCardData, changeMode) {
 
     this._filmCardsContainer = filmsCardsContainer;
-    this._commentsData = commentsData;
+    this._commentsData = commentsData;//через констуктори ли через init?
     this._updateFilmCardData = updateFilmCardData;
     this._changeMode = changeMode;
 
@@ -34,12 +33,14 @@ export default class Movie {
 
   init(movie) {
     this._movie = movie;
+    this._filmComments = this._commentsData.filter(({ id }) => movie.movieCommentsIds.includes(id));
+    // console.log(this._filmComments);
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
     this._filmCardComponent = new FilmCardView(this._movie);
-    this._filmPopupComponent = new FilmPopupView(this._movie);
+    this._filmPopupComponent = new FilmPopupView(this._movie, this._filmComments);
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick);
     this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmCardComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
@@ -88,14 +89,12 @@ export default class Movie {
   }
 
   _renderFilmPopup() {
-    this._filmPopupComponent = new FilmPopupView(this._movie);
-
+    this._filmPopupComponent = new FilmPopupView(this._movie, this._filmComments);
     render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
     this._addPopupInfo();
   }
 
   _addPopupInfo() {
-    this._renderFilmPopupComments(this._movie);
     this._changeOverflow(true);
     this._addPopupEvents();
   }
@@ -130,14 +129,6 @@ export default class Movie {
   _handleAddToWatchlistClick() {
     this._updateFilmCardData(
       Object.assign({}, this._movie, { isWatchlist: !this._movie.isWatchlist }),
-    );
-  }
-
-  _renderFilmPopupComments() {
-    const popupCommentsComponent = new PopupCommentsView(this._movie, this._commentsData);
-    render(this._filmPopupComponent.getElement().querySelector('.film-details__bottom-container'),
-      popupCommentsComponent,
-      RenderPosition.BEFOREEND,
     );
   }
 

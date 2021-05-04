@@ -1,7 +1,67 @@
 import { converArrayToList, formatReleaseDate } from '../util/util.js';
+import { formatCommentDate } from '../util/util.js';
 import AbstractView from './abstract.js';
 
-const createMovieDetailedCardTemplate = (movie) => {
+/**
+ * Функция создания строки выбора смайла для новго комментария
+ * @returns {string}
+ */
+const createNewCommentEmojiFragment = () => {
+
+  const EMOTIONS = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry',
+  ];
+  /**
+   * Функция создания разметки одного смайла из строки выбора смайлов для нового комментария
+   * @param {string} emojiType - строка, которая содержит название вида смайла
+   * @returns {string} строка разметки смайла
+   */
+  const createNewCommentEmojiItemTemplate = (emojiType) => {
+    return `
+    <input class="film-details__emoji-item visually-hidden" name="comment-${emojiType}" type="radio" id="emoji-${emojiType}" value="${emojiType}">
+    <label class="film-details__emoji-label" for="emoji-${emojiType}">
+      <img src="./images/emoji/${emojiType}.png" width="30" height="30" alt="emoji">
+    </label>
+    `;
+  };
+
+  return EMOTIONS.map((emoji) => createNewCommentEmojiItemTemplate(emoji)).join('');
+};
+
+/**
+ * Функция создания шаблона комментария
+ * @param {Object} comment - данные о комментрии
+ * @returns {string} строка, содержащая разметку шаблона комментария
+ */
+const createCommentItemTemplate = (comment) => {
+  const {
+    emotion,
+    author,
+    text,
+    date,
+  } = comment;
+
+  return `
+    <li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-info">
+         <span class="film-details__comment-author">${author}</span>
+          <span class="film-details__comment-day">${formatCommentDate(date)}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+     </li>
+  `;
+};
+
+const createFilmPopupTemplate = (movie, comments) => {
   const {
     poster,
     ageRating,
@@ -19,12 +79,19 @@ const createMovieDetailedCardTemplate = (movie) => {
     isWatchlist,
     isAlreadyWatched,
     isFavorite,
+    movieCommentsIds,
   } = movie;
+
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
   const genreList = genres.length > 1
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
     : `<span class="film-details__genre">${genres}</span>`;
+
+  let commentsFragment = '';
+  if (movieCommentsIds.length) {
+    commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+  }
 
   return `
     <section class="film-details">
@@ -103,16 +170,37 @@ const createMovieDetailedCardTemplate = (movie) => {
         </section>
       </div>
 
-      <div class="film-details__bottom-container"></div>
+      <div class="film-details__bottom-container">
+        <section class="film-details__comments-wrap">
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${movieCommentsIds.length}</span></h3>
+
+          <ul class="film-details__comments-list">
+            ${commentsFragment}
+          </ul>
+
+          <div class="film-details__new-comment">
+            <div class="film-details__add-emoji-label"></div>
+
+            <label class="film-details__comment-label">
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            </label>
+
+            <div class="film-details__emoji-list">
+              ${createNewCommentEmojiFragment()}
+            </div>
+          </div>
+        </section>
+      </div>
     </form>
   </section>
   `;
 };
 
-export default class MovieDetailedCard extends AbstractView {
-  constructor(movie) {
+export default class FilmPopup extends AbstractView {
+  constructor(movie, comments) {
     super();
     this._movie = movie;
+    this._comments = comments;
 
     this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -126,19 +214,19 @@ export default class MovieDetailedCard extends AbstractView {
   }
 
   _favoriteClickHandler() {
-    this._callback.favoriteClick(this._movie);
+    this._callback.favoriteClick(this._movie, this._comments);
   }
 
   _markAsWatchedClickHandler() {
-    this._callback.markAsWatchedClick(this._movie);
+    this._callback.markAsWatchedClick(this._movie, this._comments);
   }
 
   _addToWatchlistClickHandler() {
-    this._callback.addToWatchlistClick(this._movie);
+    this._callback.addToWatchlistClick(this._movie, this._comments);
   }
 
   getTemplate() {
-    return createMovieDetailedCardTemplate(this._movie);
+    return createFilmPopupTemplate(this._movie, this._comments);
   }
 
   setCloseBtnClickHandler(callback) {
