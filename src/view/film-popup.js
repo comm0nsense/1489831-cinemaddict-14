@@ -1,6 +1,5 @@
 import { converArrayToList, formatReleaseDate } from '../util/util.js';
 import { formatCommentDate } from '../util/util.js';
-// import AbstractView from './abstract.js';
 import SmartView from './smart.js';
 
 const DEFAULT_NEW_COMMENT = {

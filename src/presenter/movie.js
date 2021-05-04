@@ -14,7 +14,7 @@ export default class Movie {
   constructor(filmsCardsContainer, commentsData, updateFilmCardData, changeMode) {
 
     this._filmCardsContainer = filmsCardsContainer;
-    this._commentsData = commentsData;//через констуктори ли через init?
+    this._commentsData = commentsData;//через констуктори ли через init? как лучше, в чем разница?
     this._updateFilmCardData = updateFilmCardData;
     this._changeMode = changeMode;
 
@@ -34,7 +34,6 @@ export default class Movie {
   init(movie) {
     this._movie = movie;
     this._filmComments = this._commentsData.filter(({ id }) => movie.movieCommentsIds.includes(id));
-    // console.log(this._filmComments);
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmPopupComponent = this._filmPopupComponent;
