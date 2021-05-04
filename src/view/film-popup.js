@@ -1,6 +1,7 @@
 import { converArrayToList, formatReleaseDate } from '../util/util.js';
 import { formatCommentDate } from '../util/util.js';
-import AbstractView from './abstract.js';
+// import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 
 const DEFAULT_NEW_COMMENT = {
   comment: '',
@@ -206,7 +207,7 @@ const createFilmPopupTemplate = (movie, comments) => {
   `;
 };
 
-export default class FilmPopup extends AbstractView {
+export default class FilmPopup extends SmartView {
   constructor(movie, comments) {
     super();
     this._movie = movie;
@@ -253,38 +254,7 @@ export default class FilmPopup extends AbstractView {
   }
 
   getTemplate() {
-    // return createFilmPopupTemplate(this._movie, this._comments);
     return createFilmPopupTemplate(this._data, this._comments);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   _changeCommentEmojiHandler(evt) {
