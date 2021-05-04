@@ -27,16 +27,6 @@ const getRandomDate = (start = new Date(2000, 0, 1), end = new Date()) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-const convertTime = (n) => {
-  const hours = (n / 60);
-  const rhours = Math.floor(hours);
-  const minutes = (hours - rhours) * 60;
-  const rminutes = Math.round(minutes);
-
-  return `${rhours}h ${rminutes}m`;
-};
-
-
 const shuffleArray = (array) => {
   let curId = array.length;
 
@@ -56,6 +46,5 @@ export {
   getRandomNumber,
   getRandomElementFromArray,
   generateRandomArray,
-  getRandomDate,
-  convertTime
+  getRandomDate
 };

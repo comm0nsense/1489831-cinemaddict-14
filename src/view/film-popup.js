@@ -1,5 +1,10 @@
-import { converArrayToList, formatReleaseDate } from '../util/util.js';
-import { formatCommentDate } from '../util/util.js';
+import {
+  converArrayToList,
+  formatReleaseDate,
+  formatCommentDate,
+  convertRuntime
+} from '../util/util.js';
+
 import SmartView from './smart.js';
 
 const DEFAULT_NEW_COMMENT = {
@@ -101,6 +106,16 @@ const createFilmPopupTemplate = (movie, comments) => {
 
   const { emoji } = newComment;
 
+  // const convertRuntime = (time) => {
+  //   if (time < 60) {
+  //     return `${time}m`;
+  //   }
+
+  //   const h = parseInt(time / 60);
+
+  //   return `${h}h ${time - (h * 60)}m`;
+  // };
+
   return `
     <section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -146,7 +161,7 @@ const createFilmPopupTemplate = (movie, comments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${runtime}</td>
+                <td class="film-details__cell">${convertRuntime(runtime)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
