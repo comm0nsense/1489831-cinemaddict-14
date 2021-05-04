@@ -17,9 +17,11 @@ import MoviesListPresenter from './presenter/movies-list.js';
 const TOTAL_MOVIES = 25;
 const TOTAL_COMMENTS = 125;
 
+
 const comments = generateComments(TOTAL_COMMENTS);
 const commentsIds = generateArrayOfCommentsIds(comments);
 const movies = generateMovies(TOTAL_MOVIES, commentsIds);
+console.log(movies);
 
 const filters = generateFilterData(movies);
 

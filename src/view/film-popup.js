@@ -2,6 +2,11 @@ import { converArrayToList, formatReleaseDate } from '../util/util.js';
 import { formatCommentDate } from '../util/util.js';
 import AbstractView from './abstract.js';
 
+const DEFAULT_NEW_COMMENT = {
+  comment: '',
+  emoji: null,
+};
+
 /**
  * Функция создания строки выбора смайла для новго комментария
  * @returns {string}
@@ -80,6 +85,7 @@ const createFilmPopupTemplate = (movie, comments) => {
     isAlreadyWatched,
     isFavorite,
     movieCommentsIds,
+    newComment,
   } = movie;
 
 
@@ -92,6 +98,8 @@ const createFilmPopupTemplate = (movie, comments) => {
   if (movieCommentsIds.length) {
     commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
   }
+
+  const { emoji } = newComment;
 
   return `
     <section class="film-details">
@@ -179,7 +187,9 @@ const createFilmPopupTemplate = (movie, comments) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">
+            ${emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ''}
+            </div>
 
             <label class="film-details__comment-label">
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -201,11 +211,28 @@ export default class FilmPopup extends AbstractView {
     super();
     this._movie = movie;
     this._comments = comments;
+    this._data = FilmPopup.parseFilmToData(movie);
 
     this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
+
+    this._changeCommentEmojiHandler = this._changeCommentEmojiHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  static parseFilmToData(film) {
+    return Object.assign({}, film, {
+      newComment: DEFAULT_NEW_COMMENT,
+    });
+  }
+
+  static parseDataToComment(data) {
+    return {
+      comment: Object.assign({}, data.newComment),
+    };
   }
 
   _closeBtnClickHandler(evt) {
@@ -226,8 +253,66 @@ export default class FilmPopup extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._movie, this._comments);
+    // return createFilmPopupTemplate(this._movie, this._comments);
+    return createFilmPopupTemplate(this._data, this._comments);
   }
+
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+      {},
+      this._data,
+      update,
+    );
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  _changeCommentEmojiHandler(evt) {
+    evt.preventDefault();
+    const scrollPosition = document.querySelector('.film-details').scrollTop;
+
+    this.updateData({
+      newComment: Object.assign({}, this._data.newComment, { emoji: evt.target.value }),
+    });
+
+    document.querySelector('.film-details').scrollTo(0, scrollPosition);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll('.film-details__emoji-item')
+      .forEach((item) => item.addEventListener('change', this._changeCommentEmojiHandler));
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setCloseBtnClickHandler(this._callback.closeBtnClick);
+    this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setMarkAsWatchedClickHandler(this._callback.markAsWatchedClick);
+  }
+
 
   setCloseBtnClickHandler(callback) {
     this._callback.closeBtnClick = callback;
