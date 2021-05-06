@@ -112,7 +112,7 @@ export default class MoviesList {
   }
 
   _renderFilmCard(filmCardContainer, movie) {
-    const presenter = new MoviePresenter(filmCardContainer, this._comments, this._handleFilmCardChange, this._handleModeChange);//для каждой карточки передается _handleFilmCardChange метод
+    const presenter = new MoviePresenter(filmCardContainer, this._comments, this._handleFilmCardChange, this._handleModeChange);
     presenter.init(movie);
     return presenter;
   }
@@ -122,10 +122,11 @@ export default class MoviesList {
   }
 
   _handleShowMoreBtnClick() {
+    const filmLMainListContainer = this._filmListComponent.getElement().querySelector('.films-list__container');
     this._movies
       .slice(this._numberOfMoviesRendered, this._numberOfMoviesRendered + NUMBER_OF_MOVIES_TO_RENDER)
       .forEach((movie) => {
-        const presenter = this._renderFilmCard(this._filmListComponent.getElement().querySelector('.films-list__container'), movie);
+        const presenter = this._renderFilmCard(filmLMainListContainer, movie);
         this._filmCardPresenter[movie.id] = presenter;
       });
 

@@ -3,7 +3,6 @@ import {
   getRandomNumber,
   getRandomElementFromArray,
   getRandomDate,
-  convertTime,
   generateRandomArray
 } from './util.js';
 
@@ -197,7 +196,7 @@ const generateMovie = (array) => {
     releaseCountry: getRandomElementFromArray(COUNTRIES),
     genres: generateRandomArray(GENRES, 1, 3),
     movieCommentsIds: generateMovieCommentsIds(array),
-    runtime: convertTime(getRandomInteger(60, 240)),
+    runtime: getRandomInteger(60, 300),
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isAlreadyWatched: isAlreadyWatched,
     watchingDate: isAlreadyWatched ? Boolean(getRandomDate()) : false,

@@ -2,6 +2,15 @@ import dayjs from 'dayjs';
 
 const NUMBER_OF_MOVIES_TO_MEET_CRITERIA = 0;
 
+const convertRuntime = (time) => {
+  if (time < 60) {
+    return `${time}m`;
+  }
+
+  const h = parseInt(time / 60);
+
+  return `${h}h ${time - (h * 60)}m`;
+};
 
 const formatCommentDate = (date) => {
   return dayjs(date).format('YYYY/MM/DD HH:mm ');
@@ -63,5 +72,6 @@ export {
   checkIfAllFilmsWithoutComments,
   checkIfAllFilmsWithoutRating,
   sortByRating,
-  sortByReleaseDate
+  sortByReleaseDate,
+  convertRuntime
 };

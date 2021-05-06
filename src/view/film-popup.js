@@ -1,7 +1,77 @@
-import { converArrayToList, formatReleaseDate } from '../util/util.js';
-import AbstractView from './abstract.js';
+import {
+  converArrayToList,
+  formatReleaseDate,
+  formatCommentDate,
+  convertRuntime
+} from '../util/util.js';
 
-const createMovieDetailedCardTemplate = (movie) => {
+import SmartView from './smart.js';
+
+const DEFAULT_NEW_COMMENT = {
+  comment: '',
+  emoji: null,
+};
+
+/**
+ * Функция создания строки выбора смайла для новго комментария
+ * @returns {string}
+ */
+const createNewCommentEmojiFragment = () => {
+
+  const EMOTIONS = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry',
+  ];
+  /**
+   * Функция создания разметки одного смайла из строки выбора смайлов для нового комментария
+   * @param {string} emojiType - строка, которая содержит название вида смайла
+   * @returns {string} строка разметки смайла
+   */
+  const createNewCommentEmojiItemTemplate = (emojiType) => {
+    return `
+    <input class="film-details__emoji-item visually-hidden" name="comment-${emojiType}" type="radio" id="emoji-${emojiType}" value="${emojiType}">
+    <label class="film-details__emoji-label" for="emoji-${emojiType}">
+      <img src="./images/emoji/${emojiType}.png" width="30" height="30" alt="emoji">
+    </label>
+    `;
+  };
+
+  return EMOTIONS.map((emoji) => createNewCommentEmojiItemTemplate(emoji)).join('');
+};
+
+/**
+ * Функция создания шаблона комментария
+ * @param {Object} comment - данные о комментрии
+ * @returns {string} строка, содержащая разметку шаблона комментария
+ */
+const createCommentItemTemplate = (comment) => {
+  const {
+    emotion,
+    author,
+    text,
+    date,
+  } = comment;
+
+  return `
+    <li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-info">
+         <span class="film-details__comment-author">${author}</span>
+          <span class="film-details__comment-day">${formatCommentDate(date)}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+     </li>
+  `;
+};
+
+const createFilmPopupTemplate = (movie, comments) => {
   const {
     poster,
     ageRating,
@@ -19,12 +89,22 @@ const createMovieDetailedCardTemplate = (movie) => {
     isWatchlist,
     isAlreadyWatched,
     isFavorite,
+    movieCommentsIds,
+    newComment,
   } = movie;
+
 
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
   const genreList = genres.length > 1
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
     : `<span class="film-details__genre">${genres}</span>`;
+
+  // let commentsFragment = '';
+  // if (movieCommentsIds.length) {
+  const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+  // }
+
+  const { emoji } = newComment;
 
   return `
     <section class="film-details">
@@ -71,7 +151,7 @@ const createMovieDetailedCardTemplate = (movie) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${runtime}</td>
+                <td class="film-details__cell">${convertRuntime(runtime)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -103,21 +183,59 @@ const createMovieDetailedCardTemplate = (movie) => {
         </section>
       </div>
 
-      <div class="film-details__bottom-container"></div>
+      <div class="film-details__bottom-container">
+        <section class="film-details__comments-wrap">
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${movieCommentsIds.length}</span></h3>
+
+          <ul class="film-details__comments-list">
+            ${commentsFragment}
+          </ul>
+
+          <div class="film-details__new-comment">
+            <div class="film-details__add-emoji-label">
+            ${emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ''}
+            </div>
+
+            <label class="film-details__comment-label">
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            </label>
+
+            <div class="film-details__emoji-list">
+              ${createNewCommentEmojiFragment()}
+            </div>
+          </div>
+        </section>
+      </div>
     </form>
   </section>
   `;
 };
 
-export default class MovieDetailedCard extends AbstractView {
-  constructor(movie) {
+export default class FilmPopup extends SmartView {
+  constructor(movie, comments) {
     super();
     this._movie = movie;
+    this._comments = comments;
+    this._data = FilmPopup.parseFilmToData(movie);
 
     this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
+
+    this._commentEmojiClickHandler = this._commentEmojiClickHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  static parseFilmToData(film) {
+    return { ...film, newComment: DEFAULT_NEW_COMMENT };
+  }
+
+  static parseDataToComment(data) {
+    return {
+      comment: {...data.newComment},
+    };
   }
 
   _closeBtnClickHandler(evt) {
@@ -126,20 +244,48 @@ export default class MovieDetailedCard extends AbstractView {
   }
 
   _favoriteClickHandler() {
-    this._callback.favoriteClick(this._movie);
+    this._callback.favoriteClick(this._movie, this._comments);
   }
 
   _markAsWatchedClickHandler() {
-    this._callback.markAsWatchedClick(this._movie);
+    this._callback.markAsWatchedClick(this._movie, this._comments);
   }
 
   _addToWatchlistClickHandler() {
-    this._callback.addToWatchlistClick(this._movie);
+    this._callback.addToWatchlistClick(this._movie, this._comments);
   }
 
   getTemplate() {
-    return createMovieDetailedCardTemplate(this._movie);
+    return createFilmPopupTemplate(this._data, this._comments);
   }
+
+  _commentEmojiClickHandler(evt) {
+    evt.preventDefault();
+    const scrollPosition = document.querySelector('.film-details').scrollTop;
+
+    this.updateData({
+      newComment: {...this._data.newComment, emoji: evt.target.value },
+
+    });
+
+    document.querySelector('.film-details').scrollTo(0, scrollPosition);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll('.film-details__emoji-item')
+      .forEach((item) => item.addEventListener('click', this._commentEmojiClickHandler));
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setCloseBtnClickHandler(this._callback.closeBtnClick);
+    this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setMarkAsWatchedClickHandler(this._callback.markAsWatchedClick);
+  }
+
 
   setCloseBtnClickHandler(callback) {
     this._callback.closeBtnClick = callback;
