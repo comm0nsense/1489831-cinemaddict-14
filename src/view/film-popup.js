@@ -99,22 +99,12 @@ const createFilmPopupTemplate = (movie, comments) => {
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
     : `<span class="film-details__genre">${genres}</span>`;
 
-  let commentsFragment = '';
-  if (movieCommentsIds.length) {
-    commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
-  }
+  // let commentsFragment = '';
+  // if (movieCommentsIds.length) {
+  const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+  // }
 
   const { emoji } = newComment;
-
-  // const convertRuntime = (time) => {
-  //   if (time < 60) {
-  //     return `${time}m`;
-  //   }
-
-  //   const h = parseInt(time / 60);
-
-  //   return `${h}h ${time - (h * 60)}m`;
-  // };
 
   return `
     <section class="film-details">
@@ -233,20 +223,18 @@ export default class FilmPopup extends SmartView {
     this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
 
-    this._changeCommentEmojiHandler = this._changeCommentEmojiHandler.bind(this);
+    this._commentEmojiClickHandler = this._commentEmojiClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   static parseFilmToData(film) {
-    return Object.assign({}, film, {
-      newComment: DEFAULT_NEW_COMMENT,
-    });
+    return { ...film, newComment: DEFAULT_NEW_COMMENT };
   }
 
   static parseDataToComment(data) {
     return {
-      comment: Object.assign({}, data.newComment),
+      comment: {...data.newComment},
     };
   }
 
@@ -271,12 +259,13 @@ export default class FilmPopup extends SmartView {
     return createFilmPopupTemplate(this._data, this._comments);
   }
 
-  _changeCommentEmojiHandler(evt) {
+  _commentEmojiClickHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
 
     this.updateData({
-      newComment: Object.assign({}, this._data.newComment, { emoji: evt.target.value }),
+      newComment: {...this._data.newComment, emoji: evt.target.value },
+
     });
 
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
@@ -285,7 +274,7 @@ export default class FilmPopup extends SmartView {
   _setInnerHandlers() {
     this.getElement()
       .querySelectorAll('.film-details__emoji-item')
-      .forEach((item) => item.addEventListener('change', this._changeCommentEmojiHandler));
+      .forEach((item) => item.addEventListener('click', this._commentEmojiClickHandler));
   }
 
   restoreHandlers() {

@@ -115,19 +115,20 @@ export default class Movie {
 
   _handleFavoriteClick() {
     this._updateFilmCardData(
-      Object.assign({}, this._movie, { isFavorite: !this._movie.isFavorite }),
+      {...this._movie, isFavorite: !this._movie.isFavorite},
+
     );
   }
 
   _handleMarkAsWatchedClick() {
     this._updateFilmCardData(
-      Object.assign({}, this._movie, { isAlreadyWatched: !this._movie.isAlreadyWatched }),
+      {...this._movie, isAlreadyWatched: !this._movie.isAlreadyWatched},
     );
   }
 
   _handleAddToWatchlistClick() {
     this._updateFilmCardData(
-      Object.assign({}, this._movie, { isWatchlist: !this._movie.isWatchlist }),
+      {...this._movie, isWatchlist: !this._movie.isWatchlist},
     );
   }
 

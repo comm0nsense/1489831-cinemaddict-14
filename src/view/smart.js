@@ -6,7 +6,8 @@ export default class Smart extends Abstract {
     this._data = {};
   }
 
-  updateData(update, justDataUpdating) {
+  updateData(update, shouldRerender) {
+
     if (!update) {
       return;
     }
@@ -17,7 +18,7 @@ export default class Smart extends Abstract {
       update,
     );
 
-    if (justDataUpdating) {
+    if (shouldRerender) {
       return;
     }
 
