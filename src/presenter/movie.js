@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import { RenderPosition } from '../util/const.js';
+import { RenderPosition, UserAction, UpdateType } from '../util/const.js';
 import { render, remove, replace } from '../util/render.js';
 
 const Mode = {
@@ -14,8 +14,8 @@ export default class Movie {
   constructor(filmsCardsContainer, commentsData, updateFilmCardData, changeMode) {
 
     this._filmCardsContainer = filmsCardsContainer;
-    this._commentsData = commentsData;//через констуктори ли через init? как лучше, в чем разница?
-    this._updateFilmCardData = updateFilmCardData;
+    this._commentsData = commentsData;
+    this._updateFilmCardData = updateFilmCardData; //handleViewAction
     this._changeMode = changeMode;
 
     this._filmCardComponent = null;
@@ -115,19 +115,24 @@ export default class Movie {
 
   _handleFavoriteClick() {
     this._updateFilmCardData(
+      UserAction.UPDATE,
+      UpdateType.PATCH,
       {...this._movie, isFavorite: !this._movie.isFavorite},
-
     );
   }
 
   _handleMarkAsWatchedClick() {
     this._updateFilmCardData(
+      UserAction.UPDATE,
+      UpdateType.PATCH,
       {...this._movie, isAlreadyWatched: !this._movie.isAlreadyWatched},
     );
   }
 
   _handleAddToWatchlistClick() {
     this._updateFilmCardData(
+      UserAction.UPDATE,
+      UpdateType.PATCH,
       {...this._movie, isWatchlist: !this._movie.isWatchlist},
     );
   }

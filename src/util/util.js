@@ -31,7 +31,7 @@ const convertDateToYear = (date) => {
 /**
  * Функция генерации массива
  * @param {number} length - длина массива
- * @param {function} elementGeneratingFunc - функция, создающая элемент массива
+ * @param {function} elementGeneratingFunction - функция, создающая элемент массива
  * @returns {array} - массив элементов, которые создаются переданной функцией
  */
 const generateArray = (length, elementGeneratingFunction) => {

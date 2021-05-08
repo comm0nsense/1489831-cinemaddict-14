@@ -13,3 +13,15 @@ export const SortType = {
   DATE: 'date',
   RATING: 'rating',
 };
+
+export const UserAction = {
+  UPDATE: 'UPDATE',
+  ADD: 'ADD',
+  DELETE: 'DELETE',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};

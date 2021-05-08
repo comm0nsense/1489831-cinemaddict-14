@@ -52,7 +52,7 @@ const createStatisticsTemplate = (userProfile) => {
   `;
 };
 
-export default class Statictics extends AbstractView {
+export default class Statistics extends AbstractView {
   constructor(userProfile) {
     super();
     this._userProfile = userProfile;

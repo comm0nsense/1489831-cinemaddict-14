@@ -99,10 +99,7 @@ const createFilmPopupTemplate = (movie, comments) => {
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
     : `<span class="film-details__genre">${genres}</span>`;
 
-  // let commentsFragment = '';
-  // if (movieCommentsIds.length) {
   const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
-  // }
 
   const { emoji } = newComment;
 
