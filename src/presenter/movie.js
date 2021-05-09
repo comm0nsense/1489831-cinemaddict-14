@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import { RenderPosition, UserAction, UpdateType } from '../util/const.js';
-import { render, remove, replace } from '../util/render.js';
+import { RenderPosition, UserAction, UpdateType } from '../utils/const.js';
+import { render, remove, replace } from '../utils/render.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -116,7 +116,7 @@ export default class Movie {
   _handleFavoriteClick() {
     this._updateFilmCardData(
       UserAction.UPDATE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._movie, isFavorite: !this._movie.isFavorite},
     );
   }
@@ -124,7 +124,7 @@ export default class Movie {
   _handleMarkAsWatchedClick() {
     this._updateFilmCardData(
       UserAction.UPDATE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._movie, isAlreadyWatched: !this._movie.isAlreadyWatched},
     );
   }
@@ -132,7 +132,7 @@ export default class Movie {
   _handleAddToWatchlistClick() {
     this._updateFilmCardData(
       UserAction.UPDATE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._movie, isWatchlist: !this._movie.isWatchlist},
     );
   }

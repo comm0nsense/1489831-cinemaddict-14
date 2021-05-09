@@ -25,3 +25,10 @@ export const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
+
+export const FilterType = {
+  ALL: 'all',//all_movies
+  WATCHLIST: 'Watchlist',
+  FAVORITES: 'Favorites',
+  HISTORY: 'History',
+};

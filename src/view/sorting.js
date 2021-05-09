@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import { SortType } from '../util/const.js';
+import { SortType } from '../utils/const.js';
 
 const createSortingTemplate = (currentSortType) => {//не добавляется модификатор??!!
   return (

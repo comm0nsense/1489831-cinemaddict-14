@@ -1,4 +1,4 @@
-import { convertDateToYear, convertRuntime } from '../util/util.js';
+import { convertDateToYear, convertRuntime } from '../utils/util.js';
 import AbstractView from './abstract.js';
 
 const SHORT_DESC_LENGTH = 139;

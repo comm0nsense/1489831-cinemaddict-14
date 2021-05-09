@@ -12,7 +12,7 @@ import {
 
 import {
   generateArray
-} from '../util/util.js';
+} from '../utils/util.js';
 
 import {
   nanoid

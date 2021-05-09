@@ -4,22 +4,25 @@ import FilmListView from '../view/films-list.js';
 import FilmsExtraListView from '../view/films-extra-list.js';
 import ShowMoreBtnView from '../view/show-more-btn.js';
 import EmptyFilmListView from '../view/empty-film-list.js';
-
-import { render, remove } from '../util/render.js';
-import { RenderPosition, FilmExtraListTitle, SortType, UserAction, UpdateType } from '../util/const.js';
-import { checkIfAllFilmsWithoutComments, sortByMostCommented, checkIfAllFilmsWithoutRating, sortByRating, sortByReleaseDate } from '../util/util';
-
-import MoviePresenter from './movie.js';
 import UserProfile from '../view/user-profile';
 import Sorting from '../view/sorting.js';
+
+import { render, remove } from '../utils/render.js';
+import { RenderPosition, FilmExtraListTitle, SortType, UserAction, UpdateType } from '../utils/const.js';
+import { checkIfAllFilmsWithoutComments, sortByMostCommented, checkIfAllFilmsWithoutRating, sortByRating, sortByReleaseDate } from '../utils/util.js';
+import { filter } from '../utils/filter.js';
+
+import MoviePresenter from './movie.js';
+
 
 const FILM_COUNT_PER_STEP = 5;
 const NUMBER_OF_EXTRA_FILMS = 2;
 
 export default class MoviesList {
-  constructor(container, filmsModel, commentsModel) {
+  constructor(container, filmsModel, commentsModel, filterModel) {
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
+    this._filterModel = filterModel;
     this._container = container;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
 
@@ -47,6 +50,7 @@ export default class MoviesList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init () {
@@ -58,14 +62,19 @@ export default class MoviesList {
   }
 
   _getFilms() {
+    const filterType = this._filterModel.getFilter();
+    const films = this._filmsModel.getFilms();
+    const filteredFilms = filter[filterType](films);
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._filmsModel.getFilms().slice().sort(sortByReleaseDate);
+        // return this._filmsModel.getFilms().slice().sort(sortByReleaseDate);
+        return filteredFilms.sort(sortByReleaseDate);
       case SortType.RATING:
-        return sortByRating(this._filmsModel.getFilms().slice());
+        return sortByRating(filteredFilms);
     }
 
-    return this._filmsModel.getFilms();
+    return filteredFilms;
   }
 
   _handleModeChange() {

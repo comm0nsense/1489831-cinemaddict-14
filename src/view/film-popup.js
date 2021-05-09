@@ -3,7 +3,7 @@ import {
   formatReleaseDate,
   formatCommentDate,
   convertRuntime
-} from '../util/util.js';
+} from '../utils/util.js';
 
 import SmartView from './smart.js';
 
