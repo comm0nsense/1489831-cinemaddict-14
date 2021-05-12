@@ -19,21 +19,12 @@ import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 
-const TOTAL_MOVIES = 7;
-const TOTAL_COMMENTS = 125;
+const TOTAL_MOVIES = 27;
+const TOTAL_COMMENTS = 15;
 
 const comments = generateComments(TOTAL_COMMENTS);
 const commentsIds = generateArrayOfCommentsIds(comments);
 const movies = generateMovies(TOTAL_MOVIES, commentsIds);
-// const filters = generateFilterData(movies);
-// console.log(movies);
-// const filters = [
-//   {
-//     type: 'all',
-//     name: 'all',
-//     count: 0,
-//   },
-// ];
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(movies);
@@ -52,11 +43,7 @@ render(siteHeaderElement, userProfileComponent, RenderPosition.BEFOREEND);
 
 /* MAIN */
 const siteMainElement = document.querySelector('.main');
-// const mainNavComponent = new MainNavView(filters);
-// const filterComponent = new FilterView(filters, 'all');
-// render(siteMainElement, filterComponent, RenderPosition.BEFOREEND);
 
-/* MOVIES SECTION */
 const moviesListPresenter = new MoviesListPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
 

@@ -2,6 +2,7 @@ import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import { RenderPosition, UserAction, UpdateType } from '../utils/const.js';
 import { render, remove, replace } from '../utils/render.js';
+// import UserProfile from '../view/user-profile';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -29,6 +30,9 @@ export default class Movie {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleMarkAsWatchedClick = this._handleMarkAsWatchedClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
+
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
+    this._handleSubmitNewCommentClick = this._handleSubmitNewCommentClick.bind(this);
   }
 
   init(movie) {
@@ -111,6 +115,8 @@ export default class Movie {
     this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmPopupComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
     this._filmPopupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
+    this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+    this._filmPopupComponent.setSubmitNewCommentHandler(this._handleSubmitNewCommentClick);
   }
 
   _handleFavoriteClick() {
@@ -132,9 +138,56 @@ export default class Movie {
   _handleAddToWatchlistClick() {
     this._updateFilmCardData(
       UserAction.UPDATE,
-      UpdateType.MINOR,
+      UpdateType.MINOR,//с минором работает фильтр
       {...this._movie, isWatchlist: !this._movie.isWatchlist},
     );
+  }
+
+  _handleDeleteCommentClick(updatedCommentsIds, deletedCommentId) {
+    // console.log(this._movie);
+    // console.log(updatedCommentsIds);
+    // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
+    this._updateFilmCardData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,// c минором работает удаление коммента на экранах, но не обновляется попап
+      // UpdateType.PATCH,// c патчем работает удаление коммента на попапе и в основном списке, а топ-комментед не обновляется
+      {...this._movie, movieCommentsIds: updatedCommentsIds },
+    );
+
+    // remove(this._filmPopupComponent);
+    // this._renderFilmPopup();
+    // console.log(this._movie);
+    // console.log(deletedCommentId);
+
+    //2) удаляем из модели комментарий, который удалил пользователь кликом в попапе
+    const [deletedComment] = this._commentsData.filter((comment) => comment.id === parseInt(deletedCommentId));
+    // console.log(deletedComment);
+    this._updateFilmCardData( // movie-list presenter => this._commentsModel.addComment(updateType, update);
+      UserAction.DELETE,
+      // UpdateType.PATCH,
+      UpdateType.MINOR,
+      deletedComment,
+    );
+  }
+
+  _handleSubmitNewCommentClick(newComment, movieCommentsIds) {
+    // console.log(newComment);
+    //2) добавляем новый комментарий в модель комментариев
+    this._updateFilmCardData(
+      UserAction.ADD,
+      // UpdateType.PATCH,
+      UpdateType.MINOR,
+      newComment,
+    );
+
+    //1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
+    this._updateFilmCardData(
+      UserAction.UPDATE,
+      // UpdateType.PATCH,
+      UpdateType.MINOR,
+      {...this._movie, movieCommentsIds: movieCommentsIds },
+    );
+    // console.log(this._movie);
   }
 
   _escKeyDownHandler(evt) {

@@ -4,7 +4,7 @@ import FilmListView from '../view/films-list.js';
 import FilmsExtraListView from '../view/films-extra-list.js';
 import ShowMoreBtnView from '../view/show-more-btn.js';
 import EmptyFilmListView from '../view/empty-film-list.js';
-import UserProfile from '../view/user-profile';
+// import UserProfile from '../view/user-profile';
 import Sorting from '../view/sorting.js';
 
 import { render, remove } from '../utils/render.js';
@@ -51,6 +51,8 @@ export default class MoviesList {
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._commentsModel.addObserver(this._handleModelEvent);
   }
 
   init () {
@@ -68,7 +70,6 @@ export default class MoviesList {
 
     switch (this._currentSortType) {
       case SortType.DATE:
-        // return this._filmsModel.getFilms().slice().sort(sortByReleaseDate);
         return filteredFilms.sort(sortByReleaseDate);
       case SortType.RATING:
         return sortByRating(filteredFilms);
@@ -84,32 +85,35 @@ export default class MoviesList {
   }
 
   /**
-   * Обработка действий на представлении (колблек, который отдается вьюхам и они
-   * его должны дернуть, когда хотят что-то поменять в данных)
+   * Метод для обработки действий на представлении, т.е. обновляет модель данных
+   * в зависимости от действий пользователя на View.
    * @param actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-   * @param updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+   * @param updateType - тип изменений, нужно чтобы понять, что нужно обновить во View после обновления модели.
    * @param update - обновленные данные
    * @private
    */
   _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
     switch (actionType) {
-      case UserAction.UPDATE:
+      case UserAction.UPDATE://update film
         this._filmsModel.updateFilm(updateType, update);
         break;
-      case UserProfile.ADD:
-        // console.log('something to add?');
+      case UserAction.ADD://add comment
+        this._commentsModel.addComment(updateType, update);
+        // console.log(this._getComments());
         break;
-      case UserAction.DELETE:
-        // this._tasksModel.deleteTask(updateType, update);
+      case UserAction.DELETE://delete comment
+        // console.log(this._getComments());
+        this._commentsModel.deleteComment(updateType, update);
+        // console.log(this._getComments());
         break;
     }
   }
 
   /**
-   * Метод, который  передается в модель в observers (колбек, который требует обзервер. Модель будет
-   * дергать его, когда ей нужно будет уведомить презентер, что что-то поменялось
-   * @param updateType - В зависимости от типа изменений решаем (PATCH/MINOR/MAJOR), что делать:
+   * Метод, который оповещает Presenter, что поменялись данные в модели.
+   * Оповещение происходит через приватный метод _notify Observer-а в соответствующем методе Films Model.
+   * Метод _notify наследуется Films Model от класса Observer.
+   * @param updateType - В зависимости от типа изменений - PATCH/MINOR/MAJOR - решаем , что делать:
    * - PATCH: изменение одной карточки
    * - MINOR: изменение всего списка карточек целиком
    * - MAJOR: перерисовка всего экрана со списками фильмов
@@ -117,14 +121,36 @@ export default class MoviesList {
    * @private
    */
   _handleModelEvent(updateType, data) {
-    // console.log(updateType, update);
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this._filmCardPresenter[data.id].init(data);
-        break;
+    switch (updateType) {//чистом виде PATCH не достаточен, т.к. любое изменение фильма влечет изменение экрана
+      // case UpdateType.PATCH:
+      //
+      //   if(this._filmCardPresenter[data.id]) {
+      //     this._filmCardPresenter[data.id].init(data);
+      //   }
+      //
+      //   if (this._topRatedFilmCardPresenter[data.id]){
+      //     this._topRatedFilmCardPresenter[data.id].init(data);
+      //   }
+      //
+      //   if (this._mostCommentedFilmCardPresenter[data.id]) {
+      //     this._mostCommentedFilmCardPresenter[data.id].init(data);
+      //   }
+      //
+      //   break;
       case UpdateType.MINOR:
+        if(this._filmCardPresenter[data.id]) {
+          this._filmCardPresenter[data.id].init(data);
+        }
+
+        if (this._topRatedFilmCardPresenter[data.id]){
+          this._topRatedFilmCardPresenter[data.id].init(data);
+        }
+
+        if (this._mostCommentedFilmCardPresenter[data.id]) {
+          this._mostCommentedFilmCardPresenter[data.id].init(data);
+        }
         this._clearFilmLists();
-        this._renderFilmLists();
+        this._renderFilmLists(); //при перерисовке возьмет новые данные у обновленной модели
         break;
       case UpdateType.MAJOR:
         this._clearFilmLists({resetRenderedFilmCount: true, resetSortType: true});
@@ -146,7 +172,6 @@ export default class MoviesList {
 
   _renderSorting() {
     // console.log(this._sortingComponent);
-
     if (this._sortingComponent !== null) {
       this._sortingComponent = null;
     }
