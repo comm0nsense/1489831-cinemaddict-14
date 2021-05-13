@@ -1,19 +1,22 @@
 import {createElement} from '../util';
 
-export const createFilmsBoardTemplate = () => {
+export const createFilmsListMainTemplate = () => {
   return (
-    `<section class="films">
-     </section>`
+    `<section class="films-list">
+      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      <div class="films-list__container">
+      </div>
+    </section>`
   );
 };
 
-export default class FilmsBoard {
+export default class MainList {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsBoardTemplate();
+    return createFilmsListMainTemplate();
   }
 
   getElement() {
@@ -28,4 +31,5 @@ export default class FilmsBoard {
     this._element = null;
   }
 }
+
 

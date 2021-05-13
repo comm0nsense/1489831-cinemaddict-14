@@ -1,4 +1,4 @@
-import { formatReleaseDate, formatCommentDate, convertRuntime } from '../util';
+import {formatReleaseDate, formatCommentDate, convertRuntime, createElement} from '../util';
 
 /**
  * Функция создания шаблона комментария
@@ -31,7 +31,7 @@ const createCommentItemTemplate = (comment) => {
   `;
 };
 
-export const createFilmPopupTemplate = (film, comments) => {
+const createFilmPopupTemplate = (film, comments) => {
   const {
     poster,
     ageRating,
@@ -179,3 +179,28 @@ export const createFilmPopupTemplate = (film, comments) => {
     </section>
   `;
 };
+
+export default class FilmPopup {
+  constructor(film, comments) {
+    this._element = null;
+    this._film = film;
+    this._comments = comments;
+  }
+
+  getTemplate() {
+    return createFilmPopupTemplate(this._film, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

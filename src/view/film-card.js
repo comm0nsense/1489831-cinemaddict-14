@@ -1,7 +1,8 @@
+import {createElement} from '../util';
 import { convertRuntime, convertDateToYear } from '../util';
 import { SHORT_DESC_LENGTH } from '../const';
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {
     id,
     title,
@@ -17,8 +18,8 @@ export const createFilmCardTemplate = (film) => {
     isFavorite,
   } = film;
 
-  return `
-        <article class="film-card" id="${id}">
+  return (
+    `<article class="film-card" id="${id}">
           <h3 class="film-card__title">${title}</h3>
           <p class="film-card__rating">${totalRating}</p>
           <p class="film-card__info">
@@ -34,6 +35,30 @@ export const createFilmCardTemplate = (film) => {
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isAlreadyWatched ? 'film-card__controls-item--active' : ''}" type="button">Mark as watched</button>
             <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavorite ? 'film-card__controls-item--active' : ''}" type="button">Mark as favorite</button>
           </div>
-        </article>
-  `;
+        </article>`
+  );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
