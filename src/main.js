@@ -7,6 +7,15 @@ import { createFilmsListMainTemplate } from './view/films-list-main';
 import { createFilmListExtraTemplate } from './view/films-list-extra';
 import { createFooterStatistics } from './view/statistics';
 import { createFilmCardTemplate } from './view/film-card';
+import { createShowMoreBtnTemlate } from './view/show-more-btn';
+import { generateComments, generateArrayOfCommentsIds, generateFilms} from './mock/film';
+
+const comments = generateComments(5);
+const commentsIds = generateArrayOfCommentsIds(comments);
+const films = generateFilms(5, commentsIds);
+
+console.log(comments);
+console.log(films);
 
 const FILM_COUNT_MAIN_LIST = 5;
 const FILM_COUNT_EXTRA_LIST = 2;
@@ -34,6 +43,8 @@ const filmsMainListContainer = siteFilmsMainListElement.querySelector('.films-li
 for (let i = 0; i < FILM_COUNT_MAIN_LIST; i++) {
   render(filmsMainListContainer, createFilmCardTemplate(), 'beforeend');
 }
+
+render(siteFilmsMainListElement, createShowMoreBtnTemlate(), 'beforeend');
 
 render(siteFilmsBoardElement, createFilmListExtraTemplate(), 'beforeend');
 const siteTopRatedFilmsListElement = document.querySelector('#top-rated-list');
