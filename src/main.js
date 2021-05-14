@@ -31,17 +31,17 @@ console.log(filters);
 const renderFilmCard = (container, film) => {
   const filmCardComponent = new FilmCardView(film);
 
-  filmCardComponent.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
+  filmCardComponent.setFilmCardClickHandler( () => {
     renderFilmPopup(film);
-  });
+  }, '.film-card__poster');
 
-  filmCardComponent.getElement().querySelector('.film-card__title').addEventListener('click', () => {
+  filmCardComponent.setFilmCardClickHandler ( ()  => {
     renderFilmPopup(film);
-  });
+  }, '.film-card__title');
 
-  filmCardComponent.getElement().querySelector('.film-card__comments').addEventListener('click', () => {
+  filmCardComponent.setFilmCardClickHandler(() => {
     renderFilmPopup(film);
-  });
+  }, '.film-card__comments');
 
   render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
 };
@@ -49,8 +49,8 @@ const renderFilmCard = (container, film) => {
 const renderFilmPopup = (film) => {
   const filmPopupComponent = new FilmPopupView(film, comments);
 
-  filmPopupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
-    evt.preventDefault();
+  filmPopupComponent.setCloseBtnClickHandler(() => {
+    // evt.preventDefault(); //??
     siteBodyElement.removeChild(filmPopupComponent.getElement());
     siteBodyElement.classList.remove('hide-overflow');
     document.removeEventListener('keydown', onEscKeyDown);
@@ -84,12 +84,10 @@ const renderFilmsBoard = (boardContainer, boardFilms) => {
   render(boardContainer,sortingComponent.getElement(), RenderPosition.BEFOREEND);
   render(boardContainer, boardComponent.getElement(), RenderPosition.BEFOREEND);
 
-  const sortingElement = boardContainer.querySelector('.sort');
   const boardElement = boardContainer.querySelector('.films');
 
   if (!boardFilms.length) {
-    sortingElement.remove();
-    sortingComponent.removeElement();
+    boardContainer.removeChild(sortingComponent.getElement());
     render(boardElement, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
     return;
   }
@@ -107,8 +105,7 @@ const renderFilmsBoard = (boardContainer, boardFilms) => {
     render(mainListComponent.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
     const showMoreBtn = mainListComponent.getElement().querySelector('.films-list__show-more');
 
-    showMoreBtn.addEventListener('click', (evt) => {
-      evt.preventDefault();
+    showMoreBtnComponent.setClickHandler(() => {
       boardFilms
         .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
         .forEach((boardFilm) => renderFilmCard(mainListContainer, boardFilm));
@@ -116,7 +113,7 @@ const renderFilmsBoard = (boardContainer, boardFilms) => {
       renderedFilmCount += FILM_COUNT_PER_STEP;
 
       if (renderedFilmCount >= boardFilms.length) {
-        showMoreBtn.remove();
+        showMoreBtn.remove();//на компоненте?? Удаление как у компонента сортировки??
       }
     });
   }

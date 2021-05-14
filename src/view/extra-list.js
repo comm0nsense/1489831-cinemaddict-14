@@ -1,9 +1,9 @@
 import AbstractView from './abstract';
 
-const createFilmListExtraTemplate = (filmsListType) => {
+const createFilmListExtraTemplate = (listTitle) => {
   return (
     `<section class="films-list films-list--extra">
-      <h2 class="films-list__title">${filmsListType}</h2>
+      <h2 class="films-list__title">${listTitle}</h2>
       <div class="films-list__container">
       </div>
      </section>`
@@ -11,7 +11,11 @@ const createFilmListExtraTemplate = (filmsListType) => {
 };
 
 export default class ExtraList extends AbstractView {
+  constructor(listTitle) {
+    super();
+    this._listTitle = listTitle;
+  }
   getTemplate() {
-    return createFilmListExtraTemplate(this._filmsListType);
+    return createFilmListExtraTemplate(this._listTitle);
   }
 }
