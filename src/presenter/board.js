@@ -25,11 +25,15 @@ export default class Board {
     this._emptyListComponent = new EmptyListView();
     this._topRatedListComponent = new ExtraListView(ExtraListTitles.TOP_RATED);
     this._mostCommentedListComponent = new ExtraListView(ExtraListTitles.MOST_COMMENTED);
+    this._showMoreBtnComponent =  new ShowMoreBtnView();
+
+    this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
   }
 
   init(boardFilms, commentsData) {
     this._boardFilms = boardFilms.slice();
     this._commentsData = commentsData.slice();
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
 
     render(this._boardContainer, this._sortingComponent, RenderPosition.BEFOREEND);
     render(this._boardContainer, this._boardContainerComponent, RenderPosition.BEFOREEND);
@@ -92,23 +96,18 @@ export default class Board {
       .forEach((boardFilm) => this._renderFilmCard(mainListContainer, boardFilm));
   }
 
-  _renderShowMoreBtn() {
-    let renderedFilmCount = FILM_COUNT_PER_STEP;
-    const showMoreBtnComponent =  new ShowMoreBtnView();
-    render(this._mainListComponent, showMoreBtnComponent, RenderPosition.BEFOREEND);
-    const mainListContainer = this._mainListComponent.getElement().querySelector('.films-list__container');
+  _handleShowMoreBtnClick() {
+    this._renderFilms(this._renderedFilmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP);
+    this._renderedFilmCount += FILM_COUNT_PER_STEP;
 
-    showMoreBtnComponent.setClickHandler(() => {
-      this._boardFilms
-        .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-        .forEach((boardFilm) => this._renderFilmCard(mainListContainer, boardFilm));
+    if (this._renderedFilmCount >= this._boardFilms.length) {
+      remove(this._showMoreBtnComponent);
+    }
+  }
 
-      renderedFilmCount += FILM_COUNT_PER_STEP;
-
-      if (renderedFilmCount >= this._boardFilms.length) {
-        remove(showMoreBtnComponent);
-      }
-    });
+  _renderShowMoreBtn(){
+    render(this._mainListComponent, this._showMoreBtnComponent, RenderPosition.BEFOREEND);
+    this._showMoreBtnComponent.setClickHandler(this._handleShowMoreBtnClick);
   }
 
   _renderMainList() {
