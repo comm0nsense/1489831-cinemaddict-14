@@ -1,4 +1,4 @@
-import {formatReleaseDate, formatCommentDate, convertRuntime} from '../util';
+import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
 import AbstractView from './abstract';
 
 /**

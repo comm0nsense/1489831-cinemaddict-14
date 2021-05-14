@@ -1,5 +1,5 @@
-import { convertRuntime, convertDateToYear } from '../util';
-import { SHORT_DESC_LENGTH } from '../const';
+import { convertRuntime, convertDateToYear } from '../utils/film';
+import { SHORT_DESC_LENGTH } from '../utils/const';
 import AbstractView from './abstract';
 
 const createFilmCardTemplate = (film) => {
