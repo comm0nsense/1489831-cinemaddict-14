@@ -5,15 +5,12 @@ import EmptyListView from '../view/empty-list';
 import ExtraListView from '../view/extra-list';
 import {ExtraListTitles, RenderPosition} from '../utils/const';
 import {remove, render} from '../utils/render';
-import FilmCardView from '../view/film-card';
 import ShowMoreBtnView from '../view/show-more-btn';
 import { sortByMostCommented, sortByRating} from '../utils/film';
-import FilmPopupView from '../view/film-popup';
+import FilmPresenter from './film';
 
 const FILM_COUNT_PER_STEP = 5;
 const FILM_COUNT_EXTRA_LIST = 2;
-
-const siteBodyElement = document.querySelector('body'); //вынести в константу?
 
 export default class Board {
   constructor(boardContainer) {
@@ -47,46 +44,8 @@ export default class Board {
   }
 
   _renderFilmCard (container, film) {
-
-    const filmCardComponent = new FilmCardView(film);
-
-    filmCardComponent.setFilmCardClickHandler( () => {
-      this._renderFilmPopup(film);
-    }, '.film-card__poster');
-
-    filmCardComponent.setFilmCardClickHandler ( ()  => {
-      this._renderFilmPopup(film);
-    }, '.film-card__title');
-
-    filmCardComponent.setFilmCardClickHandler(() => {
-      this._renderFilmPopup(film);
-    }, '.film-card__comments');
-
-    render(container, filmCardComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderFilmPopup(film) {
-    const filmPopupComponent = new FilmPopupView(film, this._commentsData);
-
-    filmPopupComponent.setCloseBtnClickHandler(() => {
-      // evt.preventDefault(); //??
-      remove(filmPopupComponent);
-      siteBodyElement.classList.remove('hide-overflow');
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        remove(filmPopupComponent);
-        siteBodyElement.classList.remove('hide-overflow');
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    render(siteBodyElement, filmPopupComponent, RenderPosition.BEFOREEND);
-    siteBodyElement.classList.add('hide-overflow');
-    document.addEventListener('keydown', onEscKeyDown);
+    const filmPresenter = new FilmPresenter(container, this._commentsData);
+    filmPresenter.init(film);
   }
 
   _renderFilms(from ,to) {
