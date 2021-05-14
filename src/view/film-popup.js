@@ -1,4 +1,5 @@
-import {formatReleaseDate, formatCommentDate, convertRuntime, createElement} from '../util';
+import {formatReleaseDate, formatCommentDate, convertRuntime} from '../util';
+import AbstractView from './abstract';
 
 /**
  * Функция создания шаблона комментария
@@ -180,27 +181,15 @@ const createFilmPopupTemplate = (film, comments) => {
   `;
 };
 
-export default class FilmPopup {
+export default class FilmPopup extends AbstractView {
   constructor(film, comments) {
-    this._element = null;
+    super();
     this._film = film;
     this._comments = comments;
   }
 
   getTemplate() {
     return createFilmPopupTemplate(this._film, this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

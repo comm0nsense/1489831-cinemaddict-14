@@ -1,6 +1,6 @@
-import {createElement} from '../util';
 import { convertRuntime, convertDateToYear } from '../util';
 import { SHORT_DESC_LENGTH } from '../const';
+import AbstractView from './abstract';
 
 const createFilmCardTemplate = (film) => {
   const {
@@ -39,26 +39,14 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

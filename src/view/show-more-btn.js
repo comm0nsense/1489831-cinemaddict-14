@@ -1,4 +1,4 @@
-import {createElement} from '../util';
+import AbstractView from './abstract';
 
 export const createShowMoreBtnTemlate = () => {
   return `
@@ -6,24 +6,8 @@ export const createShowMoreBtnTemlate = () => {
   `;
 };
 
-export default class ShowMoreBtn {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ShowMoreBtn extends AbstractView {
   getTemplate() {
     return createShowMoreBtnTemlate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
