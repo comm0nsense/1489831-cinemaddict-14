@@ -16,6 +16,10 @@ export default class Board {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
 
+    this._mainListFilmPresenter = {};
+    this._topRatedListFilmPresenter = {};
+    this._mostCommentedListFilmPresenter = {};
+
     this._boardContainerComponent = new FilmsBoardView();//section.films
     this._sortingComponent = new SortingView();//ul.sor
     this._mainListComponent = new MainListView();//section.films-list
@@ -31,6 +35,7 @@ export default class Board {
     this._boardFilms = boardFilms.slice();
     this._commentsData = commentsData.slice();
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    this._filmPresenter = {};
 
     render(this._boardContainer, this._sortingComponent, RenderPosition.BEFOREEND);
     render(this._boardContainer, this._boardContainerComponent, RenderPosition.BEFOREEND);
@@ -46,13 +51,39 @@ export default class Board {
   _renderFilmCard (container, film) {
     const filmPresenter = new FilmPresenter(container, this._commentsData);
     filmPresenter.init(film);
+    return filmPresenter;
   }
 
   _renderFilms(from ,to) {
     const mainListContainer = this._mainListComponent.getElement().querySelector('.films-list__container');
     this._boardFilms
       .slice(from, to)
-      .forEach((boardFilm) => this._renderFilmCard(mainListContainer, boardFilm));
+      .forEach((boardFilm) => {
+        this._mainListFilmPresenter[boardFilm.id] = this._renderFilmCard(mainListContainer, boardFilm);
+      });
+  }
+
+  _clearFilmLists() {
+    // Object
+    //   .values(this._filmPresenter)
+    //   .forEach((presenter) => presenter.destroy());
+    // this._filmPresenter = {};
+    // this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    // remove(this._showMoreBtnComponent);
+    const presenters = [
+      ...Object.values(this._mainListFilmPresenter),
+      ...Object.values(this._topRatedListFilmPresenter),
+      ...Object.values(this._mostCommentedListFilmPresenter),
+    ];
+
+    presenters.forEach((presenter) => presenter.destroy());
+
+    this._mainListFilmPresenter = {};
+    this._topRatedListFilmPresenter = {};
+    this._mostCommentedListFilmPresenter = {};
+
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this._showMoreBtnComponent);
   }
 
   _handleShowMoreBtnClick() {
@@ -84,7 +115,9 @@ export default class Board {
     const topRatedFilms = sortByRating(this._boardFilms);
     topRatedFilms
       .slice(0, FILM_COUNT_EXTRA_LIST)
-      .forEach((film) => this._renderFilmCard(topRatedListContainer, film));
+      .forEach((film) => {
+        this._topRatedListFilmPresenter[film.id] = this._renderFilmCard(topRatedListContainer, film);
+      });
   }
 
   _renderMostCommentedList() {
@@ -93,7 +126,9 @@ export default class Board {
     const mostCommentedFilms = sortByMostCommented(this._boardFilms);
     mostCommentedFilms
       .slice(0, FILM_COUNT_EXTRA_LIST)
-      .forEach((film) => this._renderFilmCard(mostCommentedListContainer, film));
+      .forEach((film) => {
+        this._mostCommentedListFilmPresenter[film.id] = this._renderFilmCard(mostCommentedListContainer, film);
+      });
   }
 
   _renderBoard() {
@@ -107,5 +142,6 @@ export default class Board {
     this._renderMainList();
     this._renderTopRatedList();
     this._renderMostCommentedList();
+    // this._clearFilmLists();
   }
 }
