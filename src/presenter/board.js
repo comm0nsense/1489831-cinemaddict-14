@@ -8,6 +8,7 @@ import {remove, render} from '../utils/render';
 import ShowMoreBtnView from '../view/show-more-btn';
 import { sortByMostCommented, sortByRating} from '../utils/film';
 import FilmPresenter from './film';
+import { updateItem } from '../utils/common';
 
 const FILM_COUNT_PER_STEP = 5;
 const FILM_COUNT_EXTRA_LIST = 2;
@@ -29,6 +30,7 @@ export default class Board {
     this._showMoreBtnComponent =  new ShowMoreBtnView();
 
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
   }
 
   init(boardFilms, commentsData) {
@@ -44,12 +46,33 @@ export default class Board {
     this._renderBoard();
   }
 
+  /**
+   * Функция по изменению данных о фильме, которая передается в презентер фильма как changeData
+   * @param {object}updatedFilm
+   * @private
+   */
+  _handleFilmChange(updatedFilm) {
+    this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+
+    if (this._mainListFilmPresenter[updatedFilm.id]) {
+      this._mainListFilmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (this._topRatedListFilmPresenter[updatedFilm.id]) {
+      this._topRatedListFilmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (this._mostCommentedListFilmPresenter[updatedFilm.id]) {
+      this._mostCommentedListFilmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+  }
+
   _renderEmptyList() {
     render(this._boardElement, this._emptyListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmCard (container, film) {
-    const filmPresenter = new FilmPresenter(container, this._commentsData);
+    const filmPresenter = new FilmPresenter(container, this._commentsData, this._handleFilmChange);
     filmPresenter.init(film);
     return filmPresenter;
   }
@@ -64,12 +87,6 @@ export default class Board {
   }
 
   _clearFilmLists() {
-    // Object
-    //   .values(this._filmPresenter)
-    //   .forEach((presenter) => presenter.destroy());
-    // this._filmPresenter = {};
-    // this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    // remove(this._showMoreBtnComponent);
     const presenters = [
       ...Object.values(this._mainListFilmPresenter),
       ...Object.values(this._topRatedListFilmPresenter),
