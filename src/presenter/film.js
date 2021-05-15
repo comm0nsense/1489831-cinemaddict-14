@@ -4,15 +4,21 @@ import {RenderPosition} from '../utils/const';
 import FilmPopupView from '../view/film-popup';
 
 const siteBodyElement = document.querySelector('body'); //вынести в константу?
+const Mode = {
+  DEFAULT: 'DEAFULT',
+  POPUP: 'POPUP',
+};
 
 export default class Film {
-  constructor(filmListsContainer, commentsData, changeData) {
+  constructor(filmListsContainer, commentsData, changeData, changeMode) {
     this._filmListsContainer = filmListsContainer;
     this._commentsData = commentsData;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
@@ -46,6 +52,13 @@ export default class Film {
       replace(this._filmCardComponent, prevFilmCardComponent);
       remove(prevFilmCardComponent);
     }
+
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._closeFilmPopup();
+    }
   }
 
   destroy() {
@@ -71,6 +84,8 @@ export default class Film {
   }
 
   _handleFilmCardClick() {
+    this._changeMode();
+    this._mode = Mode.POPUP;
     this._renderFilmPopup();
   }
 
@@ -117,5 +132,6 @@ export default class Film {
     this._filmPopupComponent = null;
     siteBodyElement.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDownHandler);
+    this._mode = Mode.DEFAULT;
   }
 }

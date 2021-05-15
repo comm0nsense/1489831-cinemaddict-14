@@ -31,6 +31,7 @@ export default class Board {
 
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(boardFilms, commentsData) {
@@ -44,6 +45,12 @@ export default class Board {
     this._boardElement = this._boardContainer.querySelector('.films');
 
     this._renderBoard();
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._mainListFilmPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   /**
@@ -72,7 +79,7 @@ export default class Board {
   }
 
   _renderFilmCard (container, film) {
-    const filmPresenter = new FilmPresenter(container, this._commentsData, this._handleFilmChange);
+    const filmPresenter = new FilmPresenter(container, this._commentsData, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
     return filmPresenter;
   }
