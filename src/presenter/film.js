@@ -31,6 +31,8 @@ export default class Film {
     this._handlePopupFavoriteClick = this._handlePopupFavoriteClick.bind(this);
     this._handlePopupMarkAsWatchedClick = this._handlePopupMarkAsWatchedClick.bind(this);
     this._handlePopupAddToWatchlistClick = this._handlePopupAddToWatchlistClick.bind(this);
+
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film) {
@@ -141,6 +143,12 @@ export default class Film {
     this._filmPopupComponent.setPopupFavoriteClickHandler(this._handlePopupFavoriteClick);///POPUP
     this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handlePopupAddToWatchlistClick);
     this._filmPopupComponent.setPopupMarkAsWatchedClickHandler(this._handlePopupMarkAsWatchedClick);//POPUP
+
+    this._filmPopupComponent.setFormSubmitHandler(this._handleFormSubmit);
+  }
+
+  _handleFormSubmit(comment) {
+    console.log(comment);
   }
 
   _handleCloseBtnClick() {
