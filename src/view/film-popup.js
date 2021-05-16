@@ -185,57 +185,106 @@ export default class FilmPopup extends AbstractView {
   constructor(film, comments) {
     super();
     this._film = film;
+    // this._data = FilmPopup.parseFilmToData(film);
     this._comments = comments;
 
     this._closeBtnClickHandler = this._closeBtnClickHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
-    this._markAsWatchedClickHandler = this._markAsWatchedClickHandler.bind(this);
-    this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
+    this._popupFavoriteClickHandler = this._popupFavoriteClickHandler.bind(this);
+    this._popupMarkAsWatchedClickHandler = this._popupMarkAsWatchedClickHandler.bind(this);
+    this._popupAddToWatchlistClickHandler = this._popupAddToWatchlistClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmPopupTemplate(this._film, this._comments);
   }
 
+  // updateData(update) {
+  //   if (!update) {
+  //     return;
+  //   }
+  //
+  //   this._data = Object.assign(
+  //     {},
+  //     this._data,
+  //     update,
+  //   );
+  //
+  //   this.updateElement();
+  // }
+  //
+  // updateElement() {
+  //   const prevElement = this.getElement();
+  //   const parent = prevElement.parentElement;
+  //   this.removeElement();
+  //
+  //   const newElement = this.getElement();
+  //
+  //   parent.replaceChild(newElement, prevElement);
+  // }
+
   _closeBtnClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeBtnClick();
   }
 
-  _favoriteClickHandler() {
-    this._callback.favoriteClick(this._film);
+  _popupFavoriteClickHandler(evt) {
+    evt.preventDefault();//!!!
+    this._callback.popupFavoriteClick(this._film);
   }
 
-  _markAsWatchedClickHandler() {
-    this._callback.markAsWatchedClick(this._film);
+  _popupMarkAsWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.popupMarkAsWatchedClick(this._film);
   }
 
-  _addToWatchlistClickHandler() {
-    this._callback.addToWatchlistClick(this._filn);
+  _popupAddToWatchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.popupAddToWatchlistClick(this._film);
   }
 
-  setMarkAsWatchedClickHandler(callback) {
-    this._callback.markAsWatchedClick = callback;
+  setPopupMarkAsWatchedClickHandler(callback) {
+    this._callback.popupMarkAsWatchedClick = callback;
     this.getElement().querySelector('.film-details__control-label--watched')
-      .addEventListener('click', this._markAsWatchedClickHandler);
+      .addEventListener('click', this._popupMarkAsWatchedClickHandler);
   }
 
-  setAddToWatchlistClickHandler(callback) {
-    this._callback.addToWatchlistClick = callback;
+  setPopupAddToWatchlistClickHandler(callback) {
+    this._callback.popupAddToWatchlistClick = callback;
     this.getElement().querySelector('.film-details__control-label--watchlist')
-      .addEventListener('click', this._addToWatchlistClickHandler);
+      .addEventListener('click', this._popupAddToWatchlistClickHandler);
   }
 
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
+  setPopupFavoriteClickHandler(callback) {
+    this._callback.popupFavoriteClick = callback;
     this.getElement().querySelector('.film-details__control-label--favorite')
-      .addEventListener('click', this._favoriteClickHandler);
+      .addEventListener('click', this._popupFavoriteClickHandler);
   }
 
   setCloseBtnClickHandler(callback) {
     this._callback.closeBtnClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeBtnClickHandler);
   }
+  //
+  // static parseFilmToData(film) {
+  //   return Object.assign(
+  //     {},
+  //     film,
+  //     {
+  //       isFilmFavorite: film.isFavorite,
+  //       isFilmAddedToWatchlist: film.isWatchlist,
+  //       isFilmAlreadyWatched: film.isAlreadyWatched,
+  //     },
+  //   );
+  // }
+  //
+  // static parseDataToFilm(data) {
+  //   data = Object.assign({}, data);
+  //
+  //   delete data.isFilmFavorite;
+  //   delete data.isFilmAddedToWatchlist;
+  //   delete data.isAlreadyWatched;
+  //
+  //   return data;
+  // }
 }
 

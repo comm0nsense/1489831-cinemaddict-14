@@ -5,7 +5,7 @@ import FilmPopupView from '../view/film-popup';
 
 const siteBodyElement = document.querySelector('body'); //вынести в константу?
 const Mode = {
-  DEFAULT: 'DEAFULT',
+  DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
 };
 
@@ -27,6 +27,10 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleMarkAsWatchedClick = this._handleMarkAsWatchedClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
+
+    this._handlePopupFavoriteClick = this._handlePopupFavoriteClick.bind(this);
+    this._handlePopupMarkAsWatchedClick = this._handlePopupMarkAsWatchedClick.bind(this);
+    this._handlePopupAddToWatchlistClick = this._handlePopupAddToWatchlistClick.bind(this);
   }
 
   init(film) {
@@ -52,7 +56,6 @@ export default class Film {
       replace(this._filmCardComponent, prevFilmCardComponent);
       remove(prevFilmCardComponent);
     }
-
   }
 
   resetView() {
@@ -102,18 +105,42 @@ export default class Film {
       return;
     }
 
-    if (this._filmPopupComponent.getElement().contains(prevFilmPopupComponent.getElement())){
+    if (this._mode === Mode.POPUP) {
       replace(this._filmPopupComponent, prevFilmPopupComponent);
     }
 
     remove(prevFilmPopupComponent);
   }
 
+  _handlePopupFavoriteClick() {
+    this._changeData(
+      Object.assign({}, this._film, { isFavorite: !this._film.isFavorite }),
+    );
+
+    this._renderFilmPopup(this._film, this._commentsData);
+  }
+
+  _handlePopupMarkAsWatchedClick() {
+    this._changeData(
+      Object.assign({}, this._film, { isAlreadyWatched: !this._film.isAlreadyWatched }),
+    );
+
+    this._renderFilmPopup(this._film, this._commentsData);
+  }
+
+  _handlePopupAddToWatchlistClick() {
+    this._changeData(
+      Object.assign({}, this._film, { isWatchlist: !this._film.isWatchlist }),
+    );
+
+    this._renderFilmPopup(this._film, this._commentsData);
+  }
+
   _addPopupEvents() {
     this._filmPopupComponent.setCloseBtnClickHandler(this._handleCloseBtnClick);
-    this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._filmPopupComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
-    this._filmPopupComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
+    this._filmPopupComponent.setPopupFavoriteClickHandler(this._handlePopupFavoriteClick);///POPUP
+    this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handlePopupAddToWatchlistClick);
+    this._filmPopupComponent.setPopupMarkAsWatchedClickHandler(this._handlePopupMarkAsWatchedClick);//POPUP
   }
 
   _handleCloseBtnClick() {

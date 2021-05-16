@@ -87,7 +87,7 @@ export default class Board {
   }
 
   /**
-   * Функция по изменению данных о фильме, которая передается в презентер фильма как changeData
+   * Функция по изменению данных о фильме, которая передается в film-presenter фильма как changeData
    * @param {object}updatedFilm
    * @private
    */
