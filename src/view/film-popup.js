@@ -1,5 +1,6 @@
 import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
-import AbstractView from './abstract';
+// import AbstractView from './abstract';
+import SmartView from './smart.js';
 
 const DEFAULT_NEW_COMMENT = {
   comment: '',
@@ -59,7 +60,7 @@ const createFilmPopupTemplate = (film, comments) => {
     newComment,
   } = film;
 
-  const {emoji} = newComment;
+  const {emoji, comment} = newComment;
 
   const filmComments = comments.filter(({id}) => commentsIds.includes(id));
   // console.log(filmComments);
@@ -159,7 +160,7 @@ const createFilmPopupTemplate = (film, comments) => {
               </div>
 
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment ? comment : ''}</textarea>
               </label>
 
               <div class="film-details__emoji-list">
@@ -191,7 +192,7 @@ const createFilmPopupTemplate = (film, comments) => {
   `;
 };
 
-export default class FilmPopup extends AbstractView {
+export default class FilmPopup extends SmartView {
   constructor(film, comments) {
     super();
     this._film = film;
@@ -204,6 +205,7 @@ export default class FilmPopup extends AbstractView {
     this._popupAddToWatchlistClickHandler = this._popupAddToWatchlistClickHandler.bind(this);
 
     this._changeCommentEmojiHandler = this._changeCommentEmojiHandler.bind(this);
+    this._inputNewCommentHandler =  this._inputNewCommentHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -224,32 +226,6 @@ export default class FilmPopup extends AbstractView {
     return createFilmPopupTemplate(this._data, this._comments);
   }
 
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
-  }
-
   _changeCommentEmojiHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
@@ -261,10 +237,21 @@ export default class FilmPopup extends AbstractView {
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
 
+  _inputNewCommentHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      newComment: Object.assign({}, this._data.newComment, {comment: evt.target.value}),
+    }, true);
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelectorAll('.film-details__emoji-item')
       .forEach((item) => item.addEventListener('change', this._changeCommentEmojiHandler));
+
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._inputNewCommentHandler);
   }
 
   restoreHandlers() {
