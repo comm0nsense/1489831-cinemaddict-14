@@ -10,3 +10,9 @@ export const ExtraListTitles = {
   MOST_COMMENTED: 'Most Commented',
 };
 
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
+

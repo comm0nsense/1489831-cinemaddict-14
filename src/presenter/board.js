@@ -3,10 +3,10 @@ import MainListView from '../view/main-list';
 import SortingView from '../view/sorting';
 import EmptyListView from '../view/empty-list';
 import ExtraListView from '../view/extra-list';
-import {ExtraListTitles, RenderPosition} from '../utils/const';
+import {ExtraListTitles, RenderPosition, SortType} from '../utils/const';
 import {remove, render} from '../utils/render';
 import ShowMoreBtnView from '../view/show-more-btn';
-import { sortByMostCommented, sortByRating} from '../utils/film';
+import { sortByMostCommented, sortByRating, sortByReleaseDate} from '../utils/film';
 import FilmPresenter from './film';
 import { updateItem } from '../utils/common';
 
@@ -21,6 +21,8 @@ export default class Board {
     this._topRatedListFilmPresenter = {};
     this._mostCommentedListFilmPresenter = {};
 
+    this._currentSortType = SortType.DEFAULT;
+
     this._boardContainerComponent = new FilmsBoardView();//section.films
     this._sortingComponent = new SortingView();//ul.sor
     this._mainListComponent = new MainListView();//section.films-list
@@ -32,19 +34,50 @@ export default class Board {
     this._handleShowMoreBtnClick = this._handleShowMoreBtnClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(boardFilms, commentsData) {
     this._boardFilms = boardFilms.slice();
+    this._sourcedBoardFilms = boardFilms.slice();
     this._commentsData = commentsData.slice();
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    this._filmPresenter = {};
 
-    render(this._boardContainer, this._sortingComponent, RenderPosition.BEFOREEND);
+    this._renderSorting();
     render(this._boardContainer, this._boardContainerComponent, RenderPosition.BEFOREEND);
     this._boardElement = this._boardContainer.querySelector('.films');
 
     this._renderBoard();
+  }
+
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._boardFilms.sort(sortByReleaseDate);
+        break;
+      case SortType.RATING:
+        this._boardFilms = sortByRating(this._boardFilms);
+        break;
+      default:
+        this._boardFilms = this._boardFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearMainList();
+    this._renderMainList();
+  }
+
+  _renderSorting() {
+    render(this._boardContainer, this._sortingComponent, RenderPosition.BEFOREEND);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _handleModeChange() {
@@ -60,6 +93,7 @@ export default class Board {
    */
   _handleFilmChange(updatedFilm) {
     this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+    this._sourcedBoardFilms = updateItem(this._sourcedBoardFilms, updatedFilm);
 
     if (this._mainListFilmPresenter[updatedFilm.id]) {
       this._mainListFilmPresenter[updatedFilm.id].init(updatedFilm);
@@ -91,6 +125,16 @@ export default class Board {
       .forEach((boardFilm) => {
         this._mainListFilmPresenter[boardFilm.id] = this._renderFilmCard(mainListContainer, boardFilm);
       });
+  }
+
+  _clearMainList() {
+    Object
+      .values(this._mainListFilmPresenter)
+      .forEach((presenter) => presenter.destroy());
+
+    this._mainListFilmPresenter = {};
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this._showMoreBtnComponent);
   }
 
   _clearFilmLists() {
@@ -125,7 +169,7 @@ export default class Board {
   }
 
   _renderMainList() {
-    render(this._boardContainerComponent, this._mainListComponent, RenderPosition.BEFOREEND);
+    render(this._boardContainerComponent, this._mainListComponent, RenderPosition.AFTERBEGIN);
     this._renderFilms(0, Math.min(this._boardFilms.length, FILM_COUNT_PER_STEP));
 
     if (this._boardFilms.length > FILM_COUNT_PER_STEP) {
