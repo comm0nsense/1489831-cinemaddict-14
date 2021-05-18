@@ -168,7 +168,7 @@ const generateMovieCommentsIds = (commentsIds) => {
   return commentsIds.splice(0, getRandomInteger(0, 5));//splice изменяет исходный массив
 };
 
-let filmId = 0;
+let filmId = 1;
 
 const generateFilm = (array) => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));

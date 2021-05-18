@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card';
 import {remove, render, replace } from '../utils/render';
-import {RenderPosition} from '../utils/const';
+import {RenderPosition, UserAction, UpdateType} from '../utils/const';
 import FilmPopupView from '../view/film-popup';
 
 const siteBodyElement = document.querySelector('body'); //вынести в константу?
@@ -27,10 +27,6 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleMarkAsWatchedClick = this._handleMarkAsWatchedClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
-
-    this._handlePopupFavoriteClick = this._handlePopupFavoriteClick.bind(this);
-    this._handlePopupMarkAsWatchedClick = this._handlePopupMarkAsWatchedClick.bind(this);
-    this._handlePopupAddToWatchlistClick = this._handlePopupAddToWatchlistClick.bind(this);
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
@@ -72,18 +68,24 @@ export default class Film {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       Object.assign({}, this._film, { isFavorite: !this._film.isFavorite }),
     );
   }
 
   _handleMarkAsWatchedClick() {
     this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       Object.assign({}, this._film, { isAlreadyWatched: !this._film.isAlreadyWatched }),
     );
   }
 
   _handleAddToWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       Object.assign({}, this._film, { isWatchlist: !this._film.isWatchlist }),
     );
   }
@@ -114,35 +116,11 @@ export default class Film {
     remove(prevFilmPopupComponent);
   }
 
-  _handlePopupFavoriteClick() {
-    this._changeData(
-      Object.assign({}, this._film, { isFavorite: !this._film.isFavorite }),
-    );
-
-    this._renderFilmPopup(this._film, this._commentsData);
-  }
-
-  _handlePopupMarkAsWatchedClick() {
-    this._changeData(
-      Object.assign({}, this._film, { isAlreadyWatched: !this._film.isAlreadyWatched }),
-    );
-
-    this._renderFilmPopup(this._film, this._commentsData);
-  }
-
-  _handlePopupAddToWatchlistClick() {
-    this._changeData(
-      Object.assign({}, this._film, { isWatchlist: !this._film.isWatchlist }),
-    );
-
-    this._renderFilmPopup(this._film, this._commentsData);
-  }
-
   _addPopupEvents() {
     this._filmPopupComponent.setCloseBtnClickHandler(this._handleCloseBtnClick);
-    this._filmPopupComponent.setPopupFavoriteClickHandler(this._handlePopupFavoriteClick);///POPUP
-    this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handlePopupAddToWatchlistClick);
-    this._filmPopupComponent.setPopupMarkAsWatchedClickHandler(this._handlePopupMarkAsWatchedClick);//POPUP
+    this._filmPopupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
+    this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
+    this._filmPopupComponent.setPopupMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
 
     this._filmPopupComponent.setFormSubmitHandler(this._handleFormSubmit);
   }

@@ -289,17 +289,17 @@ export default class FilmPopup extends SmartView {
   }
 
   _popupFavoriteClickHandler(evt) {
-    evt.preventDefault();
+    // evt.preventDefault();
     this._callback.popupFavoriteClick(this._film);
   }
 
   _popupMarkAsWatchedClickHandler(evt) {
-    evt.preventDefault();
+    // evt.preventDefault();
     this._callback.popupMarkAsWatchedClick(this._film);
   }
 
   _popupAddToWatchlistClickHandler(evt) {
-    evt.preventDefault();
+    // evt.preventDefault();
     this._callback.popupAddToWatchlistClick(this._film);
   }
 
