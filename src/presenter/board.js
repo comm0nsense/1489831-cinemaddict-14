@@ -59,7 +59,6 @@ export default class Board {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
     const filteredFilms = filter[filterType](films);
-    console.log(filteredFilms);
     switch (this._currentSortType) {
       case SortType.DATE:
         return filteredFilms.sort(sortByReleaseDate);
@@ -151,13 +150,14 @@ export default class Board {
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
-        this._clearMainList();
+        this._clearMainList({resetRenderedFilmCount: false});
         this._clearExtraLists();
         this._renderBoard();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
         this._clearMainList({resetRenderedTaskCount: true, resetSortType: true});
+        this._clearExtraLists();
         this._renderBoard();
         break;
     }
@@ -214,37 +214,6 @@ export default class Board {
 
     remove(this._topRatedListComponent);
     remove(this._mostCommentedListComponent);
-  }
-
-  _clearFilmLists({resetRenderedFilmCount = false, resetSortType = false} = {}) {
-    const filmCount = this._getFilms().length;
-
-    const presenters = [
-      ...Object.values(this._mainListFilmPresenter),
-      ...Object.values(this._topRatedListFilmPresenter),
-      ...Object.values(this._mostCommentedListFilmPresenter),
-    ];
-
-    presenters.forEach((presenter) => presenter.destroy());
-
-    this._mainListFilmPresenter = {};
-    this._topRatedListFilmPresenter = {};
-    this._mostCommentedListFilmPresenter = {};
-
-    remove(this._showMoreBtnComponent);
-    //удаление компонента пустой лист?? Нужно??
-    remove(this._sortingComponent);
-    remove(this._topRatedListComponent);
-    remove(this._mostCommentedListComponent);
-
-    if (resetRenderedFilmCount) {
-      this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    } else {
-      // на случай если перерисовка списка вызвана
-      // уменьшением количества фильмов (например, убираем из favorites/watchlist/watched
-      // нужно скорректировать число показанных фильмов
-      this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
-    }
   }
 
   _handleShowMoreBtnClick() {
