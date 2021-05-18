@@ -39,6 +39,11 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
 
+    this._filmComments = this._commentsData.filter(({ id }) => this._film.commentsIds.includes(id));
+    const prevFilmPopupComponent = this._filmPopupComponent;
+    this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
+    this._addPopupEvents();
+
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__poster');
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__title');
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__comments');
@@ -54,6 +59,12 @@ export default class Film {
     if (this._filmListsContainer.contains(prevFilmCardComponent.getElement())) {
       replace(this._filmCardComponent, prevFilmCardComponent);
       remove(prevFilmCardComponent);
+    }
+
+    if (this._mode === Mode.POPUP) {
+      replace(this._filmPopupComponent, prevFilmPopupComponent);
+      remove(prevFilmPopupComponent);
+      this._addPopupEvents();
     }
   }
 
@@ -98,26 +109,27 @@ export default class Film {
   }
 
   _renderFilmPopup() {
-    this._filmComments = this._commentsData.filter(({ id }) => this._film.commentsIds.includes(id));
-    console.log(this._filmComments);
+    // this._filmComments = this._commentsData.filter(({ id }) => this._film.commentsIds.includes(id));
+    // console.log(this._filmComments);
+    //
+    // const prevFilmPopupComponent = this._filmPopupComponent;
+    // this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
+    // this._addPopupEvents();
 
-    const prevFilmPopupComponent = this._filmPopupComponent;
+    // if (prevFilmPopupComponent === null) {
     this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
+    render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
+    siteBodyElement.classList.add('hide-overflow');
+    document.addEventListener('keydown', this._onEscKeyDownHandler);
     this._addPopupEvents();
+    // return;
+    // }
 
-    if (prevFilmPopupComponent === null) {
-      render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
-      siteBodyElement.classList.add('hide-overflow');
-      document.addEventListener('keydown', this._onEscKeyDownHandler);
+    // if (this._mode === Mode.POPUP) {
+    //   replace(this._filmPopupComponent, prevFilmPopupComponent);
+    // }
 
-      return;
-    }
-
-    if (this._mode === Mode.POPUP) {
-      replace(this._filmPopupComponent, prevFilmPopupComponent);
-    }
-
-    remove(prevFilmPopupComponent);
+    // remove(prevFilmPopupComponent);
   }
 
   _addPopupEvents() {
@@ -131,17 +143,17 @@ export default class Film {
   }
 
   _handleDeleteCommentClick(deletedCommentId) {
-    console.log('presenter: deleted comment id - ', deletedCommentId);
+    // console.log('presenter: deleted comment id - ', deletedCommentId);
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
-    console.log(`before update ${this._film.commentsIds}`);
-    console.log(`after update ${updatedCommentsIds}`);
+    // console.log(`before update ${this._film.commentsIds}`);
+    // console.log(`after update ${updatedCommentsIds}`);
     // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
     this._changeData(
       UserAction.UPDATE,
       UpdateType.PATCH,
       {...this._film, commentsIds: updatedCommentsIds},
     );
-    console.log(this._film.commentsIds);
+    // console.log(this._film.commentsIds);
     // remove(this._filmPopupComponent);
     // this._renderFilmPopup();
   }

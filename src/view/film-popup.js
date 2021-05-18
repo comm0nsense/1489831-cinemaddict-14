@@ -303,18 +303,14 @@ export default class FilmPopup extends SmartView {
 
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
+    const scrollPosition = document.querySelector('.film-details').scrollTop;
     this._callback.deleteCommentClick(evt.target.id);
-    const ids = this._film.commentsIds;
-    console.log(`comments Ids before: ${ids}`);
-    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
-    this.updateData({commentsIds: updatedCommentsIds});
-    console.log(`comments Ids after: ${this._film.commentsIds}`);
+    document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
 
   setDeleteCommentClickHandler(callback) {
     this._callback.deleteCommentClick = callback;
     const allDeleteButtons = this.getElement().querySelectorAll('.film-details__comment-delete');
-    console.log(allDeleteButtons);
     allDeleteButtons.forEach((deleteBtn) => deleteBtn.addEventListener('click', this._deleteCommentClickHandler));
   }
 
