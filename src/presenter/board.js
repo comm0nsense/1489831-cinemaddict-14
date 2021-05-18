@@ -108,21 +108,7 @@ export default class Board {
    * @private
    */
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // this._boardFilms = updateItem(this._boardFilms, updatedFilm);
-    // this._sourcedBoardFilms = updateItem(this._sourcedBoardFilms, updatedFilm);
-    // Здесь будем вызывать обновление модели
-    // if (this._mainListFilmPresenter[updatedFilm.id]) {
-    //   this._mainListFilmPresenter[updatedFilm.id].init(updatedFilm);
-    // }
-    //
-    // if (this._topRatedListFilmPresenter[updatedFilm.id]) {
-    //   this._topRatedListFilmPresenter[updatedFilm.id].init(updatedFilm);
-    // }
-    //
-    // if (this._mostCommentedListFilmPresenter[updatedFilm.id]) {
-    //   this._mostCommentedListFilmPresenter[updatedFilm.id].init(updatedFilm);
-    // }
+    // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE:
         this._filmsModel.updateFilm(updateType, update);
@@ -142,11 +128,13 @@ export default class Board {
    * @private
    */
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
+    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
         this._mainListFilmPresenter[data.id].init(data);
+        this._topRatedListFilmPresenter[data.id].init(data);
+        this._mostCommentedListFilmPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)

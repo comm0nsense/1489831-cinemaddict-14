@@ -11,13 +11,13 @@ import FilterPresenter from './presenter/filter';
 
 const FILM_COUNT = 25;
 
-const comments = generateComments(25);
+const comments = generateComments(55);
 const commentsIds = generateArrayOfCommentsIds(comments);
 const films = generateFilms(FILM_COUNT, commentsIds);
 
 
 // console.log(comments);
-console.log(films);
+// console.log(films);
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
