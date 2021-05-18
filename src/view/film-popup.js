@@ -63,9 +63,9 @@ const createFilmPopupTemplate = (film, comments) => {
 
   const {emotion, text} = newComment;
 
-  const filmComments = comments.filter(({id}) => commentsIds.includes(id));
+  // const filmComments = comments.filter(({id}) => commentsIds.includes(id));
   // console.log(filmComments);
-  const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment)).join('');
+  const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
 
   const genreList = genres.length > 1
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
@@ -209,6 +209,7 @@ export default class FilmPopup extends SmartView {
     this._inputNewCommentHandler =  this._inputNewCommentHandler.bind(this);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -288,19 +289,33 @@ export default class FilmPopup extends SmartView {
     this._callback.closeBtnClick();
   }
 
-  _popupFavoriteClickHandler(evt) {
-    // evt.preventDefault();
+  _popupFavoriteClickHandler() {
     this._callback.popupFavoriteClick(this._film);
   }
 
-  _popupMarkAsWatchedClickHandler(evt) {
-    // evt.preventDefault();
+  _popupMarkAsWatchedClickHandler() {
     this._callback.popupMarkAsWatchedClick(this._film);
   }
 
-  _popupAddToWatchlistClickHandler(evt) {
-    // evt.preventDefault();
+  _popupAddToWatchlistClickHandler() {
     this._callback.popupAddToWatchlistClick(this._film);
+  }
+
+  _deleteCommentClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteCommentClick(evt.target.id);
+    const ids = this._film.commentsIds;
+    console.log(`comments Ids before: ${ids}`);
+    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
+    this.updateData({commentsIds: updatedCommentsIds});
+    console.log(`comments Ids after: ${this._film.commentsIds}`);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+    const allDeleteButtons = this.getElement().querySelectorAll('.film-details__comment-delete');
+    console.log(allDeleteButtons);
+    allDeleteButtons.forEach((deleteBtn) => deleteBtn.addEventListener('click', this._deleteCommentClickHandler));
   }
 
   setPopupMarkAsWatchedClickHandler(callback) {

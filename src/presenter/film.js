@@ -27,6 +27,7 @@ export default class Film {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleMarkAsWatchedClick = this._handleMarkAsWatchedClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
@@ -97,8 +98,11 @@ export default class Film {
   }
 
   _renderFilmPopup() {
+    this._filmComments = this._commentsData.filter(({ id }) => this._film.commentsIds.includes(id));
+    console.log(this._filmComments);
+
     const prevFilmPopupComponent = this._filmPopupComponent;
-    this._filmPopupComponent = new FilmPopupView(this._film, this._commentsData);
+    this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
     this._addPopupEvents();
 
     if (prevFilmPopupComponent === null) {
@@ -123,6 +127,23 @@ export default class Film {
     this._filmPopupComponent.setPopupMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
 
     this._filmPopupComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+  }
+
+  _handleDeleteCommentClick(deletedCommentId) {
+    console.log('presenter: deleted comment id - ', deletedCommentId);
+    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
+    console.log(`before update ${this._film.commentsIds}`);
+    console.log(`after update ${updatedCommentsIds}`);
+    // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
+    this._changeData(
+      UserAction.UPDATE,
+      UpdateType.PATCH,
+      {...this._film, commentsIds: updatedCommentsIds},
+    );
+    console.log(this._film.commentsIds);
+    // remove(this._filmPopupComponent);
+    // this._renderFilmPopup();
   }
 
   _handleFormSubmit(comment) {
