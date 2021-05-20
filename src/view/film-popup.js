@@ -304,9 +304,9 @@ export default class FilmPopup extends SmartView {
     const scrollPosition = document.querySelector('.film-details').scrollTop;
     this._callback.deleteCommentClick(evt.target.id);
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
-
+    const array = Object.values(updatedCommentsIds);
     this.updateData({
-      commentsIds: Object.assign({}, updatedCommentsIds),
+      commentsIds: array,
     });
 
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
