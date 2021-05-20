@@ -2,6 +2,10 @@ import FilmCardView from '../view/film-card';
 import {remove, render, replace } from '../utils/render';
 import {RenderPosition, UserAction, UpdateType} from '../utils/const';
 import FilmPopupView from '../view/film-popup';
+import { generateComments } from '../mock/film';
+import CommentsModel from '../model/comments';
+
+export const comments = generateComments(55);
 
 const siteBodyElement = document.querySelector('body'); //вынести в константу?
 const Mode = {
@@ -10,9 +14,8 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmListsContainer, commentsData, changeData, changeMode) {
+  constructor(filmListsContainer, changeData, changeMode) {
     this._filmListsContainer = filmListsContainer;
-    this._commentsData = commentsData;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
@@ -39,7 +42,10 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
 
-    this._filmComments = this._commentsData.filter(({ id }) => this._film.commentsIds.includes(id));
+    this._commentsModel = new CommentsModel();
+    this._commentsModel.setComments(comments);
+
+    this._filmComments = this._commentsModel.getComments().filter(({ id }) => this._film.commentsIds.includes(id));
     const prevFilmPopupComponent = this._filmPopupComponent;
     this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
     this._addPopupEvents();
@@ -109,30 +115,19 @@ export default class Film {
   }
 
   _renderFilmPopup() {
-    // this._filmComments = this._commentsData.filter(({ id }) => this._film.commentsIds.includes(id));
-    // console.log(this._filmComments);
-    //
-    // const prevFilmPopupComponent = this._filmPopupComponent;
-    // this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
-    // this._addPopupEvents();
 
-    // if (prevFilmPopupComponent === null) {
     this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
     render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
+
     siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
+
     this._addPopupEvents();
-    // return;
-    // }
-
-    // if (this._mode === Mode.POPUP) {
-    //   replace(this._filmPopupComponent, prevFilmPopupComponent);
-    // }
-
-    // remove(prevFilmPopupComponent);
   }
 
   _addPopupEvents() {
+
+
     this._filmPopupComponent.setCloseBtnClickHandler(this._handleCloseBtnClick);
     this._filmPopupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
     this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
@@ -143,19 +138,13 @@ export default class Film {
   }
 
   _handleDeleteCommentClick(deletedCommentId) {
-    // console.log('presenter: deleted comment id - ', deletedCommentId);
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
-    // console.log(`before update ${this._film.commentsIds}`);
-    // console.log(`after update ${updatedCommentsIds}`);
     // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
     this._changeData(
       UserAction.UPDATE,
       UpdateType.PATCH,
       {...this._film, commentsIds: updatedCommentsIds},
     );
-    // console.log(this._film.commentsIds);
-    // remove(this._filmPopupComponent);
-    // this._renderFilmPopup();
   }
 
   _handleFormSubmit(comment) {

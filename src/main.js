@@ -1,28 +1,23 @@
 import UserProfileView from './view/user-profile';
 import StatisticsView from './view/statistics';
-import { generateComments, generateArrayOfCommentsIds, generateFilms} from './mock/film';
+import { generateArrayOfCommentsIds, generateFilms} from './mock/film';
 import { render } from './utils/render';
 import { RenderPosition } from './utils/const';
 import BoardPresenter from './presenter/board';
 import FilmsModel from './model/films';
-import CommentsModel from './model/comments';
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
+import { comments } from './presenter/film';
 
 const FILM_COUNT = 12;
 
-const comments = generateComments(55);
 const commentsIds = generateArrayOfCommentsIds(comments);
 const films = generateFilms(FILM_COUNT, commentsIds);
-
 
 // console.log(comments);
 // console.log(films);
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
-
-const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
 
 const filterModel = new FilterModel();//7.1.10
 
@@ -31,7 +26,7 @@ render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 const siteMainElement = document.querySelector('.main');
 
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
-const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
+const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel);
 filterPresenter.init();
 boardPresenter.init();
 

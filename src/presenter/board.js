@@ -8,17 +8,15 @@ import {remove, render} from '../utils/render';
 import ShowMoreBtnView from '../view/show-more-btn';
 import { sortByMostCommented, sortByRating, sortByReleaseDate} from '../utils/film';
 import FilmPresenter from './film';
-// import { updateItem } from '../utils/common';
 import {filter} from '../utils/filter';
 
 const FILM_COUNT_PER_STEP = 5;
 const FILM_COUNT_EXTRA_LIST = 2;
 
 export default class Board {
-  constructor(boardContainer, filmsModel, commentsModel, filterModel) {
+  constructor(boardContainer, filmsModel, filterModel) {
     this._boardContainer = boardContainer;
     this._filmsModel = filmsModel;
-    this._commentsModel = commentsModel;
     this._filterModel = filterModel;
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -46,7 +44,6 @@ export default class Board {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
-    this._commentsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
@@ -69,10 +66,6 @@ export default class Board {
     }
 
     return filteredFilms;
-  }
-
-  _getComments() {
-    return this._commentsModel.getComments();
   }
 
   _handleSortTypeChange(sortType) {
@@ -134,9 +127,18 @@ export default class Board {
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
-        this._mainListFilmPresenter[data.id].init(data);
-        this._topRatedListFilmPresenter[data.id].init(data);
-        this._mostCommentedListFilmPresenter[data.id].init(data);
+        if (this._mainListFilmPresenter[data.id]) {
+          this._mainListFilmPresenter[data.id].init(data);
+        }
+
+        if (this._topRatedListFilmPresenter[data.id]) {
+          this._topRatedListFilmPresenter[data.id].init(data);
+        }
+
+        if (this._mostCommentedListFilmPresenter[data.id]) {
+          this._mostCommentedListFilmPresenter[data.id].init(data);
+        }
+
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
@@ -160,15 +162,13 @@ export default class Board {
   }
 
   _renderFilmCard (container, film) {
-    const filmPresenter = new FilmPresenter(container, this._getComments(), this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange);
     filmPresenter.init(film);
     return filmPresenter;
   }
 
   _renderFilms(films) {
     const mainListContainer = this._mainListComponent.getElement().querySelector('.films-list__container');
-    // this._boardFilms
-    //   .slice(from, to)
     films.forEach((film) => {
       this._mainListFilmPresenter[film.id] = this._renderFilmCard(mainListContainer, film);
     });
