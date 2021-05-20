@@ -42,14 +42,6 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
 
-    // this._commentsModel = new CommentsModel();
-    // this._commentsModel.setComments(comments);
-    //
-    // this._filmComments = this._commentsModel.getComments().filter(({ id }) => this._film.commentsIds.includes(id));
-    // const prevFilmPopupComponent = this._filmPopupComponent;
-    // this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
-    // this._addPopupEvents();
-
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__poster');
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__title');
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__comments');
@@ -66,13 +58,6 @@ export default class Film {
       replace(this._filmCardComponent, prevFilmCardComponent);
       remove(prevFilmCardComponent);
     }
-
-    // if (this._mode === Mode.POPUP) {
-    //   // replace(this._filmPopupComponent, prevFilmPopupComponent);
-    //   // remove(prevFilmPopupComponent);
-    //   // this._addPopupEvents();
-    //   this._renderFilmPopup();
-    // }
   }
 
   resetView() {
