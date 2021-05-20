@@ -9,7 +9,7 @@ import CommentsModel from './model/comments';
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
 
-const FILM_COUNT = 25;
+const FILM_COUNT = 12;
 
 const comments = generateComments(55);
 const commentsIds = generateArrayOfCommentsIds(comments);

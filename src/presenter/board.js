@@ -53,6 +53,8 @@ export default class Board {
   init() {
 
     this._renderBoard();
+
+    this._renderExtraFilms();
   }
 
   _getFilms() {
@@ -80,7 +82,7 @@ export default class Board {
 
     this._currentSortType = sortType;
     this._clearMainList({resetRenderedFilmCount: true});
-    this._renderMainList();
+    this._renderBoard();
   }
 
   _renderSorting() {
@@ -139,14 +141,16 @@ export default class Board {
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
         this._clearMainList({resetRenderedFilmCount: false});
-        this._clearExtraLists();
         this._renderBoard();
+
+        this._renderExtraFilms();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
         this._clearMainList({resetRenderedTaskCount: true, resetSortType: true});
-        this._clearExtraLists();
         this._renderBoard();
+
+        this._renderExtraFilms();
         break;
     }
   }
@@ -178,14 +182,13 @@ export default class Board {
       .forEach((presenter) => presenter.destroy());
 
     this._mainListFilmPresenter = {};
-    // this._renderedFilmCount = FILM_COUNT_PER_STEP;
     remove(this._sortingComponent);
     remove(this._showMoreBtnComponent);
 
-    if (resetRenderedFilmCount) {
-      this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    } else {
-      this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
+    this._renderedFilmCount = resetRenderedFilmCount ? FILM_COUNT_PER_STEP : Math.min(filmCount, this._renderedFilmCount);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
     }
   }
 
@@ -227,8 +230,7 @@ export default class Board {
     render(this._mainListComponent, this._showMoreBtnComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderMainList() {
-    const films = this._getFilms();
+  _renderMainList(films) {
     const filmCount = films.length;
 
     this._renderSorting();
@@ -236,6 +238,7 @@ export default class Board {
     render(this._boardContainer, this._boardContainerComponent, RenderPosition.BEFOREEND);
 
     render(this._boardContainerComponent, this._mainListComponent, RenderPosition.AFTERBEGIN);
+
     this._renderFilms(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
 
     if (filmCount > this._renderedFilmCount) {
@@ -246,7 +249,7 @@ export default class Board {
   _renderTopRatedList() {
     render(this._boardContainerComponent, this._topRatedListComponent, RenderPosition.BEFOREEND);
     const topRatedListContainer = this._topRatedListComponent.getElement().querySelector('.films-list__container');
-    const topRatedFilms = sortByRating(this._getFilms());
+    const topRatedFilms = sortByRating(this._filmsModel.getFilms());
     topRatedFilms
       .slice(0, FILM_COUNT_EXTRA_LIST)
       .forEach((film) => {
@@ -257,7 +260,7 @@ export default class Board {
   _renderMostCommentedList() {
     render(this._boardContainerComponent, this._mostCommentedListComponent, RenderPosition.BEFOREEND);
     const mostCommentedListContainer = this._mostCommentedListComponent.getElement().querySelector('.films-list__container');
-    const mostCommentedFilms = sortByMostCommented(this._getFilms());
+    const mostCommentedFilms = sortByMostCommented(this._filmsModel.getFilms());
     mostCommentedFilms
       .slice(0, FILM_COUNT_EXTRA_LIST)
       .forEach((film) => {
@@ -266,17 +269,25 @@ export default class Board {
   }
 
   _renderBoard() {
+    const films = this._getFilms();
 
-    if (!this._getFilms().length) {
-      // remove(this._sortingComponent);
+    if (!films.length) {
       render(this._boardContainer, this._boardContainerComponent, RenderPosition.BEFOREEND);
       this._renderEmptyList();
       return;
     }
 
-    this._renderMainList();
+    if (this._emptyListComponent) {
+      remove(this._emptyListComponent);
+    }
+
+    this._renderMainList(films);
+  }
+
+  _renderExtraFilms() {
+    this._clearExtraLists();
+
     this._renderTopRatedList();
     this._renderMostCommentedList();
-    // this._clearFilmLists();
   }
 }
