@@ -42,13 +42,13 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
 
-    this._commentsModel = new CommentsModel();
-    this._commentsModel.setComments(comments);
-
-    this._filmComments = this._commentsModel.getComments().filter(({ id }) => this._film.commentsIds.includes(id));
-    const prevFilmPopupComponent = this._filmPopupComponent;
-    this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
-    this._addPopupEvents();
+    // this._commentsModel = new CommentsModel();
+    // this._commentsModel.setComments(comments);
+    //
+    // this._filmComments = this._commentsModel.getComments().filter(({ id }) => this._film.commentsIds.includes(id));
+    // const prevFilmPopupComponent = this._filmPopupComponent;
+    // this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
+    // this._addPopupEvents();
 
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__poster');
     this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__title');
@@ -67,11 +67,12 @@ export default class Film {
       remove(prevFilmCardComponent);
     }
 
-    if (this._mode === Mode.POPUP) {
-      replace(this._filmPopupComponent, prevFilmPopupComponent);
-      remove(prevFilmPopupComponent);
-      this._addPopupEvents();
-    }
+    // if (this._mode === Mode.POPUP) {
+    //   // replace(this._filmPopupComponent, prevFilmPopupComponent);
+    //   // remove(prevFilmPopupComponent);
+    //   // this._addPopupEvents();
+    //   this._renderFilmPopup();
+    // }
   }
 
   resetView() {
@@ -115,8 +116,22 @@ export default class Film {
   }
 
   _renderFilmPopup() {
+    const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
+    if (prevFilmPopupComponent !== null) {
+      replace(this._filmPopupComponent, prevFilmPopupComponent);
+      remove(prevFilmPopupComponent);
+      this._addPopupEvents();
+      return;
+    }
+
+    this._commentsModel = new CommentsModel();
+    this._commentsModel.setComments(comments);
+
+    // this._filmComments = this._commentsModel.getComments().filter(({ id }) => this._film.commentsIds.includes(id));
+    // this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
+    this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
+
     render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
 
     siteBodyElement.classList.add('hide-overflow');
@@ -147,8 +162,9 @@ export default class Film {
     );
   }
 
-  _handleFormSubmit(comment) {
-    console.log(comment);
+  _handleFormSubmit() {
+    // _handleFormSubmit(comment) {
+    // console.log(comment);
   }
 
   _handleCloseBtnClick() {

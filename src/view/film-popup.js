@@ -63,9 +63,11 @@ const createFilmPopupTemplate = (film, comments) => {
 
   const {emotion, text} = newComment;
 
-  // const filmComments = comments.filter(({id}) => commentsIds.includes(id));
+  const filmComments = comments.filter(({id}) => commentsIds.includes(id));
   // console.log(filmComments);
-  const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+
+  // const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+  const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment)).join('');
 
   const genreList = genres.length > 1
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
@@ -305,6 +307,12 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
     this._callback.deleteCommentClick(evt.target.id);
+    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
+
+    this.updateData({
+      commentsIds: Object.assign({}, updatedCommentsIds),
+    });
+
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
 
