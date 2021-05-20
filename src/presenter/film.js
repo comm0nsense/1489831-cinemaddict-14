@@ -113,8 +113,6 @@ export default class Film {
     this._commentsModel = new CommentsModel();
     this._commentsModel.setComments(comments);
 
-    // this._filmComments = this._commentsModel.getComments().filter(({ id }) => this._film.commentsIds.includes(id));
-    // this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
     this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
 
     render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);

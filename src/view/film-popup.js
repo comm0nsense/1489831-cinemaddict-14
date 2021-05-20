@@ -1,5 +1,4 @@
 import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
-// import AbstractView from './abstract';
 import SmartView from './smart.js';
 
 const DEFAULT_NEW_COMMENT = {
@@ -64,9 +63,6 @@ const createFilmPopupTemplate = (film, comments) => {
   const {emotion, text} = newComment;
 
   const filmComments = comments.filter(({id}) => commentsIds.includes(id));
-  // console.log(filmComments);
-
-  // const commentsFragment = comments.map((comment) => createCommentItemTemplate(comment)).join('');
   const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment)).join('');
 
   const genreList = genres.length > 1
