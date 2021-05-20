@@ -304,10 +304,15 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
     this._callback.deleteCommentClick(evt.target.id);
+    const deletedCommentId = parseInt(evt.target.id);
+    const filmComments = this._film.commentsIds;
+    const index = filmComments.indexOf(deletedCommentId);
+    if (index !== -1) {
+      filmComments.splice(index,1);
+    }
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
-    const array = Object.values(updatedCommentsIds);
     this.updateData({
-      commentsIds: array,
+      commentsIds: updatedCommentsIds,
     });
 
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
