@@ -30,9 +30,14 @@ export const UpdateType = {
 };
 
 export const FilterType = {
-  ALL: 'all',//all_movies
+  ALL: 'all',
   WATCHLIST: 'Watchlist',
   FAVORITES: 'Favorites',
   HISTORY: 'History',
 };
 
+export const KeyDownType = {
+  ESC: 'Escape',
+  ESC_SHORT: 'Esc',
+  ENTER: 'Enter',
+};

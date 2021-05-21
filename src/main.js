@@ -19,7 +19,7 @@ const films = generateFilms(FILM_COUNT, commentsIds);
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
-const filterModel = new FilterModel();//7.1.10
+const filterModel = new FilterModel();
 
 const siteHeaderElement = document.querySelector('.header');
 render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);

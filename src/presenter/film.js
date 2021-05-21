@@ -1,10 +1,10 @@
 import FilmCardView from '../view/film-card';
 import {remove, render, replace } from '../utils/render';
-import {RenderPosition, UserAction, UpdateType} from '../utils/const';
+import {RenderPosition, UserAction, UpdateType, KeyDownType} from '../utils/const';
 import FilmPopupView from '../view/film-popup';
 import { generateComments } from '../mock/film';
 
-export const comments = generateComments(5);
+export const comments = generateComments(25);
 
 const siteBodyElement = document.querySelector('body'); //вынести в константу?
 const Mode = {
@@ -32,7 +32,7 @@ export default class Film {
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
 
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleNewCommentSend = this._handleNewCommentSend.bind(this);
   }
 
   init(film) {
@@ -42,9 +42,7 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
 
-    this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__poster');
-    this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__title');
-    this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick, '.film-card__comments');
+    this._filmCardComponent.setFilmCardClickHandler(this._handleFilmCardClick);
     this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmCardComponent.setMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
     this._filmCardComponent.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
@@ -129,7 +127,7 @@ export default class Film {
     this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._filmPopupComponent.setPopupMarkAsWatchedClickHandler(this._handleMarkAsWatchedClick);
 
-    this._filmPopupComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._filmPopupComponent.setNewCommentSendHandler(this._handleNewCommentSend);
     this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
@@ -149,13 +147,14 @@ export default class Film {
     );
   }
 
-  _handleFormSubmit(comment) {
+  _handleNewCommentSend(comment) {
     this._changeData(
       UserAction.ADD,
-      UpdateType.PATCH,
+      UpdateType.PATCH,//перерисовка через init??
       comment,
     );
-    //Нужно еще перерисовать Попап
+    //Нужно еще перерисовать Попап??
+    // console.log('render updated pop', comment);
   }
 
   _handleCloseBtnClick() {
@@ -163,7 +162,7 @@ export default class Film {
   }
 
   _onEscKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === KeyDownType.ESC || evt.key === KeyDownType.ESC_SHORT) {
       evt.preventDefault();
       this._closeFilmPopup();
     }

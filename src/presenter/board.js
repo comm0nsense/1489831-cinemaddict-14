@@ -119,6 +119,20 @@ export default class Board {
     }
   }
 
+  _handleModelEventPatch(data) {
+    if (this._mainListFilmPresenter[data.id]) {
+      this._mainListFilmPresenter[data.id].init(data);
+    }
+
+    if (this._topRatedListFilmPresenter[data.id]) {
+      this._topRatedListFilmPresenter[data.id].init(data);
+    }
+
+    if (this._mostCommentedListFilmPresenter[data.id]) {
+      this._mostCommentedListFilmPresenter[data.id].init(data);
+    }
+  }
+
   /**
    * Метод, который оповещает Presenter, что поменялись данные в модели.
    * Оповещение происходит через приватный метод _notify Observer-а в соответствующем методе Films Model.
@@ -134,19 +148,7 @@ export default class Board {
     // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
-
-        if (this._mainListFilmPresenter[data.id]) {
-          this._mainListFilmPresenter[data.id].init(data);
-        }
-
-        if (this._topRatedListFilmPresenter[data.id]) {
-          this._topRatedListFilmPresenter[data.id].init(data);
-        }
-
-        if (this._mostCommentedListFilmPresenter[data.id]) {
-          this._mostCommentedListFilmPresenter[data.id].init(data);
-        }
-
+        this._handleModelEventPatch(data);
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)

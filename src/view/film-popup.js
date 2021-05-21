@@ -2,6 +2,7 @@ import he from 'he';
 import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
 import SmartView from './smart.js';
 import dayjs from 'dayjs';
+import {KeyDownType} from '../utils/const';
 
 const DEFAULT_NEW_COMMENT = {
   text: '',
@@ -208,8 +209,10 @@ export default class FilmPopup extends SmartView {
     this._changeCommentEmojiHandler = this._changeCommentEmojiHandler.bind(this);
     this._inputNewCommentHandler =  this._inputNewCommentHandler.bind(this);
 
-    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._newCommentSendHandler = this._newCommentSendHandler.bind(this);
     this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
+
+    this.setNewCommentSendHandler(this._callback.newCommentSend);
 
     this._setInnerHandlers();
   }
@@ -234,18 +237,23 @@ export default class FilmPopup extends SmartView {
     return createFilmPopupTemplate(this._data, this._comments);
   }
 
-
-  _formSubmitHandler(evt) {
-    if (evt.key === 'Enter' && (evt.metaKey || evt.ctrlKey)) {
+  _newCommentSendHandler(evt) {
+    if (evt.key === KeyDownType.ENTER && (evt.metaKey || evt.ctrlKey)) {
       evt.preventDefault();
       const newComment = FilmPopup.parseDataToComment(this._data);
-      this._callback.formSubmit(newComment);
+      //перерисовка Попапа?? только newComment - это dummy чтобы нарисовался смайлик и updateData не сработает
+      //в init у меня нет renderPopup. Раньше была, и можно было бы сделать replace thisPopup with prevPopup
+      // this.updateData({
+      //   newComment: Object.assign({}, this._data.newComment, newComment),
+      // });
+
+      this._callback.newCommentSend(newComment);
     }
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    document.addEventListener('keydown', this._formSubmitHandler);
+  setNewCommentSendHandler(callback) {
+    this._callback.newCommentSend = callback;
+    document.addEventListener('keydown', this._newCommentSendHandler);
   }
 
   _changeCommentEmojiHandler(evt) {
@@ -284,11 +292,10 @@ export default class FilmPopup extends SmartView {
     this.setPopupFavoriteClickHandler(this._callback.popupFavoriteClick);
     this.setPopupMarkAsWatchedClickHandler(this._callback.popupMarkAsWatchedClick);
     this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
-
-    this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
   _closeBtnClickHandler(evt) {
+    document.removeEventListener('keydown', this._newCommentSendHandler);
     evt.preventDefault();
     this._callback.closeBtnClick();
   }
