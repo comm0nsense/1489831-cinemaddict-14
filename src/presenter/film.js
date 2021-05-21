@@ -3,9 +3,8 @@ import {remove, render, replace } from '../utils/render';
 import {RenderPosition, UserAction, UpdateType} from '../utils/const';
 import FilmPopupView from '../view/film-popup';
 import { generateComments } from '../mock/film';
-import CommentsModel from '../model/comments';
 
-export const comments = generateComments(55);
+export const comments = generateComments(5);
 
 const siteBodyElement = document.querySelector('body'); //вынести в константу?
 const Mode = {
@@ -14,10 +13,11 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmListsContainer, changeData, changeMode) {
+  constructor(filmListsContainer, changeData, changeMode, commentsModel) {
     this._filmListsContainer = filmListsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._commentsModel = commentsModel;
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
@@ -110,7 +110,6 @@ export default class Film {
       return;
     }
 
-    this._commentsModel = new CommentsModel();
     this._commentsModel.setComments(comments);
 
     this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
@@ -125,7 +124,6 @@ export default class Film {
 
   _addPopupEvents() {
 
-
     this._filmPopupComponent.setCloseBtnClickHandler(this._handleCloseBtnClick);
     this._filmPopupComponent.setPopupFavoriteClickHandler(this._handleFavoriteClick);
     this._filmPopupComponent.setPopupAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
@@ -135,7 +133,7 @@ export default class Film {
     this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
-  _handleDeleteCommentClick(deletedCommentId) {
+  _handleDeleteCommentClick(deletedCommentId, deletedComment) {
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
     // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
     this._changeData(
@@ -143,11 +141,21 @@ export default class Film {
       UpdateType.PATCH,
       {...this._film, commentsIds: updatedCommentsIds},
     );
+    // 2) из модели комментов удаляем комментарий, который пользователь удалили в попапе
+    this._changeData(
+      UserAction.DELETE,
+      UpdateType.PATCH,
+      deletedComment,
+    );
   }
 
-  _handleFormSubmit() {
-    // _handleFormSubmit(comment) {
-    // console.log(comment);
+  _handleFormSubmit(comment) {
+    this._changeData(
+      UserAction.ADD,
+      UpdateType.PATCH,
+      comment,
+    );
+    //Нужно еще перерисовать Попап
   }
 
   _handleCloseBtnClick() {

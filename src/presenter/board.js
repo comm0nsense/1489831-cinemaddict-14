@@ -9,6 +9,7 @@ import ShowMoreBtnView from '../view/show-more-btn';
 import { sortByMostCommented, sortByRating, sortByReleaseDate} from '../utils/film';
 import FilmPresenter from './film';
 import {filter} from '../utils/filter';
+import CommentsModel from '../model/comments';
 
 const FILM_COUNT_PER_STEP = 5;
 const FILM_COUNT_EXTRA_LIST = 2;
@@ -18,6 +19,8 @@ export default class Board {
     this._boardContainer = boardContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+
+    this._commentsModel = new CommentsModel();
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
 
@@ -103,10 +106,15 @@ export default class Board {
    * @private
    */
   _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE:
         this._filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.DELETE:
+        this._commentsModel.deleteComment(updateType, update);
+        break;
+      case UserAction.ADD:
+        this._commentsModel.addComment(updateType, update);
         break;
     }
   }
@@ -126,7 +134,7 @@ export default class Board {
     // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
+
         if (this._mainListFilmPresenter[data.id]) {
           this._mainListFilmPresenter[data.id].init(data);
         }
@@ -162,7 +170,7 @@ export default class Board {
   }
 
   _renderFilmCard (container, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel);
     filmPresenter.init(film);
     return filmPresenter;
   }

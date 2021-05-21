@@ -1,5 +1,7 @@
+import he from 'he';
 import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
 import SmartView from './smart.js';
+import dayjs from 'dayjs';
 
 const DEFAULT_NEW_COMMENT = {
   text: '',
@@ -159,7 +161,7 @@ const createFilmPopupTemplate = (film, comments) => {
               </div>
 
               <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${text ? text : ''}</textarea>
+                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(text) ? text : ''}</textarea>
               </label>
 
               <div class="film-details__emoji-list">
@@ -221,7 +223,10 @@ export default class FilmPopup extends SmartView {
 
   static parseDataToComment(data) {
     return {
-      comment: Object.assign({}, data.newComment),
+      text: data.newComment.text,
+      emotion: data.newComment.emotion,
+      date: dayjs().toDate(),
+      id: Date.now(),
     };
   }
 
@@ -303,17 +308,19 @@ export default class FilmPopup extends SmartView {
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
-    this._callback.deleteCommentClick(evt.target.id);
+
     const deletedCommentId = parseInt(evt.target.id);
-    const filmComments = this._film.commentsIds;
-    const index = filmComments.indexOf(deletedCommentId);
+    const index = this._film.commentsIds.indexOf(deletedCommentId);
     if (index !== -1) {
-      filmComments.splice(index,1);
+      this._film.commentsIds.splice(index,1);
     }
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
     this.updateData({
       commentsIds: updatedCommentsIds,
     });
+
+    const [deletedComment] = this._comments.filter((comment) => comment.id === deletedCommentId);
+    this._callback.deleteCommentClick(evt.target.id, deletedComment);
 
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
