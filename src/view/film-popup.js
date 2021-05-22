@@ -242,12 +242,17 @@ export default class FilmPopup extends SmartView {
       evt.preventDefault();
       const newComment = FilmPopup.parseDataToComment(this._data);
       this._callback.newCommentSend(newComment);
+      const update = this._data.commentsIds;
+      update.push(newComment.id);
+
+      this.updateData({
+        commentsIds: update,
+      });
     }
   }
 
   setNewCommentSendHandler(callback) {
     this._callback.newCommentSend = callback;
-    document.addEventListener('keydown', this._newCommentSendHandler);
   }
 
   _changeCommentEmojiHandler(evt) {
@@ -276,6 +281,8 @@ export default class FilmPopup extends SmartView {
     this.getElement()
       .querySelector('.film-details__comment-input')
       .addEventListener('input', this._inputNewCommentHandler);
+
+    this.getElement().addEventListener('keydown', this._newCommentSendHandler);
   }
 
   restoreHandlers() {
