@@ -38,6 +38,12 @@ export default class Film {
   init(film) {
     this._film = film;
 
+    if (this.isPopupMode()) {
+      this._renderFilmPopup();
+
+      return;
+    }
+
     const prevFilmCardComponent = this._filmCardComponent;
 
     this._filmCardComponent = new FilmCardView(this._film);
@@ -52,10 +58,16 @@ export default class Film {
       return;
     }
 
-    if (this._filmListsContainer.contains(prevFilmCardComponent.getElement())) {
-      replace(this._filmCardComponent, prevFilmCardComponent);
-      remove(prevFilmCardComponent);
-    }
+    replace(this._filmCardComponent, prevFilmCardComponent);
+    remove(prevFilmCardComponent);
+  }
+
+  isPopupMode() {
+    return this._mode === Mode.POPUP;
+  }
+
+  getFilmId() {
+    return this._film.id;
   }
 
   resetView() {
@@ -66,6 +78,11 @@ export default class Film {
 
   destroy() {
     remove(this._filmCardComponent);
+    this._filmCardComponent = null;
+  }
+
+  destroyPopup() {
+    this._closeFilmPopup();
   }
 
   _handleFavoriteClick() {
@@ -94,30 +111,29 @@ export default class Film {
 
   _handleFilmCardClick() {
     this._changeMode();
-    this._mode = Mode.POPUP;
     this._renderFilmPopup();
   }
 
   _renderFilmPopup() {
+    this._mode = Mode.POPUP;
     const prevFilmPopupComponent = this._filmPopupComponent;
-
-    if (prevFilmPopupComponent !== null) {
-      replace(this._filmPopupComponent, prevFilmPopupComponent);
-      remove(prevFilmPopupComponent);
-      this._addPopupEvents();
-      return;
-    }
 
     this._commentsModel.setComments(comments);
 
     this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
 
-    render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
-
     siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
 
     this._addPopupEvents();
+
+    if (!prevFilmPopupComponent) {
+      render(siteBodyElement, this._filmPopupComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    replace(this._filmPopupComponent, prevFilmPopupComponent);
+    remove(prevFilmPopupComponent);
   }
 
   _addPopupEvents() {
@@ -136,13 +152,13 @@ export default class Film {
     // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
     this._changeData(
       UserAction.UPDATE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       {...this._film, commentsIds: updatedCommentsIds},
     );
     // 2) из модели комментов удаляем комментарий, который пользователь удалили в попапе
     this._changeData(
       UserAction.DELETE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       deletedComment,
     );
   }
@@ -150,11 +166,9 @@ export default class Film {
   _handleNewCommentSend(comment) {
     this._changeData(
       UserAction.ADD,
-      UpdateType.PATCH,//перерисовка через init??
+      UpdateType.MINOR,
       comment,
     );
-    //Нужно еще перерисовать Попап??
-    // console.log('render updated pop', comment);
   }
 
   _handleCloseBtnClick() {

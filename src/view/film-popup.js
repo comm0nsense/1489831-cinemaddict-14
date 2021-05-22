@@ -241,12 +241,6 @@ export default class FilmPopup extends SmartView {
     if (evt.key === KeyDownType.ENTER && (evt.metaKey || evt.ctrlKey)) {
       evt.preventDefault();
       const newComment = FilmPopup.parseDataToComment(this._data);
-      //перерисовка Попапа?? только newComment - это dummy чтобы нарисовался смайлик и updateData не сработает
-      //в init у меня нет renderPopup. Раньше была, и можно было бы сделать replace thisPopup with prevPopup
-      // this.updateData({
-      //   newComment: Object.assign({}, this._data.newComment, newComment),
-      // });
-
       this._callback.newCommentSend(newComment);
     }
   }

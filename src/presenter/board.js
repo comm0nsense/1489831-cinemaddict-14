@@ -24,6 +24,7 @@ export default class Board {
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
 
+    this._filmPopupPresenter = null;
     this._mainListFilmPresenter = {};
     this._topRatedListFilmPresenter = {};
     this._mostCommentedListFilmPresenter = {};
@@ -95,6 +96,11 @@ export default class Board {
     Object
       .values(this._mainListFilmPresenter)
       .forEach((presenter) => presenter.resetView());
+
+    if (this._filmPopupPresenter) {
+      this._filmPopupPresenter.destroyPopup();
+      this._filmPopupPresenter = null;
+    }
   }
 
   /**
@@ -156,6 +162,8 @@ export default class Board {
         this._renderBoard();
 
         this._renderExtraFilms();
+
+        this._renderPopupFilm();
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
@@ -163,6 +171,7 @@ export default class Board {
         this._renderBoard();
 
         this._renderExtraFilms();
+        this._renderPopupFilm();
         break;
     }
   }
@@ -172,8 +181,10 @@ export default class Board {
   }
 
   _renderFilmCard (container, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel);
+
+    const filmPresenter =  new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel);
     filmPresenter.init(film);
+
     return filmPresenter;
   }
 
@@ -189,7 +200,15 @@ export default class Board {
 
     Object
       .values(this._mainListFilmPresenter)
-      .forEach((presenter) => presenter.destroy());
+      .forEach((presenter) => {
+
+        if (presenter.isPopupMode()){
+          this._filmPopupPresenter = presenter;
+        }
+
+        presenter.destroy();
+
+      });
 
     this._mainListFilmPresenter = {};
     remove(this._sortingComponent);
@@ -208,7 +227,15 @@ export default class Board {
       ...Object.values(this._mostCommentedListFilmPresenter),
     ];
 
-    presenters.forEach((presenter) => presenter.destroy());
+    presenters.forEach((presenter) => {
+
+      if (presenter.isPopupMode()){
+        this._filmPopupPresenter = presenter;
+      }
+
+      presenter.destroy();
+
+    });
 
     this._topRatedListFilmPresenter = {};
     this._mostCommentedListFilmPresenter = {};
@@ -299,5 +326,19 @@ export default class Board {
 
     this._renderTopRatedList();
     this._renderMostCommentedList();
+  }
+
+  _renderPopupFilm() {
+    if (!this._filmPopupPresenter) {
+      return;
+    }
+
+    const popupFilm = this._filmsModel.getFilms().find((film) => film.id === this._filmPopupPresenter.getFilmId());
+
+    if (!popupFilm) {
+      return;
+    }
+
+    this._filmPopupPresenter.init(popupFilm);
   }
 }
