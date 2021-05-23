@@ -122,7 +122,7 @@ export default class Film {
 
     this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
 
-    siteBodyElement.classList.add('hide-overflow');
+    // siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
 
     this._addPopupEvents();
@@ -163,11 +163,18 @@ export default class Film {
     );
   }
 
-  _handleNewCommentSend(comment) {
+  _handleNewCommentSend(comment, commentsIds) {
+    // 2) добавляем комментарий в модель комментариев
     this._changeData(
       UserAction.ADD,
       UpdateType.MINOR,
       comment,
+    );
+    //1) добавляем id нового комментария в commentsIds фильма
+    this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
+      {...this._film, commentsIds: commentsIds },
     );
   }
 

@@ -226,10 +226,11 @@ export default class FilmPopup extends SmartView {
 
   static parseDataToComment(data) {
     return {
+      author: 'TestAuthor',
+      id: Date.now(),
       text: data.newComment.text,
       emotion: data.newComment.emotion,
       date: dayjs().toDate(),
-      id: Date.now(),
     };
   }
 
@@ -241,13 +242,14 @@ export default class FilmPopup extends SmartView {
     if (evt.key === KeyDownType.ENTER && (evt.metaKey || evt.ctrlKey)) {
       evt.preventDefault();
       const newComment = FilmPopup.parseDataToComment(this._data);
-      this._callback.newCommentSend(newComment);
-      const update = this._data.commentsIds;
-      update.push(newComment.id);
+
+      const updatedCommentsIds = this._data.commentsIds;
+      updatedCommentsIds.push(newComment.id);
 
       this.updateData({
-        commentsIds: update,
+        commentsIds: updatedCommentsIds,
       });
+      this._callback.newCommentSend(newComment, updatedCommentsIds);
     }
   }
 

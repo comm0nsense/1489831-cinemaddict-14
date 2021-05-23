@@ -20,7 +20,7 @@ export default class Comments extends Observer {
       ...this._comments,
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, this._comments);
   }
 
   deleteComment(updateType, update) {
@@ -34,8 +34,6 @@ export default class Comments extends Observer {
       ...this._comments.slice(0, index),
       ...this._comments.slice(index + 1),
     ];
-
-    // console.log(this._comments);
 
     this._notify(updateType, this._comments);
   }
