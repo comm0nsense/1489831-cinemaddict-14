@@ -158,8 +158,7 @@ export default class Board {
         this._handleModelEventPatch(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
-        this._clearMainList({resetRenderedFilmCount: false});
+        this._clearMainList({resetRenderedFilmCount: true});
         this._renderBoard();
 
         this._renderExtraFilms();
@@ -167,7 +166,6 @@ export default class Board {
         this._renderPopupFilm();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
         this._clearMainList({resetRenderedTaskCount: true, resetSortType: true});
         this._renderBoard();
 

@@ -240,16 +240,19 @@ export default class FilmPopup extends SmartView {
 
   _newCommentSendHandler(evt) {
     if (evt.key === KeyDownType.ENTER && (evt.metaKey || evt.ctrlKey)) {
+      const scrollPosition = document.querySelector('.film-details').scrollTop;
       evt.preventDefault();
-      const newComment = FilmPopup.parseDataToComment(this._data);
+      const { text, emotion } = this._data.newComment;
 
+      if(!text.trim() || !emotion) {
+        return;
+      }
+
+      const newComment = FilmPopup.parseDataToComment(this._data);
       const updatedCommentsIds = this._data.commentsIds;
       updatedCommentsIds.push(newComment.id);
-
-      this.updateData({
-        commentsIds: updatedCommentsIds,
-      });
       this._callback.newCommentSend(newComment, updatedCommentsIds);
+      document.querySelector('.film-details').scrollTo(0, scrollPosition);
     }
   }
 
@@ -318,19 +321,9 @@ export default class FilmPopup extends SmartView {
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
-
     const deletedCommentId = parseInt(evt.target.id);
-    const index = this._film.commentsIds.indexOf(deletedCommentId);
-    if (index !== -1) {
-      this._film.commentsIds.splice(index,1);
-    }
-    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(evt.target.id));
-    this.updateData({
-      commentsIds: updatedCommentsIds,
-    });
-
     const [deletedComment] = this._comments.filter((comment) => comment.id === deletedCommentId);
-    this._callback.deleteCommentClick(evt.target.id, deletedComment);
+    this._callback.deleteCommentClick(deletedCommentId, deletedComment);
 
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }

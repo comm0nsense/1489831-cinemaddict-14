@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card';
 import {remove, render, replace } from '../utils/render';
 import {RenderPosition, UserAction, UpdateType, KeyDownType} from '../utils/const';
-import FilmPopupView from '../view/film-popup';
+import FilmPopupView  from '../view/film-popup';
 import { generateComments } from '../mock/film';
 
 export const comments = generateComments(25);
@@ -111,6 +111,7 @@ export default class Film {
 
   _handleFilmCardClick() {
     this._changeMode();
+    this._commentsModel.setComments(comments);
     this._renderFilmPopup();
   }
 
@@ -118,11 +119,9 @@ export default class Film {
     this._mode = Mode.POPUP;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._commentsModel.setComments(comments);
-
     this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
 
-    // siteBodyElement.classList.add('hide-overflow');
+    siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
 
     this._addPopupEvents();
@@ -149,13 +148,11 @@ export default class Film {
 
   _handleDeleteCommentClick(deletedCommentId, deletedComment) {
     const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
-    // 1) обновляем фильм в модели фильмов - т.е. перезаписываем поле movieCommentsIds у фильма
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
       {...this._film, commentsIds: updatedCommentsIds},
     );
-    // 2) из модели комментов удаляем комментарий, который пользователь удалили в попапе
     this._changeData(
       UserAction.DELETE,
       UpdateType.MINOR,
@@ -164,13 +161,11 @@ export default class Film {
   }
 
   _handleNewCommentSend(comment, commentsIds) {
-    // 2) добавляем комментарий в модель комментариев
     this._changeData(
       UserAction.ADD,
       UpdateType.MINOR,
       comment,
     );
-    //1) добавляем id нового комментария в commentsIds фильма
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
