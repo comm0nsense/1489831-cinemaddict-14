@@ -1,8 +1,4 @@
-import {
-  getRandomElementFromArray,
-  generateRandomArray,
-  getRandomDate
-} from './util.js';
+import {getRandomElementFromArray, generateRandomArray, getRandomDate } from './util';
 
 const EMOTIONS = [
   'smile',
@@ -38,7 +34,7 @@ const SENTENCES = [
 
 let commentId = 0;
 
-const generateComment = () => {
+export const generateComment = () => {
 
   return {
     id: commentId++,
@@ -48,5 +44,3 @@ const generateComment = () => {
     emotion: getRandomElementFromArray(EMOTIONS),
   };
 };
-
-export { generateComment};
