@@ -6,8 +6,7 @@ export default class Smart extends Abstract {
     this._data = {};
   }
 
-  updateData(update, shouldRerender) {
-
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
@@ -18,7 +17,7 @@ export default class Smart extends Abstract {
       update,
     );
 
-    if (shouldRerender) {
+    if (justDataUpdating) {
       return;
     }
 
@@ -35,9 +34,5 @@ export default class Smart extends Abstract {
     parent.replaceChild(newElement, prevElement);
 
     this.restoreHandlers();
-  }
-
-  restoreHandlers() {
-    throw new Error('Abstract method not implemented: resetHandlers');
   }
 }

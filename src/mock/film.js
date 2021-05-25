@@ -6,17 +6,7 @@ import {
   generateRandomArray
 } from './util.js';
 
-import {
-  generateComment
-} from './comment.js';
-
-import {
-  generateArray
-} from '../utils/util.js';
-
-import {
-  nanoid
-} from 'nanoid';
+import { generateComment } from './comment.js';
 
 const TITLES = [
   'Mank',
@@ -160,11 +150,11 @@ const AGE_RATINGS = [
   18,
 ];
 
-const generateComments = (number) => {
-  return generateArray(number, generateComment);
+export const generateComments = (number) => {
+  return new Array(number).fill().map(generateComment);
 };
 
-const generateArrayOfCommentsIds = (comments) => {
+export const generateArrayOfCommentsIds = (comments) => {
   const arrayOfCommentsIds = [];
 
   comments.forEach((comment) => {
@@ -175,14 +165,16 @@ const generateArrayOfCommentsIds = (comments) => {
 };
 
 const generateMovieCommentsIds = (commentsIds) => {
-  return commentsIds.splice(0, getRandomInteger(0, 5));
+  return commentsIds.splice(0, getRandomInteger(0, 5));//splice изменяет исходный массив
 };
 
-const generateMovie = (array) => {
+let filmId = 1;
+
+const generateFilm = (array) => {
   const isAlreadyWatched = Boolean(getRandomInteger(0, 1));
 
   return {
-    id: nanoid(),
+    id: filmId++,
     title: getRandomElementFromArray(TITLES),
     originalTitle: getRandomElementFromArray(TITLES),
     poster: getRandomElementFromArray(POSTERS),
@@ -195,7 +187,7 @@ const generateMovie = (array) => {
     releaseDate: getRandomDate(new Date(1990, 0, 1), new Date()),
     releaseCountry: getRandomElementFromArray(COUNTRIES),
     genres: generateRandomArray(GENRES, 1, 3),
-    movieCommentsIds: generateMovieCommentsIds(array),
+    commentsIds: generateMovieCommentsIds(array),
     runtime: getRandomInteger(60, 300),
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isAlreadyWatched: isAlreadyWatched,
@@ -204,14 +196,8 @@ const generateMovie = (array) => {
   };
 };
 
-const generateMovies = (number, array) => {
-  return new Array(number).fill().map(() => generateMovie(array));
+export const generateFilms = (number, array) => {
+  return new Array(number).fill().map(() => generateFilm(array));
 };
 
-export {
-  GENRES,
-  generateComments,
-  generateArrayOfCommentsIds,
-  generateMovies
-};
 

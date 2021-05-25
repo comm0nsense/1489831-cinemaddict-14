@@ -1,56 +1,82 @@
-import { generateComments, generateArrayOfCommentsIds, generateMovies } from './mock/movie.js';
-import { userProfiles } from './mock/user-profile.js';
-// import { generateFilterData } from './filter.js';
+import UserProfileView from './view/user-profile';
+import StatisticsView from './view/footer-statistics';
+import { generateArrayOfCommentsIds, generateFilms} from './mock/film';
+import { render } from './utils/render';
+import { RenderPosition, MenuItem } from './utils/const';
+import BoardPresenter from './presenter/board';
+import FilmsModel from './model/films';
+import FilterModel from './model/filter';
+import FilterPresenter from './presenter/filter';
+import { comments } from './presenter/film';
+// import StatsView from './view/stats';
 
-import { render } from './utils/render.js';
-import { RenderPosition } from './utils/const.js';
+const FILM_COUNT = 12;
 
-import FooterStatisticsView from './view/footer-statictics.js';
-import UserProfileView from './view/user-profile.js';
-// import FilterView from './view/filter.js';
-
-
-// import StatisticsView from './view/statistics.js';
-
-import MoviesListPresenter from './presenter/movies-list.js';
-import FilterPresenter from './presenter/filter.js';
-
-import FilmsModel from './model/films.js';
-import CommentsModel from './model/comments.js';
-import FilterModel from './model/filter.js';
-
-const TOTAL_MOVIES = 27;
-const TOTAL_COMMENTS = 15;
-
-const comments = generateComments(TOTAL_COMMENTS);
 const commentsIds = generateArrayOfCommentsIds(comments);
-const movies = generateMovies(TOTAL_MOVIES, commentsIds);
+const films = generateFilms(FILM_COUNT, commentsIds);
 
+// console.log(comments);
+// console.log(films);
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(movies);
-
-const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
+filmsModel.setFilms(films);
 
 const filterModel = new FilterModel();
 
-const siteBodyElement = document.querySelector('body');
-
-/* USER RANK */
 const siteHeaderElement = document.querySelector('.header');
-const userProfileComponent =  new UserProfileView(userProfiles[0]);
-render(siteHeaderElement, userProfileComponent, RenderPosition.BEFOREEND);
-
-/* MAIN */
+render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
 const siteMainElement = document.querySelector('.main');
 
-const moviesListPresenter = new MoviesListPresenter(siteMainElement, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel);
 
 filterPresenter.init();
-moviesListPresenter.init();
+boardPresenter.init();
 
-/* FOOTER */
-const siteFooterElement = siteBodyElement.querySelector('.footer__statistics');
-const footerStaticsComponent =  new FooterStatisticsView(movies.length);
-render(siteFooterElement, footerStaticsComponent, RenderPosition.BEFOREEND);
+//закомментировать строки 36-80, чтобы убрать экран Stats потому что он не работает корректно
+// const statsComponent = new StatsView(filmsModel.getFilms());
+//
+// const handleSiteMenuClick = (menuItem) => {
+//
+//   switch (menuItem) {
+//     case MenuItem.STATISTICS:
+//       // Скрыть доску
+//       boardPresenter.destroy();
+//       // Показать статистику
+//       render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
+//       break;
+//     case MenuItem.ALL_MOVIES:
+//       // Показать доску
+//       boardPresenter.init();
+//       // Скрыть статистику
+//       break;
+//     case MenuItem.WATCHLIST:
+//       // Показать доску
+//       boardPresenter.destroy();
+//       boardPresenter.init();
+//       // Скрыть статистику
+//       break;
+//     case MenuItem.HISTORY:
+//       // Показать доску
+//       boardPresenter.destroy();
+//       boardPresenter.init();
+//       // Скрыть статистику
+//       break;
+//     case MenuItem.FAVORITES:
+//       // Показать доску
+//       boardPresenter.destroy();
+//       boardPresenter.init();
+//       // Скрыть статистику
+//       break;
+//   }
+// };
+//
+// const mainNavigation = document.querySelector('.main-navigation');
+// // нужно перенести в компонент Фильтр-Меню??
+// mainNavigation.addEventListener('click', (evt) => {
+//   evt.preventDefault();
+//   const menuItemType = evt.target.id;
+//   handleSiteMenuClick(menuItemType);
+// });
+
+const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
+render(siteFooterStatisticsElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);

@@ -1,9 +1,9 @@
-import { createSiteElement } from '../utils/render.js';
+import {createElement} from '../utils/render';
 
 export default class Abstract {
   constructor() {
     if (new.target === Abstract) {
-      throw new Error('Can\'t intantiate Abstract, only conrete one');
+      throw new Error('Can\'t instantiate Abstract, only concrete one.');
     }
 
     this._element = null;
@@ -11,12 +11,12 @@ export default class Abstract {
   }
 
   getTemplate() {
-    throw new Error('Abstract method is not implemented: getTemplate');
+    throw new Error('Abstract method not implemented: getTemplate');
   }
 
   getElement() {
-    if(!this._element) {
-      this._element = createSiteElement(this.getTemplate());
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;
