@@ -6,7 +6,7 @@ const createFooterStatistics = (number) => {
   );
 };
 
-export default class Statistics extends AbstractView {
+export default class FooterStatistics extends AbstractView {
   constructor(number) {
     super();
     this._number = number;

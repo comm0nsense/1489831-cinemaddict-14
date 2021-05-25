@@ -1,13 +1,14 @@
 import UserProfileView from './view/user-profile';
-import StatisticsView from './view/statistics';
+import StatisticsView from './view/footer-statistics';
 import { generateArrayOfCommentsIds, generateFilms} from './mock/film';
 import { render } from './utils/render';
-import { RenderPosition, MenuItem, UpdateType, FilterType } from './utils/const';
+import { RenderPosition, MenuItem } from './utils/const';
 import BoardPresenter from './presenter/board';
 import FilmsModel from './model/films';
 import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
 import { comments } from './presenter/film';
+import StatsView from './view/stats';
 
 const FILM_COUNT = 12;
 
@@ -31,14 +32,18 @@ const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterMod
 filterPresenter.init();
 boardPresenter.init();
 
+//можно закомментировать строки 36-80, чтобы убрать экран Stats потому что он не работает корректно
+
+const statsComponent = new StatsView(filmsModel.getFilms());
+
 const handleSiteMenuClick = (menuItem) => {
 
   switch (menuItem) {
     case MenuItem.STATISTICS:
       // Скрыть доску
       boardPresenter.destroy();
-      // console.log('boardPresenter.destroy()');
       // Показать статистику
+      render(siteMainElement, statsComponent, RenderPosition.BEFOREEND);
       break;
     case MenuItem.ALL_MOVIES:
       // Показать доску
@@ -47,7 +52,19 @@ const handleSiteMenuClick = (menuItem) => {
       break;
     case MenuItem.WATCHLIST:
       // Показать доску
-      // filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+      boardPresenter.destroy();
+      boardPresenter.init();
+      // Скрыть статистику
+      break;
+    case MenuItem.HISTORY:
+      // Показать доску
+      boardPresenter.destroy();
+      boardPresenter.init();
+      // Скрыть статистику
+      break;
+    case MenuItem.FAVORITES:
+      // Показать доску
+      boardPresenter.destroy();
       boardPresenter.init();
       // Скрыть статистику
       break;
