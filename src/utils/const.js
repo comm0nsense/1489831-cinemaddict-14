@@ -41,3 +41,12 @@ export const KeyDownType = {
   ESC_SHORT: 'Esc',
   ENTER: 'Enter',
 };
+
+export const MenuItem = {
+  ALL_MOVIES: 'all',
+  WATCHLIST: 'Watchlist',
+  FAVORITES: 'Favorites',
+  HISTORY: 'History',
+  STATISTICS: 'Stats',
+};
+

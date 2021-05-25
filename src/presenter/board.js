@@ -59,6 +59,15 @@ export default class Board {
     this._renderExtraFilms();
   }
 
+  destroy() {
+    this._clearMainList({resetRenderedFilmCount: true, resetSortType: true});
+    this._clearExtraLists();
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
+  }
+
   _getFilms() {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();

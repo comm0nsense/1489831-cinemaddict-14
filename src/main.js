@@ -2,7 +2,7 @@ import UserProfileView from './view/user-profile';
 import StatisticsView from './view/statistics';
 import { generateArrayOfCommentsIds, generateFilms} from './mock/film';
 import { render } from './utils/render';
-import { RenderPosition } from './utils/const';
+import { RenderPosition, MenuItem, UpdateType, FilterType } from './utils/const';
 import BoardPresenter from './presenter/board';
 import FilmsModel from './model/films';
 import FilterModel from './model/filter';
@@ -27,8 +27,40 @@ const siteMainElement = document.querySelector('.main');
 
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
 const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel);
+
 filterPresenter.init();
 boardPresenter.init();
+
+const handleSiteMenuClick = (menuItem) => {
+
+  switch (menuItem) {
+    case MenuItem.STATISTICS:
+      // Скрыть доску
+      boardPresenter.destroy();
+      // console.log('boardPresenter.destroy()');
+      // Показать статистику
+      break;
+    case MenuItem.ALL_MOVIES:
+      // Показать доску
+      boardPresenter.init();
+      // Скрыть статистику
+      break;
+    case MenuItem.WATCHLIST:
+      // Показать доску
+      // filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+      boardPresenter.init();
+      // Скрыть статистику
+      break;
+  }
+};
+
+const mainNavigation = document.querySelector('.main-navigation');
+// нужно перенести в компонент Фильтр-Меню??
+mainNavigation.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  const menuItemType = evt.target.id;
+  handleSiteMenuClick(menuItemType);
+});
 
 const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
 render(siteFooterStatisticsElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
