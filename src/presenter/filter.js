@@ -50,10 +50,7 @@ export default class Filter {
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-
-    // if (this._handleSiteMenuClick !== null) {
     this._handleSiteMenuClick(filterType);
-    // }
   }
 
   _getFilters() {
