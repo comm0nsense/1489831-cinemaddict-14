@@ -37,6 +37,6 @@ export const getRandomNumber = (a = 1, b = 0) => {
   return lower + Math.random() * (upper - lower);
 };
 
-export const getRandomDate = (start = new Date(2000, 0, 1), end = new Date()) => {
+export const getRandomDate = (start = new Date(2021, 0, 1), end = new Date()) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };

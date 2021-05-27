@@ -10,7 +10,7 @@ import FilterPresenter from './presenter/filter';
 import { comments } from './presenter/film';
 import StatsView from './view/stats';
 
-const FILM_COUNT = 12;
+const FILM_COUNT = 25;
 
 const commentsIds = generateArrayOfCommentsIds(comments);
 const films = generateFilms(FILM_COUNT, commentsIds);
@@ -28,7 +28,7 @@ const siteMainElement = document.querySelector('.main');
 
 const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel);
 
-const statComponent = new StatsView();
+const statComponent = new StatsView(films);
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem){

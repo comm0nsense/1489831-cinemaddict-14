@@ -1,15 +1,26 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart.js';
+import { getRankName } from '../utils/rank';
+import { StatPeriod } from '../utils/const';
+import { getFilmsByPeriod, getTotaDuration, getCountByGenre } from '../utils/stats';
 
-const renderChart = (statisticCtx) => {
+const renderChart = (statisticCtx, data) => {
+  const { films, statsPeriod} = data;
+
+  const watchedFilms = films.filter((film) => film.isAlreadyWatched);
+  const watchedFilmsByPeriod = getFilmsByPeriod(watchedFilms, statsPeriod);
+  const genreCounts = getCountByGenre(watchedFilmsByPeriod);
+  const genres = genreCounts.map((obj) => obj.genre);
+  const counts = genreCounts.map((obj) => obj.count);
+
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['Sci-Fi', 'Animation', 'Fantasy', 'Comedy', 'TV Series'],
+      labels: genres,
       datasets: [{
-        data: [11, 8, 7, 4, 3],
+        data: counts,
         backgroundColor: '#ffe800',
         hoverBackgroundColor: '#ffe800',
         anchor: 'start',
@@ -61,47 +72,56 @@ const renderChart = (statisticCtx) => {
   });
 };
 
-const createStatsTemplate = () => {
+const createStatsTemplate = (data) => {
+  const { films, statsPeriod} = data;
+
+  const watchedFilms = films.filter((film) => film.isAlreadyWatched);
+  const watchedFilmsByPeriod = getFilmsByPeriod(watchedFilms, statsPeriod);
+  const totalDuration = getTotaDuration(watchedFilmsByPeriod);
+  const totalDurationHours = totalDuration < 60 ? totalDuration : parseInt(totalDuration / 60);
+  const totalDurationMins = totalDuration - totalDurationHours * 60;
+  const genreCounts = getCountByGenre(watchedFilmsByPeriod);
+  const topGenre = genreCounts.length === 0 ? '' : genreCounts[0].genre;
 
   return (
-    `  <section class="statistic">
+    `<section class="statistic">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Movie buff</span>
+      <span class="statistic__rank-label">${getRankName(watchedFilms)}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${statsPeriod === StatPeriod.ALL ? 'checked' : ''}>
       <label for="statistic-all-time" class="statistic__filters-label">All time</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${statsPeriod === StatPeriod.TODAY ? 'checked' : ''}>
       <label for="statistic-today" class="statistic__filters-label">Today</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${statsPeriod === StatPeriod.WEEK? 'checked' : ''}>
       <label for="statistic-week" class="statistic__filters-label">Week</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${statsPeriod === StatPeriod.MONTH? 'checked' : ''}>
       <label for="statistic-month" class="statistic__filters-label">Month</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${statsPeriod === StatPeriod.YEAR? 'checked' : ''}>
       <label for="statistic-year" class="statistic__filters-label">Year</label>
     </form>
 
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${watchedFilmsByPeriod ? watchedFilmsByPeriod.length : '0'} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text"> ${totalDurationHours} <span class="statistic__item-description">h</span> ${totalDurationMins} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text">${topGenre}</p>
       </li>
     </ul>
 
@@ -114,14 +134,29 @@ const createStatsTemplate = () => {
 };
 
 export default class Stats extends SmartView {
-  constructor() {
+  constructor(films) {
     super();
 
+    this._data = {
+      films,
+      statsPeriod: StatPeriod.ALL,
+    };
+
+    this._currentStatsPeriod = null;
+
+    this._periodChangeHandler = this._periodChangeHandler.bind(this);
+
+    this._setInnersHandler();
     this._setChart();
   }
 
   getTemplate() {
-    return createStatsTemplate();
+    return createStatsTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnersHandler();
+    this._setChart();
   }
 
   _setChart() {
@@ -129,8 +164,17 @@ export default class Stats extends SmartView {
     const BAR_HEIGHT = 50;
     statisticCtx.height = BAR_HEIGHT * 5;
 
-    renderChart(statisticCtx);
+    renderChart(statisticCtx, this._data);
+  }
+
+  _periodChangeHandler(evt) {
+    this._currentStatsPeriod = evt.target.value;
+    this.updateData({
+      statsPeriod: this._currentStatsPeriod,
+    });
+  }
+
+  _setInnersHandler() {
+    this.getElement().querySelector('.statistic__filters').addEventListener('change', this._periodChangeHandler);
   }
 }
-
-
