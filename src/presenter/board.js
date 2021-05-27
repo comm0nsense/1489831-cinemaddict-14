@@ -61,13 +61,22 @@ export default class Board {
     this._commentsModel.addObserver(this._handleModelEvent);
   }
 
-  destroy() {
-    this._clearMainList({resetRenderedFilmCount: true, resetSortType: true});
-    this._clearExtraLists();
+  showComponents() {
+    if (!this._sortingComponent || !this._boardContainerComponent) {
+      return;
+    }
 
-    this._filmsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
-    this._commentsModel.removeObserver(this._handleModelEvent);
+    this._sortingComponent.show();
+    this._boardContainerComponent.show();
+  }
+
+  hideComponents() {
+    if (!this._sortingComponent || !this._boardContainerComponent) {
+      return;
+    }
+
+    this._sortingComponent.hide();
+    this._boardContainerComponent.hide();
   }
 
   _getFilms() {
