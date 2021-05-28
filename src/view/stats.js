@@ -178,3 +178,4 @@ export default class Stats extends SmartView {
     this.getElement().querySelector('.statistic__filters').addEventListener('change', this._periodChangeHandler);
   }
 }
+

@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Ольга](https://up.htmlacademy.ru/ecmascript/14/user/1489831).
-* Наставник: [Владимир Якушкин](https://htmlacademy.ru/profile/id126208). 
+* Наставник: [Алексей Михеев](https://htmlacademy.ru/profile/id454457). 
 
 ---
 
