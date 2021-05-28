@@ -1,4 +1,5 @@
 import AbstractView from './abstract';
+import { MenuItem } from '../utils/const';
 
 const createFilterItemTemplate = (filter, currentType) => {
   const {type, name, count } = filter;
@@ -20,7 +21,7 @@ const createFilterTemplate = (filterItems, currentType) => {
     <div class="main-navigation__items">
         ${filterItemsTemplate}
     </div>
-    <a href="#stats" class="main-navigation__additional" id="Stats">Stats</a>
+    <a href="#stats" class="main-navigation__additional ${currentType === MenuItem.STATS ? 'main-navigation__item--active' : ''}" id="Stats">Stats</a>
   </nav>`
   );
 };
@@ -40,14 +41,18 @@ export default class Filter extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
+    const isMenuItem = evt.target.classList.contains('main-navigation__item') ||
+      evt.target.classList.contains('main-navigation__additional');
+
+    if (!isMenuItem) {
+      return;
+    }
+
     this._callback.filterTypeChange(evt.target.id);
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
-    this.getElement().querySelector('#all').addEventListener('click', this._filterTypeChangeHandler);
-    this.getElement().querySelector('#Watchlist').addEventListener('click', this._filterTypeChangeHandler);
-    this.getElement().querySelector('#History').addEventListener('click', this._filterTypeChangeHandler);
-    this.getElement().querySelector('#Favorites').addEventListener('click', this._filterTypeChangeHandler);
+    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
   }
 }

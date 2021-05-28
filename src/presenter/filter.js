@@ -1,13 +1,15 @@
 import FilterView from '../view/filter.js';
-import { FilterType, UpdateType, RenderPosition } from '../utils/const.js';
+import { MenuItem, UpdateType, RenderPosition } from '../utils/const.js';
 import { render, remove, replace } from '../utils/render.js';
 import { filter } from '../utils/filter.js';
 
 export default class Filter {
-  constructor(filterContainer, filterModel, filmsModel) {
+  constructor(filterContainer, filterModel, filmsModel, handleSiteMenuClick) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
+
+    this._handleSiteMenuClick = handleSiteMenuClick;
 
     this._filterComponent = null;
 
@@ -19,6 +21,10 @@ export default class Filter {
   }
 
   init() {
+    this._renderFilters();
+  }
+
+  _renderFilters() {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
@@ -44,6 +50,7 @@ export default class Filter {
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._handleSiteMenuClick(filterType);
   }
 
   _getFilters() {
@@ -51,24 +58,24 @@ export default class Filter {
 
     return [
       {
-        type: FilterType.ALL,
+        type: MenuItem.ALL,
         name: 'All movies',
-        count: filter[FilterType.ALL](films).length,
+        count: filter[MenuItem.ALL](films).length,
       },
       {
-        type: FilterType.WATCHLIST,
+        type: MenuItem.WATCHLIST,
         name: 'Watchlist',
-        count: filter[FilterType.WATCHLIST](films).length,
+        count: filter[MenuItem.WATCHLIST](films).length,
       },
       {
-        type: FilterType.HISTORY,
+        type: MenuItem.HISTORY,
         name: 'History',
-        count: filter[FilterType.HISTORY](films).length,
+        count: filter[MenuItem.HISTORY](films).length,
       },
       {
-        type: FilterType.FAVORITES,
+        type: MenuItem.FAVORITES,
         name: 'Favorites',
-        count: filter[FilterType.FAVORITES](films).length,
+        count: filter[MenuItem.FAVORITES](films).length,
       },
     ];
   }

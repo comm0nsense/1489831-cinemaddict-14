@@ -191,7 +191,7 @@ const generateFilm = (array) => {
     runtime: getRandomInteger(60, 300),
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isAlreadyWatched: isAlreadyWatched,
-    watchingDate: isAlreadyWatched ? Boolean(getRandomDate()) : false,
+    watchingDate: isAlreadyWatched ? getRandomDate() : false,
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };

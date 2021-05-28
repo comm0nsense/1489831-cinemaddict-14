@@ -29,11 +29,12 @@ export const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export const FilterType = {
+export const MenuItem = {
   ALL: 'all',
   WATCHLIST: 'Watchlist',
   FAVORITES: 'Favorites',
   HISTORY: 'History',
+  STATS: 'Stats',
 };
 
 export const KeyDownType = {
@@ -42,11 +43,17 @@ export const KeyDownType = {
   ENTER: 'Enter',
 };
 
-export const MenuItem = {
-  ALL_MOVIES: 'all',
-  WATCHLIST: 'Watchlist',
-  FAVORITES: 'Favorites',
-  HISTORY: 'History',
-  STATISTICS: 'Stats',
+export const UserRank = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};
+
+export const StatPeriod = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
 
