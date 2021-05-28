@@ -3,6 +3,7 @@ import MainListView from '../view/main-list';
 import SortingView from '../view/sorting';
 import EmptyListView from '../view/empty-list';
 import ExtraListView from '../view/extra-list';
+import LoadingView from '../view/loading';
 import {ExtraListTitle, RenderPosition, SortType, UpdateType, UserAction} from '../utils/const';
 import {remove, render} from '../utils/render';
 import ShowMoreBtnView from '../view/show-more-btn';
@@ -30,12 +31,14 @@ export default class Board {
     this._mostCommentedListFilmPresenter = {};
 
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
 
     this._boardContainerComponent = new FilmsBoardView();
     this._mainListComponent = new MainListView();
     this._emptyListComponent = new EmptyListView();
     this._topRatedListComponent = new ExtraListView(ExtraListTitle.TOP_RATED);
     this._mostCommentedListComponent = new ExtraListView(ExtraListTitle.MOST_COMMENTED);
+    this._loadingComponent = new LoadingView();
 
     this._sortingComponent = null;
     this._showMoreBtnComponent = null;
@@ -77,6 +80,10 @@ export default class Board {
 
     this._sortingComponent.hide();
     this._boardContainerComponent.hide();
+  }
+
+  _renderLoading() {
+    render(this._boardContainer, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   _getFilms() {
@@ -172,7 +179,6 @@ export default class Board {
    * @private
    */
   _handleModelEvent(updateType, data) {
-    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this._handleModelEventPatch(data);
@@ -191,6 +197,12 @@ export default class Board {
 
         this._renderExtraFilms();
         this._renderPopupFilm();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
+        this._renderExtraFilms();
         break;
     }
   }
@@ -325,6 +337,11 @@ export default class Board {
   }
 
   _renderBoard() {
+    if(this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
 
     if (!films.length) {

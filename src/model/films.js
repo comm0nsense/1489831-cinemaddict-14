@@ -6,8 +6,10 @@ export default class Films extends Observer {
     this._films = [];
   }
 
-  setFilms(films) {
+  setFilms(updateType, films) {
     this._films = films.slice();
+
+    this._notify(updateType);
   }
 
   getFilms() {
@@ -45,17 +47,38 @@ export default class Films extends Observer {
         isFavorite: film.user_details.favorite,
         isWatchlist: film.user_details.watchlist,
         originalTitle: film.film_info.alternative_title,
-        poster: film.film_info.alternative_title,
+        poster: film.film_info.poster,
         releaseCountry: film.film_info.release.release_country,
         releaseDate: film.film_info.release.date,
         runtime: film.film_info.runtime,
         title: film.film_info.title,
         totalRating: film.film_info.total_rating,
-        watchingDate: film.user_details.watching_date,
+        watchingDate: film.user_details.watching_date !==null ? new Date(film.user_details.watching_date) : film.user_details.watching_date,
         writers: film.film_info.writers,
 
       },
     );
+
+    delete adaptedFilm.film_info.actors;
+    delete adaptedFilm.film_info.age_rating;
+    delete adaptedFilm.comments;
+    delete adaptedFilm.film_info.description;
+    delete adaptedFilm.film_info.director;
+    delete adaptedFilm.film_info.genre;
+    delete adaptedFilm.user_details.already_watched;
+    delete adaptedFilm.user_details.favorite;
+    delete adaptedFilm.user_details.watchlist;
+    delete adaptedFilm.film_info.alternative_title;
+    delete adaptedFilm.film_info.poster;
+    delete adaptedFilm.film_info.release.release_country;
+    delete adaptedFilm.film_info.release.date;
+    delete adaptedFilm.film_info.runtime;
+    delete adaptedFilm.film_info.title;
+    delete adaptedFilm.film_info.total_rating;
+    delete adaptedFilm.user_details.watching_date;
+    delete adaptedFilm.film_info.writers;
+    delete adaptedFilm.film_info;
+    delete adaptedFilm.user_details;
 
     return adaptedFilm;
   }
@@ -87,7 +110,7 @@ export default class Films extends Observer {
           'watchlist': film.isWatchlist,
           'already_watched': film.isAlreadyWatched,
           'favorite': film.isFavorite,
-          'watching_date': film.watchingDate,
+          'watching_date': film.watchingDate instanceof Date ? film.watchingDate.toISOString() : null,
         },
       },
     );
