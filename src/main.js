@@ -9,14 +9,26 @@ import FilterModel from './model/filter';
 import FilterPresenter from './presenter/filter';
 import { comments } from './presenter/film';
 import StatsView from './view/stats';
+import Api from './api';
 
 const FILM_COUNT = 25;
+const AUTHORIZATION = 'Basic sfkjsdf34535jk';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const commentsIds = generateArrayOfCommentsIds(comments);
 const films = generateFilms(FILM_COUNT, commentsIds);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getFilms().then((films) => {
+  console.log(films);
+});
+
+api.getComments(0).then((comments) => {
+  console.log(comments);
+});
 
 // console.log(comments);
-// console.log(films);
+console.log(films);
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
