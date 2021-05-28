@@ -40,11 +40,12 @@ const filterModel = new FilterModel();
 
 const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel);
 
-const statComponent = new StatsView(filmsModel.getFilms());
+let statComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem){
     case MenuItem.STATS:
+      statComponent = new StatsView(filmsModel.getFilms());
       render(siteMainElement, statComponent, RenderPosition.BEFOREEND);
       statComponent.show();
       boardPresenter.hideComponents();
