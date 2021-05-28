@@ -16,10 +16,11 @@ const FILM_COUNT_PER_STEP = 5;
 const FILM_COUNT_EXTRA_LIST = 2;
 
 export default class Board {
-  constructor(boardContainer, filmsModel, filterModel) {
+  constructor(boardContainer, filmsModel, filterModel, api) {
     this._boardContainer = boardContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._api = api;
 
     this._commentsModel = new CommentsModel();
 
@@ -142,7 +143,10 @@ export default class Board {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE:
-        this._filmsModel.updateFilm(updateType, update);
+        // this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.DELETE:
         this._commentsModel.deleteComment(updateType, update);

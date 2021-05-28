@@ -11,7 +11,6 @@ import { comments } from './presenter/film';
 import StatsView from './view/stats';
 import Api from './api';
 
-// const FILM_COUNT = 25;
 const AUTHORIZATION = 'Basic sfkjsdf345jk';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
@@ -38,7 +37,7 @@ const filmsModel = new FilmsModel();
 
 const filterModel = new FilterModel();
 
-const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel);
+const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel, api);
 
 let statComponent = null;
 

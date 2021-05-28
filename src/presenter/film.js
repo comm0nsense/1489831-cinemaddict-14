@@ -3,6 +3,7 @@ import {remove, render, replace } from '../utils/render';
 import {RenderPosition, UserAction, UpdateType, KeyDownType} from '../utils/const';
 import FilmPopupView  from '../view/film-popup';
 import { generateComments } from '../mock/film';
+import Api from '../api';
 
 export const comments = generateComments(25);
 
