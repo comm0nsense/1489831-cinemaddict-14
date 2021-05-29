@@ -146,8 +146,17 @@ export default class Stats extends SmartView {
 
     this._periodChangeHandler = this._periodChangeHandler.bind(this);
 
-    this._setInnersHandler();
+    this._chart = null;
+  }
+
+  init() {
+    if(this._chart !== null) {
+      this._chart.destroy();
+      this._chart = null;
+    }
+
     this._setChart();
+    this._setInnersHandler();
   }
 
   getTemplate() {
@@ -164,7 +173,7 @@ export default class Stats extends SmartView {
     const BAR_HEIGHT = 50;
     statisticCtx.height = BAR_HEIGHT * 5;
 
-    renderChart(statisticCtx, this._data);
+    this._chart = renderChart(statisticCtx, this._data);
   }
 
   _periodChangeHandler(evt) {

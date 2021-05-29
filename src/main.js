@@ -40,11 +40,12 @@ const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel, api);
 
 let statComponent = null;
+// statComponent = new StatsView(filmsModel.getFilms());
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem){
     case MenuItem.STATS:
-      statComponent = new StatsView(filmsModel.getFilms());
+      statComponent.init();
       render(siteMainElement, statComponent, RenderPosition.BEFOREEND);
       statComponent.show();
       boardPresenter.hideComponents();
@@ -69,6 +70,7 @@ render(siteFooterStatisticsElement, new StatisticsView(filmsModel.getFilms().len
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+    statComponent = new StatsView(filmsModel.getFilms());
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);

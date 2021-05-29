@@ -14,11 +14,12 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(filmListsContainer, changeData, changeMode, commentsModel) {
+  constructor(filmListsContainer, changeData, changeMode, commentsModel, api) {
     this._filmListsContainer = filmListsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._commentsModel = commentsModel;
+    this._api = api;
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
@@ -112,15 +113,20 @@ export default class Film {
 
   _handleFilmCardClick() {
     this._changeMode();
-    this._commentsModel.setComments(comments);
-    this._renderFilmPopup();
+    // this._commentsModel.setComments(comments);
+    // this._renderFilmPopup();
+    return this._api.getComments(this._film.id)
+      .then((response) => this._renderFilmPopup(response))
+      .catch(() => {
+        console.log('error');
+      });
   }
 
-  _renderFilmPopup() {
+  _renderFilmPopup(comments) {
     this._mode = Mode.POPUP;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
+    this._filmPopupComponent = new FilmPopupView(this._film, comments);
 
     siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);

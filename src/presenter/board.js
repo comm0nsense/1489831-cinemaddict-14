@@ -217,7 +217,7 @@ export default class Board {
 
   _renderFilmCard (container, film) {
 
-    const filmPresenter =  new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel);
+    const filmPresenter =  new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
     filmPresenter.init(film);
 
     return filmPresenter;
