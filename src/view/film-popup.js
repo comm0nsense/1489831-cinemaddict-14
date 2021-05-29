@@ -1,7 +1,6 @@
 import he from 'he';
 import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
 import SmartView from './smart.js';
-import dayjs from 'dayjs';
 import {KeyDownType} from '../utils/const';
 
 const DEFAULT_NEW_COMMENT = {
@@ -226,11 +225,12 @@ export default class FilmPopup extends SmartView {
 
   static parseDataToComment(data) {
     return {
-      author: 'TestAuthor',
-      id: Date.now(),
+      // author: 'TestAuthor',
+      // id: Date.now(),
       text: data.newComment.text,
       emotion: data.newComment.emotion,
-      date: dayjs().toDate(),
+      // date: dayjs().toDate(),
+      filmId: data.id,
     };
   }
 

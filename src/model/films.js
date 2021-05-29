@@ -110,7 +110,7 @@ export default class Films extends Observer {
           'watchlist': film.isWatchlist,
           'already_watched': film.isAlreadyWatched,
           'favorite': film.isFavorite,
-          'watching_date': film.watchingDate instanceof Date ? film.watchingDate.toISOString() : null,
+          'watching_date': film.watchingDate ? film.watchingDate.toISOString() : null,
         },
       },
     );

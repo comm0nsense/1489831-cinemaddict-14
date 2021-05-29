@@ -3,7 +3,7 @@ import {remove, render, replace } from '../utils/render';
 import {RenderPosition, UserAction, UpdateType, KeyDownType} from '../utils/const';
 import FilmPopupView  from '../view/film-popup';
 import { generateComments } from '../mock/film';
-import Api from '../api';
+import dayjs from 'dayjs';
 
 export const comments = generateComments(25);
 
@@ -99,7 +99,13 @@ export default class Film {
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
-      Object.assign({}, this._film, { isAlreadyWatched: !this._film.isAlreadyWatched }),
+      Object.assign(
+        {},
+        this._film,
+        {
+          isAlreadyWatched: !this._film.isAlreadyWatched,
+          watchingDate: !this._film.isAlreadyWatched ? dayjs() : '',
+        }),
     );
   }
 
@@ -113,20 +119,35 @@ export default class Film {
 
   _handleFilmCardClick() {
     this._changeMode();
-    // this._commentsModel.setComments(comments);
-    // this._renderFilmPopup();
-    return this._api.getComments(this._film.id)
-      .then((response) => this._renderFilmPopup(response))
-      .catch(() => {
-        console.log('error');
-      });
+
+    //1) получаем id всех комментов из модели комментов
+    const commentsIds = this._commentsModel.getComments().map((comment) => comment.id).map(Number);
+
+    //2) получаем id комментов у фильма
+    const filmCommentsIds = this._film.commentsIds.map(Number);
+
+    //3) проверяем, есть ли комменты фильма в модели комментов
+    const isCommentsInModel = filmCommentsIds.every((id) => commentsIds.includes(id));
+
+    //4) если комментов нет, то сначала добавляем их в модель комментов
+    if (isCommentsInModel === false) {
+
+      return this._api.getComments(this._film.id)
+        .then((response) => this._commentsModel.setComments(response))
+        .catch(() => {
+          console.log('error');
+        });
+    }
+
+    //5) рисуем Попап
+    this._renderFilmPopup();
   }
 
-  _renderFilmPopup(comments) {
+  _renderFilmPopup() {
     this._mode = Mode.POPUP;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._filmPopupComponent = new FilmPopupView(this._film, comments);
+    this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
 
     siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
@@ -163,7 +184,7 @@ export default class Film {
     this._changeData(
       UserAction.DELETE,
       UpdateType.MINOR,
-      deletedComment,
+      deletedCommentId,
     );
   }
 

@@ -44,3 +44,5 @@ export const generateComment = () => {
     emotion: getRandomElementFromArray(EMOTIONS),
   };
 };
+
+// const testComments = new Array(5).fill().map(generateComment);
