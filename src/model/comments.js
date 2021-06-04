@@ -19,11 +19,25 @@ export default class Comments extends Observer {
   }
 
   addComment(updateType, update, filmId) {
+
+    const comments = update.slice();
+    const updatedComments = [];
+
+    const renameKey = (object, key, newKey) => {
+      const clonedObj = Object.assign({}, object);
+      const targetKey = clonedObj[key];
+      delete clonedObj[key];
+      clonedObj[newKey] = targetKey;
+      return clonedObj;
+    };
+
+    comments.forEach((comment) => {
+      const adaptenComment = renameKey(comment, 'comment', 'text');
+      updatedComments.push(adaptenComment);
+    });
+
     //найти по filmId обновить добавить в массив новый комент и положить обратно в словарь
-    const updatedComments = update.comments;
-
     this._comments.set(filmId, updatedComments);
-
     this._notify(updateType, this._comments);
   }
 

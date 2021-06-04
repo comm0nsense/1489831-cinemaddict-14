@@ -155,7 +155,7 @@ export default class Board {
         break;
       case UserAction.ADD:
         this._api.addComment(update).then((response) => {
-          this._commentsModel.addComment(updateType, response, filmId);
+          this._commentsModel.addComment(updateType, response.comments, filmId);
         });
         break;
     }
