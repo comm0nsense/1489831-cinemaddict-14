@@ -180,10 +180,13 @@ export default class Film {
       UserAction.UPDATE,
       UpdateType.MINOR,
       {...this._film, commentsIds: updatedFilmCommentsIds},
+      // {...this._film},
+
     );
   }
 
   _handleNewCommentSend(comment) {
+    // const filmCommentIds = this._film.commentsIds;
 
     this._changeData(
       UserAction.ADD,
@@ -191,10 +194,12 @@ export default class Film {
       comment, this._film.id,
     );
 
+    //id нового комментария появится только после обновления модели
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
-      {...this._film },
+      {...this._film},
+      // {...this._film, commentsIds: 'где тут взять ids они появятся после отправки комента'},
     );
   }
 

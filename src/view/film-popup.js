@@ -148,7 +148,7 @@ const createFilmPopupTemplate = (film, filmComments) => {
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsIds.length}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${filmComments.length}</span></h3>
 
             <ul class="film-details__comments-list">
                 ${commentsFragment}
@@ -248,8 +248,6 @@ export default class FilmPopup extends SmartView {
       }
 
       const newComment = FilmPopup.parseDataToComment(this._data);
-      // const updatedCommentsIds = this._data.commentsIds;
-      // updatedCommentsIds.push(newComment.id);
       this._callback.newCommentSend(newComment);
       document.querySelector('.film-details').scrollTo(0, scrollPosition);
     }

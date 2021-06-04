@@ -157,6 +157,9 @@ export default class Board {
         this._api.addComment(update).then((response) => {
           this._commentsModel.addComment(updateType, response.comments, filmId);
         });
+        // this._api.updateFilm(update).then((response) => {
+        //   this._filmsModel.updateFilmCommentsIds(updateType, response.comments, filmId);
+        // });
         break;
     }
   }
