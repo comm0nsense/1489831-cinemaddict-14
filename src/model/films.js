@@ -132,6 +132,7 @@ export default class Films extends Observer {
     delete adaptedFilm.isAlreadyWatched;
     delete adaptedFilm.isFavorite;
     delete adaptedFilm.watchingDate;
+    delete adaptedFilm.title;
 
     return adaptedFilm;
   }

@@ -138,9 +138,10 @@ export default class Board {
    * @param actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
    * @param updateType - тип изменений, нужно чтобы понять, что нужно обновить во View после обновления модели.
    * @param update - обновленные данные
+   * @param filmId - id фильма
    * @private
    */
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, update, filmId) {
     switch (actionType) {
       case UserAction.UPDATE:
         this._api.updateFilm(update).then((response) => {
@@ -148,11 +149,13 @@ export default class Board {
         });
         break;
       case UserAction.DELETE:
-        this._commentsModel.deleteComment(updateType, update);
+        this._api.deleteComment(update).then(() => {
+          this._commentsModel.deleteComment(updateType, update, filmId);
+        });
         break;
       case UserAction.ADD:
         this._api.addComment(update).then((response) => {
-          this._commentsModel.addComment(updateType, response);
+          this._commentsModel.addComment(updateType, response, filmId);
         });
         break;
     }

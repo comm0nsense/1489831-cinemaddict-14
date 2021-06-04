@@ -25,6 +25,8 @@ export default class Film {
     this._filmPopupComponent = null;
     this._mode = Mode.DEFAULT;
 
+    this._filmComments = null;
+
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
     this._onEscKeyDownHandler = this._onEscKeyDownHandler.bind(this);
@@ -120,26 +122,14 @@ export default class Film {
   _handleFilmCardClick() {
     this._changeMode();
 
-    //1) получаем id всех комментов из модели комментов
-    const commentsIds = this._commentsModel.getComments().map((comment) => comment.id).map(Number);
-
-    //2) получаем id комментов у фильма
-    const filmCommentsIds = this._film.commentsIds.map(Number);
-
-    //3) проверяем, есть ли комменты фильма в модели комментов
-    const isCommentsInModel = filmCommentsIds.every((id) => commentsIds.includes(id));
-
-    //4) если комментов нет, то сначала добавляем их в модель комментов
-    if (isCommentsInModel === false) {
-
+    if (!this._commentsModel.hasComments(this._film.id)) {
       return this._api.getComments(this._film.id)
-        .then((response) => this._commentsModel.setComments(response))
-        .catch(() => {
-          console.log('error');
-        });
+        .then((response) => {
+          this._commentsModel.setComments(this._film.id, response);
+        })
+        .then(() => this._renderFilmPopup());
     }
 
-    //5) рисуем Попап
     this._renderFilmPopup();
   }
 
@@ -147,7 +137,9 @@ export default class Film {
     this._mode = Mode.POPUP;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
+    this._filmComments = this._commentsModel.getComments(this._film.id);
+
+    this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
 
     siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
@@ -174,30 +166,35 @@ export default class Film {
     this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
-  _handleDeleteCommentClick(deletedCommentId, deletedComment) {
-    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
-    this._changeData(
-      UserAction.UPDATE,
-      UpdateType.MINOR,
-      {...this._film, commentsIds: updatedCommentsIds},
-    );
+  _handleDeleteCommentClick(deletedCommentId) {
+    const filmCommentIds = this._film.commentsIds;
+    const updatedFilmCommentsIds = filmCommentIds.filter((id) => id !== deletedCommentId);
+
     this._changeData(
       UserAction.DELETE,
       UpdateType.MINOR,
-      deletedCommentId,
+      deletedCommentId, this._film.id,
     );
-  }
 
-  _handleNewCommentSend(comment, commentsIds) {
-    this._changeData(
-      UserAction.ADD,
-      UpdateType.MINOR,
-      comment,
-    );
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
-      {...this._film, commentsIds: commentsIds },
+      {...this._film, commentsIds: updatedFilmCommentsIds},
+    );
+  }
+
+  _handleNewCommentSend(comment) {
+
+    this._changeData(
+      UserAction.ADD,
+      UpdateType.MINOR,
+      comment, this._film.id,
+    );
+
+    this._changeData(
+      UserAction.UPDATE,
+      UpdateType.MINOR,
+      {...this._film },
     );
   }
 

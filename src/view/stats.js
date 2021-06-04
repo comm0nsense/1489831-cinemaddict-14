@@ -134,13 +134,10 @@ const createStatsTemplate = (data) => {
 };
 
 export default class Stats extends SmartView {
-  constructor(films) {
+  constructor(filmsModel) {
     super();
 
-    this._data = {
-      films,
-      statsPeriod: StatPeriod.ALL,
-    };
+    this._filmsModel = filmsModel;
 
     this._currentStatsPeriod = null;
 
@@ -150,6 +147,15 @@ export default class Stats extends SmartView {
   }
 
   init() {
+    const films = this._filmsModel.getFilms();
+
+    this._data = {
+      films,
+      statsPeriod: StatPeriod.ALL,
+    };
+
+    this.updateData(films);
+
     if(this._chart !== null) {
       this._chart.destroy();
       this._chart = null;
@@ -169,6 +175,12 @@ export default class Stats extends SmartView {
   }
 
   _setChart() {
+
+    if(this._chart !== null) {
+      this._chart.destroy();
+      this._chart = null;
+    }
+
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
     const BAR_HEIGHT = 50;
     statisticCtx.height = BAR_HEIGHT * 5;

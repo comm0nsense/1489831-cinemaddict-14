@@ -23,15 +23,11 @@ const filterModel = new FilterModel();
 const boardPresenter = new BoardPresenter(siteMainElement, filmsModel, filterModel, api);
 
 let statComponent = null;
-// statComponent = new StatsView(filmsModel.getFilms());
+statComponent = new StatsView(filmsModel);
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem){
     case MenuItem.STATS:
-      //было в строках 43 и 75
-      //в любом другом месте не обновляется кол-во просмотренных фильмов
-      // после кликов пользователя по галочке
-      statComponent = new StatsView(filmsModel.getFilms());
       statComponent.init();
       render(siteMainElement, statComponent, RenderPosition.BEFOREEND);
       statComponent.show();
@@ -57,7 +53,6 @@ render(siteFooterStatisticsElement, new StatisticsView(filmsModel.getFilms().len
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
-    // statComponent = new StatsView(filmsModel.getFilms());
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);

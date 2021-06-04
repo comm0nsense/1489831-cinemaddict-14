@@ -39,7 +39,7 @@ const createCommentItemTemplate = (comment) => {
   `;
 };
 
-const createFilmPopupTemplate = (film, comments) => {
+const createFilmPopupTemplate = (film, filmComments) => {
   const {
     poster,
     ageRating,
@@ -64,7 +64,6 @@ const createFilmPopupTemplate = (film, comments) => {
 
   const {emotion, text} = newComment;
 
-  const filmComments = comments.filter(({id}) => commentsIds.includes(id));
   const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment)).join('');
 
   const genreList = genres.length > 1
@@ -249,9 +248,9 @@ export default class FilmPopup extends SmartView {
       }
 
       const newComment = FilmPopup.parseDataToComment(this._data);
-      const updatedCommentsIds = this._data.commentsIds;
-      updatedCommentsIds.push(newComment.id);
-      this._callback.newCommentSend(newComment, updatedCommentsIds);
+      // const updatedCommentsIds = this._data.commentsIds;
+      // updatedCommentsIds.push(newComment.id);
+      this._callback.newCommentSend(newComment);
       document.querySelector('.film-details').scrollTo(0, scrollPosition);
     }
   }
@@ -321,9 +320,7 @@ export default class FilmPopup extends SmartView {
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
-    const deletedCommentId = parseInt(evt.target.id);
-    const [deletedComment] = this._comments.filter((comment) => comment.id === deletedCommentId);
-    this._callback.deleteCommentClick(deletedCommentId, deletedComment);
+    this._callback.deleteCommentClick(evt.target.id);
 
     document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
