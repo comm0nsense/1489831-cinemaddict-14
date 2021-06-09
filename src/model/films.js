@@ -32,11 +32,24 @@ export default class Films extends Observer {
     this._notify(updateType, update);
   }
 
-  //не используется - для получения массива айдишников комментов
-  updateFilmCommentsIds(updateType, update, filmId) {
-    // console.log(updateType, update, filmId);
-    const commmentsIds = update.map((comment) => comment.id);
-    const index = this._films.findIndex((film) => film.id === filmId);
+
+  addNewCommentId(updateType, filmId, comments) {
+    const updatedFilm = this._films.find(({id}) => id === filmId);
+
+    if(updatedFilm) {
+      updatedFilm.commentsIds = comments;
+
+      this._notify(updateType, updatedFilm);
+    }
+  }
+
+  removeDeletedCommentId(updateType, deletedCommentId, filmId) {
+    const updatedFilm = this._films.find(({id}) => id === filmId);
+    const filmCommentIds = updatedFilm.commentsIds;
+    const updatedFilmCommentsIds = filmCommentIds.filter((id) => id !== deletedCommentId);
+    updatedFilm.commentsIds = updatedFilmCommentsIds;
+
+    this._notify(updateType, updatedFilmCommentsIds);
   }
 
   static adaptToClient(film) {

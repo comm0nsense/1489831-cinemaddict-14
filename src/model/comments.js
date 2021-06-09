@@ -18,29 +18,6 @@ export default class Comments extends Observer {
     return this._comments.get(filmId);
   }
 
-  addComment(updateType, update, filmId) {
-
-    const comments = update.slice();
-    const updatedComments = [];
-
-    const renameKey = (object, key, newKey) => {
-      const clonedObj = Object.assign({}, object);
-      const targetKey = clonedObj[key];
-      delete clonedObj[key];
-      clonedObj[newKey] = targetKey;
-      return clonedObj;
-    };
-
-    comments.forEach((comment) => {
-      const adaptenComment = renameKey(comment, 'comment', 'text');
-      updatedComments.push(adaptenComment);
-    });
-
-    //найти по filmId обновить добавить в массив новый комент и положить обратно в словарь
-    this._comments.set(filmId, updatedComments);
-    this._notify(updateType, this._comments);
-  }
-
   /**
    * Метод для удаления комментария по клику пользователя: по filmId находит
    * в модели-мапе все комментарии к этому фильму, дальше обновляет массив
@@ -49,13 +26,14 @@ export default class Comments extends Observer {
    * @param update - id удаленного комментария
    * @param filmId - id фильма, на котором произошло событие
    */
-  deleteComment(updateType, update, filmId) {
+  deleteComment(updateType, update, filmId, scrollPosition) {
     const filmComments = this._comments.get(filmId);
     const removeIndex = filmComments.map((comment) => comment.id).indexOf(update);
     filmComments.splice(removeIndex, 1);
 
     this._comments.set(filmId, filmComments);
     this._notify(updateType, this._comments);
+    console.log(scrollPosition);
   }
 
   static adaptToClient(comment) {

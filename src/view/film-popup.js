@@ -1,7 +1,7 @@
 import he from 'he';
-import {formatReleaseDate, formatCommentDate, convertRuntime} from '../utils/film';
+import { formatReleaseDate, formatCommentDate, convertRuntime } from '../utils/film';
 import SmartView from './smart.js';
-import {KeyDownType} from '../utils/const';
+import { KeyDownType } from '../utils/const';
 
 const DEFAULT_NEW_COMMENT = {
   text: '',
@@ -13,7 +13,7 @@ const DEFAULT_NEW_COMMENT = {
  * @param {Object} comment - данные о комментарии
  * @returns {string} строка, содержащая разметку шаблона комментария
  */
-const createCommentItemTemplate = (comment) => {
+const createCommentItemTemplate = (comment, isDeleting, isDisabled) => {
   const {
     id,
     emotion,
@@ -32,14 +32,14 @@ const createCommentItemTemplate = (comment) => {
         <p class="film-details__comment-info">
          <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${formatCommentDate(date)}</span>
-          <button class="film-details__comment-delete" id="${id}">Delete</button>
+          <button class="film-details__comment-delete" id="${id}" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting....' : 'Delete'}</button>
         </p>
       </div>
      </li>
   `;
 };
 
-const createFilmPopupTemplate = (film, filmComments) => {
+const createFilmPopupTemplate = (data, filmComments) => {
   const {
     poster,
     ageRating,
@@ -60,11 +60,12 @@ const createFilmPopupTemplate = (film, filmComments) => {
     commentsIds,
     newComment,
     isDisabled,
-  } = film;
+    isDeleting,
+  } = data;
 
-  const {emotion, text} = newComment;
+  const { emotion, text } = newComment;
 
-  const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment)).join('');
+  const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment, isDisabled, isDeleting)).join('');
 
   const genreList = genres.length > 1
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
@@ -148,7 +149,7 @@ const createFilmPopupTemplate = (film, filmComments) => {
 
         <div class="film-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${filmComments.length}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsIds.length}</span></h3>
 
             <ul class="film-details__comments-list">
                 ${commentsFragment}
@@ -205,7 +206,7 @@ export default class FilmPopup extends SmartView {
     this._popupAddToWatchlistClickHandler = this._popupAddToWatchlistClickHandler.bind(this);
 
     this._changeCommentEmojiHandler = this._changeCommentEmojiHandler.bind(this);
-    this._inputNewCommentHandler =  this._inputNewCommentHandler.bind(this);
+    this._inputNewCommentHandler = this._inputNewCommentHandler.bind(this);
 
     this._newCommentSendHandler = this._newCommentSendHandler.bind(this);
     this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
@@ -219,16 +220,17 @@ export default class FilmPopup extends SmartView {
     return Object.assign({}, film, {
       newComment: DEFAULT_NEW_COMMENT,
       isDisabled: false,
+      isDeleting: false,
     });
   }
 
   static parseDataToComment(data) {
+    delete data.isDisabled;
+    delete data.isDeleting;
+
     return {
-      // author: 'TestAuthor',
-      // id: Date.now(),
       text: data.newComment.text,
       emotion: data.newComment.emotion,
-      // date: dayjs().toDate(),
       filmId: data.id,
     };
   }
@@ -238,18 +240,23 @@ export default class FilmPopup extends SmartView {
   }
 
   _newCommentSendHandler(evt) {
+
+    if (this._data.isDisabled) {
+      return;
+    }
+
     if (evt.key === KeyDownType.ENTER && (evt.metaKey || evt.ctrlKey)) {
-      const scrollPosition = document.querySelector('.film-details').scrollTop;
+      // const scrollPosition = document.querySelector('.film-details').scrollTop;
       evt.preventDefault();
       const { text, emotion } = this._data.newComment;
 
-      if(!text.trim() || !emotion) {
+      if (!text.trim() || !emotion) {
         return;
       }
 
       const newComment = FilmPopup.parseDataToComment(this._data);
       this._callback.newCommentSend(newComment);
-      document.querySelector('.film-details').scrollTo(0, scrollPosition);
+      // document.querySelector('.film-details').scrollTo(0, scrollPosition);
     }
   }
 
@@ -271,7 +278,7 @@ export default class FilmPopup extends SmartView {
   _inputNewCommentHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      newComment: Object.assign({}, this._data.newComment, {text: evt.target.value}),
+      newComment: Object.assign({}, this._data.newComment, { text: evt.target.value }),
     }, true);
   }
 
@@ -318,9 +325,8 @@ export default class FilmPopup extends SmartView {
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
-    this._callback.deleteCommentClick(evt.target.id);
-
-    document.querySelector('.film-details').scrollTo(0, scrollPosition);
+    this._callback.deleteCommentClick(evt.target.id, scrollPosition);
+    // document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
 
   setDeleteCommentClickHandler(callback) {

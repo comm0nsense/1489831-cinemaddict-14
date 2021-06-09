@@ -8,7 +8,7 @@ import {ExtraListTitle, RenderPosition, SortType, UpdateType, UserAction} from '
 import {remove, render} from '../utils/render';
 import ShowMoreBtnView from '../view/show-more-btn';
 import { sortByMostCommented, sortByRating, sortByReleaseDate} from '../utils/film';
-import FilmPresenter from './film';
+import FilmPresenter, {State as FilmPresenterViewState} from './film';
 import {filter} from '../utils/filter';
 import CommentsModel from '../model/comments';
 
@@ -141,7 +141,7 @@ export default class Board {
    * @param filmId - id фильма
    * @private
    */
-  _handleViewAction(actionType, updateType, update, filmId) {
+  _handleViewAction(actionType, updateType, update, filmId, scrollPosition) {
     switch (actionType) {
       case UserAction.UPDATE:
         this._api.updateFilm(update).then((response) => {
@@ -150,16 +150,20 @@ export default class Board {
         break;
       case UserAction.DELETE:
         this._api.deleteComment(update).then(() => {
-          this._commentsModel.deleteComment(updateType, update, filmId);
+          this._commentsModel.deleteComment(updateType, update, filmId, scrollPosition);
+          this._filmsModel.removeDeletedCommentId(updateType, update, filmId);
         });
         break;
       case UserAction.ADD:
         this._api.addComment(update).then((response) => {
-          this._commentsModel.addComment(updateType, response.comments, filmId);
+          const {comments,
+            movie: {
+              comments: commentsIds,
+            },
+          } = response;
+          this._commentsModel.setComments(filmId, comments.map(CommentsModel.adaptToClient));
+          this._filmsModel.addNewCommentId(updateType, filmId, commentsIds);
         });
-        // this._api.updateFilm(update).then((response) => {
-        //   this._filmsModel.updateFilmCommentsIds(updateType, response.comments, filmId);
-        // });
         break;
     }
   }

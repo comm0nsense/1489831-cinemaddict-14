@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card';
-import {remove, render, replace } from '../utils/render';
-import {RenderPosition, UserAction, UpdateType, KeyDownType} from '../utils/const';
-import FilmPopupView  from '../view/film-popup';
+import { remove, render, replace } from '../utils/render';
+import { RenderPosition, UserAction, UpdateType, KeyDownType } from '../utils/const';
+import FilmPopupView from '../view/film-popup';
 import { generateComments } from '../mock/film';
 import dayjs from 'dayjs';
 
@@ -11,6 +11,10 @@ const siteBodyElement = document.querySelector('body'); //вынести в ко
 const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
+};
+export const State = {
+  DELETING: 'DELETING',
+  ADDING_NEW_COMMENT: 'ADDING',
 };
 
 export default class Film {
@@ -64,6 +68,19 @@ export default class Film {
 
     replace(this._filmCardComponent, prevFilmCardComponent);
     remove(prevFilmCardComponent);
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.DELETING:
+        this._filmPopupComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ADDING_NEW_COMMENT:
+        console.log('adding new Comment');
+    }
   }
 
   isPopupMode() {
@@ -166,40 +183,21 @@ export default class Film {
     this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
-  _handleDeleteCommentClick(deletedCommentId) {
-    const filmCommentIds = this._film.commentsIds;
-    const updatedFilmCommentsIds = filmCommentIds.filter((id) => id !== deletedCommentId);
+  _handleDeleteCommentClick(deletedCommentId, scrollPosition) {
 
     this._changeData(
       UserAction.DELETE,
       UpdateType.MINOR,
-      deletedCommentId, this._film.id,
-    );
-
-    this._changeData(
-      UserAction.UPDATE,
-      UpdateType.MINOR,
-      {...this._film, commentsIds: updatedFilmCommentsIds},
-      // {...this._film},
-
+      deletedCommentId, this._film.id, scrollPosition,
     );
   }
 
   _handleNewCommentSend(comment) {
-    // const filmCommentIds = this._film.commentsIds;
 
     this._changeData(
       UserAction.ADD,
       UpdateType.MINOR,
       comment, this._film.id,
-    );
-
-    //id нового комментария появится только после обновления модели
-    this._changeData(
-      UserAction.UPDATE,
-      UpdateType.MINOR,
-      {...this._film},
-      // {...this._film, commentsIds: 'где тут взять ids они появятся после отправки комента'},
     );
   }
 
