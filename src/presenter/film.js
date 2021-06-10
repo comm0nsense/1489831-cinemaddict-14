@@ -31,6 +31,8 @@ export default class Film {
 
     this._filmComments = null;
 
+    this._scrollPosition = null;
+
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
     this._onEscKeyDownHandler = this._onEscKeyDownHandler.bind(this);
@@ -106,6 +108,7 @@ export default class Film {
     this._closeFilmPopup();
   }
 
+
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE,
@@ -170,6 +173,9 @@ export default class Film {
 
     replace(this._filmPopupComponent, prevFilmPopupComponent);
     remove(prevFilmPopupComponent);
+
+    document.querySelector('.film-details').scrollTo(0, this._scrollPosition);
+    this._scrollPosition = null;
   }
 
   _addPopupEvents() {
@@ -184,6 +190,7 @@ export default class Film {
   }
 
   _handleDeleteCommentClick(deletedCommentId, scrollPosition) {
+    this._scrollPosition = scrollPosition;
 
     this._changeData(
       UserAction.DELETE,
@@ -192,7 +199,8 @@ export default class Film {
     );
   }
 
-  _handleNewCommentSend(comment) {
+  _handleNewCommentSend(comment, scrollPosition) {
+    this._scrollPosition = scrollPosition;
 
     this._changeData(
       UserAction.ADD,

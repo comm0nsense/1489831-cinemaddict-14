@@ -26,14 +26,12 @@ export default class Comments extends Observer {
    * @param update - id удаленного комментария
    * @param filmId - id фильма, на котором произошло событие
    */
-  deleteComment(updateType, update, filmId, scrollPosition) {
+  deleteComment(updateType, update, filmId) {
     const filmComments = this._comments.get(filmId);
     const removeIndex = filmComments.map((comment) => comment.id).indexOf(update);
     filmComments.splice(removeIndex, 1);
 
     this._comments.set(filmId, filmComments);
-    this._notify(updateType, this._comments);
-    console.log(scrollPosition);
   }
 
   static adaptToClient(comment) {

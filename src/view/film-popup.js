@@ -246,7 +246,7 @@ export default class FilmPopup extends SmartView {
     }
 
     if (evt.key === KeyDownType.ENTER && (evt.metaKey || evt.ctrlKey)) {
-      // const scrollPosition = document.querySelector('.film-details').scrollTop;
+      const scrollPosition = document.querySelector('.film-details').scrollTop;
       evt.preventDefault();
       const { text, emotion } = this._data.newComment;
 
@@ -255,8 +255,7 @@ export default class FilmPopup extends SmartView {
       }
 
       const newComment = FilmPopup.parseDataToComment(this._data);
-      this._callback.newCommentSend(newComment);
-      // document.querySelector('.film-details').scrollTo(0, scrollPosition);
+      this._callback.newCommentSend(newComment, scrollPosition);
     }
   }
 
@@ -326,7 +325,6 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
     this._callback.deleteCommentClick(evt.target.id, scrollPosition);
-    // document.querySelector('.film-details').scrollTo(0, scrollPosition);
   }
 
   setDeleteCommentClickHandler(callback) {
