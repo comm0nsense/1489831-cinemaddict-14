@@ -4,12 +4,12 @@ import SortingView from '../view/sorting';
 import EmptyListView from '../view/empty-list';
 import ExtraListView from '../view/extra-list';
 import LoadingView from '../view/loading';
-import {ExtraListTitle, RenderPosition, SortType, UpdateType, UserAction} from '../utils/const';
-import {remove, render} from '../utils/render';
+import { ExtraListTitle, RenderPosition, SortType, UpdateType, UserAction } from '../utils/const';
+import { remove, render } from '../utils/render';
 import ShowMoreBtnView from '../view/show-more-btn';
-import { sortByMostCommented, sortByRating, sortByReleaseDate} from '../utils/film';
-import FilmPresenter, {State as FilmPresenterViewState} from './film';
-import {filter} from '../utils/filter';
+import { sortByMostCommented, sortByRating, sortByReleaseDate } from '../utils/film';
+import FilmPresenter from './film';
+import { filter } from '../utils/filter';
 import CommentsModel from '../model/comments';
 
 const FILM_COUNT_PER_STEP = 5;
@@ -50,8 +50,6 @@ export default class Board {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
-
   }
 
   init() {
@@ -107,7 +105,7 @@ export default class Board {
     }
 
     this._currentSortType = sortType;
-    this._clearMainList({resetRenderedFilmCount: true});
+    this._clearMainList({ resetRenderedFilmCount: true });
     this._renderBoard();
   }
 
@@ -149,14 +147,20 @@ export default class Board {
         });
         break;
       case UserAction.DELETE:
-        this._api.deleteComment(update).then(() => {
-          this._commentsModel.deleteComment(updateType, update, filmId, scrollPosition);
-          this._filmsModel.removeDeletedCommentId(updateType, update, filmId);
-        });
+        this._api.deleteComment(update)
+          .then(() => {
+            this._commentsModel.deleteComment(updateType, update, filmId, scrollPosition);
+            this._filmsModel.removeDeletedCommentId(updateType, update, filmId);
+          })
+          .catch(() => {
+            const filmPopup = this._filmsModel.getFilms().find((film) => film.id === filmId);
+            this._mainListFilmPresenter[filmId].init(filmPopup, true);
+            // console.log('ошибка на сервере', filmId, update, filmPopup);
+          });
         break;
       case UserAction.ADD:
         this._api.addComment(update).then((response) => {
-          const {comments,
+          const { comments,
             movie: {
               comments: commentsIds,
             },
@@ -199,7 +203,7 @@ export default class Board {
         this._handleModelEventPatch(data);
         break;
       case UpdateType.MINOR:
-        this._clearMainList({resetRenderedFilmCount: true});
+        this._clearMainList({ resetRenderedFilmCount: true });
         this._renderBoard();
 
         this._renderExtraFilms();
@@ -207,7 +211,7 @@ export default class Board {
         this._renderPopupFilm();
         break;
       case UpdateType.MAJOR:
-        this._clearMainList({resetRenderedTaskCount: true, resetSortType: true});
+        this._clearMainList({ resetRenderedTaskCount: true, resetSortType: true });
         this._renderBoard();
 
         this._renderExtraFilms();
@@ -226,9 +230,9 @@ export default class Board {
     render(this._boardContainerComponent, this._emptyListComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmCard (container, film) {
+  _renderFilmCard(container, film) {
 
-    const filmPresenter =  new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
     filmPresenter.init(film);
 
     return filmPresenter;
@@ -241,14 +245,14 @@ export default class Board {
     });
   }
 
-  _clearMainList({resetRenderedFilmCount = true, resetSortType = false} = {}) {
+  _clearMainList({ resetRenderedFilmCount = true, resetSortType = false } = {}) {
     const filmCount = this._getFilms().length;
 
     Object
       .values(this._mainListFilmPresenter)
       .forEach((presenter) => {
 
-        if (presenter.isPopupMode()){
+        if (presenter.isPopupMode()) {
           this._filmPopupPresenter = presenter;
         }
 
@@ -275,7 +279,7 @@ export default class Board {
 
     presenters.forEach((presenter) => {
 
-      if (presenter.isPopupMode()){
+      if (presenter.isPopupMode()) {
         this._filmPopupPresenter = presenter;
       }
 
@@ -303,7 +307,7 @@ export default class Board {
     }
   }
 
-  _renderShowMoreBtn(){
+  _renderShowMoreBtn() {
     if (this._showMoreBtnComponent !== null) {
       this._showMoreBtnComponent = null;
     }
@@ -352,7 +356,7 @@ export default class Board {
   }
 
   _renderBoard() {
-    if(this._isLoading) {
+    if (this._isLoading) {
       this._renderLoading();
       return;
     }

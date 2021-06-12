@@ -32,6 +32,7 @@ export default class Film {
     this._filmComments = null;
 
     this._scrollPosition = null;
+    this._deletedCommentId = null;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
@@ -45,8 +46,9 @@ export default class Film {
     this._handleNewCommentSend = this._handleNewCommentSend.bind(this);
   }
 
-  init(film) {
+  init(film, shake) {
     this._film = film;
+    this._shake = shake;
 
     if (this.isPopupMode()) {
       this._renderFilmPopup();
@@ -72,18 +74,18 @@ export default class Film {
     remove(prevFilmCardComponent);
   }
 
-  setViewState(state) {
-    switch (state) {
-      case State.DELETING:
-        this._filmPopupComponent.updateData({
-          isDisabled: true,
-          isDeleting: true,
-        });
-        break;
-      case State.ADDING_NEW_COMMENT:
-        console.log('adding new Comment');
-    }
-  }
+  // setViewState(state) {
+  //   switch (state) {
+  //     case State.DELETING:
+  //       this._filmPopupComponent.updateData({
+  //         isDisabled: true,
+  //         isDeleting: true,
+  //       });
+  //       break;
+  //     case State.ADDING_NEW_COMMENT:
+  //       console.log('adding new Comment');
+  //   }
+  // }
 
   isPopupMode() {
     return this._mode === Mode.POPUP;
@@ -106,6 +108,11 @@ export default class Film {
 
   destroyPopup() {
     this._closeFilmPopup();
+  }
+
+  ///???
+  _shakeComponent(component) {
+    component.shake();
   }
 
 
@@ -176,6 +183,11 @@ export default class Film {
 
     document.querySelector('.film-details').scrollTo(0, this._scrollPosition);
     this._scrollPosition = null;
+
+    if(this._shake) {
+      // const test = document.querySelector('.film-details');
+      this._shakeComponent(this._filmPopupComponent);
+    }
   }
 
   _addPopupEvents() {
@@ -191,6 +203,7 @@ export default class Film {
 
   _handleDeleteCommentClick(deletedCommentId, scrollPosition) {
     this._scrollPosition = scrollPosition;
+    this._deletedCommentId = deletedCommentId;
 
     this._changeData(
       UserAction.DELETE,

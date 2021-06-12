@@ -13,7 +13,7 @@ const DEFAULT_NEW_COMMENT = {
  * @param {Object} comment - данные о комментарии
  * @returns {string} строка, содержащая разметку шаблона комментария
  */
-const createCommentItemTemplate = (comment, isDeleting, isDisabled) => {
+const createCommentItemTemplate = (comment, isDeleting, isDisabled,  deletedCommentId) => {
   const {
     id,
     emotion,
@@ -32,7 +32,7 @@ const createCommentItemTemplate = (comment, isDeleting, isDisabled) => {
         <p class="film-details__comment-info">
          <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${formatCommentDate(date)}</span>
-          <button class="film-details__comment-delete" id="${id}" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting....' : 'Delete'}</button>
+          <button class="film-details__comment-delete" id="${id}" ${isDisabled ? 'disabled' : ''}>${id === deletedCommentId ? 'Deleting....' : 'Delete'}</button>
         </p>
       </div>
      </li>
@@ -60,12 +60,14 @@ const createFilmPopupTemplate = (data, filmComments) => {
     commentsIds,
     newComment,
     isDisabled,
-    isDeleting,
+    isDeleting,//не нужно - удалить
+    deletedCommentId,
+
   } = data;
 
   const { emotion, text } = newComment;
 
-  const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment, isDisabled, isDeleting)).join('');
+  const commentsFragment = filmComments.map((comment) => createCommentItemTemplate(comment, isDisabled, isDeleting,  deletedCommentId)).join('');
 
   const genreList = genres.length > 1
     ? `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`
@@ -220,13 +222,14 @@ export default class FilmPopup extends SmartView {
     return Object.assign({}, film, {
       newComment: DEFAULT_NEW_COMMENT,
       isDisabled: false,
-      isDeleting: false,
+      isDeleting: false, //не нужно - удалить
+      deletedCommentId: '',
     });
   }
 
   static parseDataToComment(data) {
     delete data.isDisabled;
-    delete data.isDeleting;
+    delete data.isDeleting; //не нужно - удалить
 
     return {
       text: data.newComment.text,
@@ -324,6 +327,16 @@ export default class FilmPopup extends SmartView {
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
     const scrollPosition = document.querySelector('.film-details').scrollTop;
+
+    this.updateData(
+      {
+        isDisabled: true,
+        isDeleting: true,
+        deletedCommentId: evt.target.id,
+      },
+    );
+    document.querySelector('.film-details').scrollTo(0, scrollPosition);
+
     this._callback.deleteCommentClick(evt.target.id, scrollPosition);
   }
 
