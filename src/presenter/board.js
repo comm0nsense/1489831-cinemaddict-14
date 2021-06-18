@@ -130,6 +130,34 @@ export default class Board {
     }
   }
 
+  _handleDeleteCommentError(filmId, filmPopup, update, isShakeElement) {
+    if (this._mainListFilmPresenter[filmId]) {
+      this._mainListFilmPresenter[filmId].init(filmPopup, update, isShakeElement);
+    }
+
+    if (this._topRatedListFilmPresenter[filmId]) {
+      this._topRatedListFilmPresenter[filmId].init(filmPopup, update, isShakeElement);
+    }
+
+    if (this._mostCommentedListFilmPresenter[filmId]) {
+      this._mostCommentedListFilmPresenter[filmId].init(filmPopup, update, isShakeElement);
+    }
+  }
+
+  _handleAddCommentError(filmId, update, isShakeElement, isShakeComponent) {
+    if (this._mainListFilmPresenter[filmId]) {
+      this._mainListFilmPresenter[filmId].shakeComponent(update, isShakeElement, isShakeComponent);
+    }
+
+    if (this._topRatedListFilmPresenter[filmId]) {
+      this._topRatedListFilmPresenter[filmId].shakeComponent(update, isShakeElement, isShakeComponent);
+    }
+
+    if (this._mostCommentedListFilmPresenter[filmId]) {
+      this._mostCommentedListFilmPresenter[filmId].shakeComponent(update, isShakeElement, isShakeComponent);
+    }
+  }
+
   /**
    * Метод для обработки действий на представлении, т.е. обновляет модель данных
    * в зависимости от действий пользователя на View.
@@ -139,7 +167,9 @@ export default class Board {
    * @param filmId - id фильма
    * @private
    */
-  _handleViewAction(actionType, updateType, update, filmId, scrollPosition) {
+  _handleViewAction(actionType, updateType, update, filmId) {
+    let isShakeElement = false;
+    let isShakeComponent = false;
     switch (actionType) {
       case UserAction.UPDATE:
         this._api.updateFilm(update).then((response) => {
@@ -149,25 +179,30 @@ export default class Board {
       case UserAction.DELETE:
         this._api.deleteComment(update)
           .then(() => {
-            this._commentsModel.deleteComment(updateType, update, filmId, scrollPosition);
+            this._commentsModel.deleteComment(updateType, update, filmId);
             this._filmsModel.removeDeletedCommentId(updateType, update, filmId);
           })
           .catch(() => {
+            isShakeElement = true;
             const filmPopup = this._filmsModel.getFilms().find((film) => film.id === filmId);
-            this._mainListFilmPresenter[filmId].init(filmPopup, true);
-            // console.log('ошибка на сервере', filmId, update, filmPopup);
+            this._handleDeleteCommentError(filmId, filmPopup, update, isShakeElement);
           });
         break;
       case UserAction.ADD:
-        this._api.addComment(update).then((response) => {
-          const { comments,
-            movie: {
-              comments: commentsIds,
-            },
-          } = response;
-          this._commentsModel.setComments(filmId, comments.map(CommentsModel.adaptToClient));
-          this._filmsModel.addNewCommentId(updateType, filmId, commentsIds);
-        });
+        this._api.addComment(update)
+          .then((response) => {
+            const { comments,
+              movie: {
+                comments: commentsIds,
+              },
+            } = response;
+            this._commentsModel.setComments(filmId, comments.map(CommentsModel.adaptToClient));
+            this._filmsModel.addNewCommentId(updateType, filmId, commentsIds);
+          })
+          .catch(() => {
+            isShakeComponent = true;
+            this._handleAddCommentError(filmId, update, isShakeElement, isShakeComponent);
+          });
         break;
     }
   }

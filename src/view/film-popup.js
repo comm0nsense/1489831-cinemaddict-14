@@ -313,15 +313,18 @@ export default class FilmPopup extends SmartView {
   }
 
   _popupFavoriteClickHandler() {
-    this._callback.popupFavoriteClick(this._film);
+    const scrollPosition = document.querySelector('.film-details').scrollTop;
+    this._callback.popupFavoriteClick(scrollPosition);
   }
 
   _popupMarkAsWatchedClickHandler() {
-    this._callback.popupMarkAsWatchedClick(this._film);
+    const scrollPosition = document.querySelector('.film-details').scrollTop;
+    this._callback.popupMarkAsWatchedClick(scrollPosition);
   }
 
   _popupAddToWatchlistClickHandler() {
-    this._callback.popupAddToWatchlistClick(this._film);
+    const scrollPosition = document.querySelector('.film-details').scrollTop;
+    this._callback.popupAddToWatchlistClick(scrollPosition);
   }
 
   _deleteCommentClickHandler(evt) {

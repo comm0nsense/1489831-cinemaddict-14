@@ -33,6 +33,8 @@ export default class Film {
 
     this._scrollPosition = null;
     this._deletedCommentId = null;
+    this._isShakeElement = false;
+    this._isShakeComponent = false;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
@@ -46,9 +48,11 @@ export default class Film {
     this._handleNewCommentSend = this._handleNewCommentSend.bind(this);
   }
 
-  init(film, shake) {
+  init(film, deletedCommentId, isShakeElement) {
     this._film = film;
-    this._shake = shake;
+    this._deletedCommentId = deletedCommentId;
+    this._isShakeElement = isShakeElement;
+    // this._isShakeComponent = isShakeComponent;
 
     if (this.isPopupMode()) {
       this._renderFilmPopup();
@@ -74,18 +78,6 @@ export default class Film {
     remove(prevFilmCardComponent);
   }
 
-  // setViewState(state) {
-  //   switch (state) {
-  //     case State.DELETING:
-  //       this._filmPopupComponent.updateData({
-  //         isDisabled: true,
-  //         isDeleting: true,
-  //       });
-  //       break;
-  //     case State.ADDING_NEW_COMMENT:
-  //       console.log('adding new Comment');
-  //   }
-  // }
 
   isPopupMode() {
     return this._mode === Mode.POPUP;
@@ -110,13 +102,17 @@ export default class Film {
     this._closeFilmPopup();
   }
 
-  ///???
-  _shakeComponent(component) {
-    component.shake();
+  shakeComponent(update, isShakeElement, isShakeComponent) {
+    this._filmPopupComponent.shake(update, isShakeElement, isShakeComponent);
   }
 
+  _shakeElement(component) {
+    component.shake(this._deletedCommentId, this._isShakeElement, this._isShakeComponent);
+  }
 
-  _handleFavoriteClick() {
+  _handleFavoriteClick(scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
@@ -124,7 +120,9 @@ export default class Film {
     );
   }
 
-  _handleMarkAsWatchedClick() {
+  _handleMarkAsWatchedClick(scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
@@ -138,7 +136,9 @@ export default class Film {
     );
   }
 
-  _handleAddToWatchlistClick() {
+  _handleAddToWatchlistClick(scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
@@ -184,9 +184,8 @@ export default class Film {
     document.querySelector('.film-details').scrollTo(0, this._scrollPosition);
     this._scrollPosition = null;
 
-    if(this._shake) {
-      // const test = document.querySelector('.film-details');
-      this._shakeComponent(this._filmPopupComponent);
+    if(this._isShakeElement) {
+      this._shakeElement(this._filmPopupComponent);
     }
   }
 
