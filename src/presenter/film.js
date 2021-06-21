@@ -34,7 +34,7 @@ export default class Film {
     this._scrollPosition = null;
     this._deletedCommentId = null;
     this._isShakeElement = false;
-    this._isShakeComponent = false;
+    // this._isShakeComponent = false;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
@@ -102,12 +102,12 @@ export default class Film {
     this._closeFilmPopup();
   }
 
-  shakeComponent(update, isShakeElement, isShakeComponent) {
-    this._filmPopupComponent.shake(update, isShakeElement, isShakeComponent);
+  shakeComponent() {
+    this._filmPopupComponent.shake();
   }
 
-  _shakeElement(component) {
-    component.shake(this._deletedCommentId, this._isShakeElement, this._isShakeComponent);
+  _shakeElement() {
+    this._filmPopupComponent.shake(this._deletedCommentId);
   }
 
   _handleFavoriteClick(scrollPosition) {
@@ -185,7 +185,7 @@ export default class Film {
     this._scrollPosition = null;
 
     if(this._isShakeElement) {
-      this._shakeElement(this._filmPopupComponent);
+      this._shakeElement();
     }
   }
 

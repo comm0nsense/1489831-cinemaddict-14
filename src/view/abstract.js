@@ -36,22 +36,18 @@ export default class Abstract {
     this.getElement().classList.remove('visually-hidden');
   }
 
-  shake(elementId, isShakeElement, isShakeComponent) {
-    if (isShakeElement) {
-      const deletedCommentId = document.getElementById(elementId);
-      deletedCommentId.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-      setTimeout(() => {
-        deletedCommentId.style.animation = '';
-      }, SHAKE_ANIMATION_TIMEOUT);
-      return;
+  shake(deletedCommentId) {
+    let element = null;
+
+    if (deletedCommentId) {
+      element = document.getElementById(deletedCommentId);
+    } else {
+      element = this.getElement();
     }
 
-    if (isShakeComponent) {
-      this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-      setTimeout(() => {
-        this.getElement().style.animation = '';
-      }, SHAKE_ANIMATION_TIMEOUT);
-      return;
-    }
+    element.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      element.style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

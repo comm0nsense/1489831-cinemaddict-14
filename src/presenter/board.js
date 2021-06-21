@@ -144,17 +144,17 @@ export default class Board {
     }
   }
 
-  _handleAddCommentError(filmId, update, isShakeElement, isShakeComponent) {
+  _handleAddCommentError(filmId) {
     if (this._mainListFilmPresenter[filmId]) {
-      this._mainListFilmPresenter[filmId].shakeComponent(update, isShakeElement, isShakeComponent);
+      this._mainListFilmPresenter[filmId].shakeComponent();
     }
 
     if (this._topRatedListFilmPresenter[filmId]) {
-      this._topRatedListFilmPresenter[filmId].shakeComponent(update, isShakeElement, isShakeComponent);
+      this._topRatedListFilmPresenter[filmId].shakeComponent();
     }
 
     if (this._mostCommentedListFilmPresenter[filmId]) {
-      this._mostCommentedListFilmPresenter[filmId].shakeComponent(update, isShakeElement, isShakeComponent);
+      this._mostCommentedListFilmPresenter[filmId].shakeComponent();
     }
   }
 
@@ -169,7 +169,6 @@ export default class Board {
    */
   _handleViewAction(actionType, updateType, update, filmId) {
     let isShakeElement = false;
-    let isShakeComponent = false;
     switch (actionType) {
       case UserAction.UPDATE:
         this._api.updateFilm(update).then((response) => {
@@ -200,8 +199,7 @@ export default class Board {
             this._filmsModel.addNewCommentId(updateType, filmId, commentsIds);
           })
           .catch(() => {
-            isShakeComponent = true;
-            this._handleAddCommentError(filmId, update, isShakeElement, isShakeComponent);
+            this._handleAddCommentError(filmId);
           });
         break;
     }
