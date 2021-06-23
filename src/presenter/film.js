@@ -1,8 +1,9 @@
 import FilmCardView from '../view/film-card';
-import {remove, render, replace } from '../utils/render';
-import {RenderPosition, UserAction, UpdateType, KeyDownType} from '../utils/const';
-import FilmPopupView  from '../view/film-popup';
+import { remove, render, replace } from '../utils/render';
+import { RenderPosition, UserAction, UpdateType, KeyDownType } from '../utils/const';
+import FilmPopupView from '../view/film-popup';
 import { generateComments } from '../mock/film';
+import dayjs from 'dayjs';
 
 export const comments = generateComments(25);
 
@@ -11,17 +12,29 @@ const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
 };
+export const State = {
+  DELETING: 'DELETING',
+  ADDING_NEW_COMMENT: 'ADDING',
+};
 
 export default class Film {
-  constructor(filmListsContainer, changeData, changeMode, commentsModel) {
+  constructor(filmListsContainer, changeData, changeMode, commentsModel, api) {
     this._filmListsContainer = filmListsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._commentsModel = commentsModel;
+    this._api = api;
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
     this._mode = Mode.DEFAULT;
+
+    this._filmComments = null;
+
+    this._scrollPosition = null;
+    this._deletedCommentId = null;
+    this._isShakeElement = false;
+    // this._isShakeComponent = false;
 
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleCloseBtnClick = this._handleCloseBtnClick.bind(this);
@@ -35,8 +48,11 @@ export default class Film {
     this._handleNewCommentSend = this._handleNewCommentSend.bind(this);
   }
 
-  init(film) {
+  init(film, deletedCommentId, isShakeElement) {
     this._film = film;
+    this._deletedCommentId = deletedCommentId;
+    this._isShakeElement = isShakeElement;
+    // this._isShakeComponent = isShakeComponent;
 
     if (this.isPopupMode()) {
       this._renderFilmPopup();
@@ -62,6 +78,7 @@ export default class Film {
     remove(prevFilmCardComponent);
   }
 
+
   isPopupMode() {
     return this._mode === Mode.POPUP;
   }
@@ -85,7 +102,21 @@ export default class Film {
     this._closeFilmPopup();
   }
 
-  _handleFavoriteClick() {
+  shakeComponent() {
+    if (!this._filmPopupComponent) {
+      return;
+    }
+
+    this._filmPopupComponent.shake();
+  }
+
+  _shakeElement() {
+    this._filmPopupComponent.shake(this._deletedCommentId);
+  }
+
+  _handleFavoriteClick(scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
@@ -93,15 +124,25 @@ export default class Film {
     );
   }
 
-  _handleMarkAsWatchedClick() {
+  _handleMarkAsWatchedClick(scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
-      Object.assign({}, this._film, { isAlreadyWatched: !this._film.isAlreadyWatched }),
+      Object.assign(
+        {},
+        this._film,
+        {
+          isAlreadyWatched: !this._film.isAlreadyWatched,
+          watchingDate: !this._film.isAlreadyWatched ? dayjs() : '',
+        }),
     );
   }
 
-  _handleAddToWatchlistClick() {
+  _handleAddToWatchlistClick(scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.UPDATE,
       UpdateType.MINOR,
@@ -111,7 +152,15 @@ export default class Film {
 
   _handleFilmCardClick() {
     this._changeMode();
-    this._commentsModel.setComments(comments);
+
+    if (!this._commentsModel.hasComments(this._film.id)) {
+      return this._api.getComments(this._film.id)
+        .then((response) => {
+          this._commentsModel.setComments(this._film.id, response);
+        })
+        .then(() => this._renderFilmPopup());
+    }
+
     this._renderFilmPopup();
   }
 
@@ -119,7 +168,9 @@ export default class Film {
     this._mode = Mode.POPUP;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._filmPopupComponent = new FilmPopupView(this._film, this._commentsModel.getComments());
+    this._filmComments = this._commentsModel.getComments(this._film.id);
+
+    this._filmPopupComponent = new FilmPopupView(this._film, this._filmComments);
 
     siteBodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDownHandler);
@@ -133,6 +184,13 @@ export default class Film {
 
     replace(this._filmPopupComponent, prevFilmPopupComponent);
     remove(prevFilmPopupComponent);
+
+    document.querySelector('.film-details').scrollTo(0, this._scrollPosition);
+    this._scrollPosition = null;
+
+    if(this._isShakeElement) {
+      this._shakeElement();
+    }
   }
 
   _addPopupEvents() {
@@ -146,30 +204,24 @@ export default class Film {
     this._filmPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
   }
 
-  _handleDeleteCommentClick(deletedCommentId, deletedComment) {
-    const updatedCommentsIds = this._film.commentsIds.filter((commentId) => commentId !== parseInt(deletedCommentId));
-    this._changeData(
-      UserAction.UPDATE,
-      UpdateType.MINOR,
-      {...this._film, commentsIds: updatedCommentsIds},
-    );
+  _handleDeleteCommentClick(deletedCommentId, scrollPosition) {
+    this._scrollPosition = scrollPosition;
+    this._deletedCommentId = deletedCommentId;
+
     this._changeData(
       UserAction.DELETE,
       UpdateType.MINOR,
-      deletedComment,
+      deletedCommentId, this._film.id, scrollPosition,
     );
   }
 
-  _handleNewCommentSend(comment, commentsIds) {
+  _handleNewCommentSend(comment, scrollPosition) {
+    this._scrollPosition = scrollPosition;
+
     this._changeData(
       UserAction.ADD,
       UpdateType.MINOR,
-      comment,
-    );
-    this._changeData(
-      UserAction.UPDATE,
-      UpdateType.MINOR,
-      {...this._film, commentsIds: commentsIds },
+      comment, this._film.id,
     );
   }
 

@@ -3,38 +3,63 @@ import Observer from '../utils/observer.js';
 export default class Comments extends Observer {
   constructor() {
     super();
-    this._comments = [];
+    this._comments = new Map();
   }
 
-  setComments(comments) {
-    this._comments = comments.slice();
+  hasComments(filmId) {
+    return this._comments.has(filmId);
   }
 
-  getComments() {
-    return this._comments;
+  setComments(filmId, comments) {
+    this._comments.set(filmId, comments.slice());
   }
 
-  addComment(updateType, update) {
-    this._comments = [
-      ...this._comments,
-      update,
-    ];
-
-    this._notify(updateType, this._comments);
+  getComments(filmId) {
+    return this._comments.get(filmId);
   }
 
-  deleteComment(updateType, update) {
-    const index = this._comments.findIndex((comment) => comment.id === parseInt(update.id));
+  /**
+   * Метод для удаления комментария по клику пользователя: по filmId находит
+   * в модели-мапе все комментарии к этому фильму, дальше обновляет массив
+   * комментов к этому фильму и оповещает view, чтобы произошла перерисовка компонента по обновленной модели
+   * @param updateType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+   * @param update - id удаленного комментария
+   * @param filmId - id фильма, на котором произошло событие
+   */
+  deleteComment(updateType, update, filmId) {
+    const filmComments = this._comments.get(filmId);
+    const removeIndex = filmComments.map((comment) => comment.id).indexOf(update);
+    filmComments.splice(removeIndex, 1);
 
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting comment');
-    }
+    this._comments.set(filmId, filmComments);
+  }
 
-    this._comments = [
-      ...this._comments.slice(0, index),
-      ...this._comments.slice(index + 1),
-    ];
+  static adaptToClient(comment) {
 
-    this._notify(updateType, this._comments);
+    const adaptedComment = Object.assign(
+      {},
+      comment,
+      {
+        text: comment.comment,
+      },
+    );
+
+    delete adaptedComment.comment;
+
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+    const adaptedComment = Object.assign(
+      {},
+      comment,
+      {
+        comment: comment.text,
+      },
+    );
+
+    delete adaptedComment.text;
+
+    return adaptedComment;
   }
 }
