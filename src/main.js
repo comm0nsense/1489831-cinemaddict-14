@@ -48,11 +48,11 @@ filterPresenter.init();
 boardPresenter.init();
 
 const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
-render(siteFooterStatisticsElement, new StatisticsView(filmsModel.getFilms().length), RenderPosition.BEFOREEND);
 
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+    render(siteFooterStatisticsElement, new StatisticsView(filmsModel.getFilms().length), RenderPosition.BEFOREEND);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);

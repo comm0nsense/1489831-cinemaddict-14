@@ -103,6 +103,10 @@ export default class Film {
   }
 
   shakeComponent() {
+    if (!this._filmPopupComponent) {
+      return;
+    }
+
     this._filmPopupComponent.shake();
   }
 

@@ -46,7 +46,7 @@ export default class Api {
     const movieId = comment.filmId;
     delete comment.filmId;
     return this._load({
-      url: `co1mments/${movieId}`,
+      url: `comments/${movieId}`,
       method: Method.POST,
       body: JSON.stringify(CommentsModel.adaptToServer(comment)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -57,7 +57,7 @@ export default class Api {
 
   deleteComment(commentId) {
     return this._load({
-      url: `co1mments/${commentId}`,
+      url: `comments/${commentId}`,
       method: Method.DELETE,
     });
   }

@@ -36,11 +36,11 @@ export default class Abstract {
     this.getElement().classList.remove('visually-hidden');
   }
 
-  shake(deletedCommentId) {
+  shake(elementId) {
     let element = null;
 
-    if (deletedCommentId) {
-      element = document.getElementById(deletedCommentId);
+    if (elementId) {
+      element = document.getElementById(elementId);
     } else {
       element = this.getElement();
     }
